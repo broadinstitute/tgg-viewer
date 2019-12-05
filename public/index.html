@@ -6,26 +6,45 @@
     <title>RNA-seq Viewer</title>
 
     <script>
-      const REFERENCE_DATA_ROOT = ' gs://macarthurlab-rnaseq/reference_tracks/GTEx_ref_data'
+      const REFERENCE_DATA_ROOT = 'gs://macarthurlab-rnaseq/reference_tracks/GTEx_ref_data'
       const REFERENCE_TRACKS = [
         {
-          name: 'GTEx Muscle',
+          name: 'GTEx 100 Muscle',
           description: '100 GTEx muscle samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all 100 samples.',
           junctions: `${REFERENCE_DATA_ROOT}/muscle_100_GTEx_samples.SJ.out.tab.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/muscle_100_GTEx_samples.bigWig`,
         },
         {
-          name: 'GTEx Blood',
+          name: 'GTEx 100 Blood',
           description: '100 GTEx blood samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all 100 samples.',
           junctions: `${REFERENCE_DATA_ROOT}/blood_100_GTEx_samples.SJ.out.tab.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/blood_100_GTEx_samples.bigWig`,
         },
         {
-          name: 'GTEx Fibroblasts',
+          name: 'GTEx 100 Fibs',
           description: '100 GTEx fibroblast samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all 100 samples.',
           junctions: `${REFERENCE_DATA_ROOT}/fibs_100_GTEx_samples.SJ.out.tab.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/fibs_100_GTEx_samples.bigWig`,
         },
+        {
+          name: 'GTEx All Muscle',
+          description: '803 GTEx muscle samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all samples.',
+          junctions: `${REFERENCE_DATA_ROOT}/GTEX_muscle.803_samples.SJ.out.bed.gz`,
+          coverage: `${REFERENCE_DATA_ROOT}/GTEX_muscle.803_samples.bigWig`,
+        },
+        {
+          name: 'GTEx All Blood',
+          description: '755 GTEx blood samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all samples.',
+          junctions: `${REFERENCE_DATA_ROOT}/GTEX_blood.755_samples.SJ.out.bed.gz`,
+          coverage: `${REFERENCE_DATA_ROOT}/GTEX_blood.755_samples.bigWig`,
+        },
+        {
+          name: 'GTEx All Fibs',
+          description: '504 GTEx fibroblast samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all samples.',
+          junctions: `${REFERENCE_DATA_ROOT}/GTEX_fibs.504_samples.SJ.out.bed.gz`,
+          coverage: `${REFERENCE_DATA_ROOT}/GTEX_fibs.504_samples.bigWig`,
+        },
+        /*
         {
           name: 'Gencode v32 Genes',
           description: 'Comprehensive gene annotations for GRCh38 reference chromosomes. Source: https://www.gencodegenes.org/human/release_32.html',
@@ -33,8 +52,9 @@
         },
         {
           name: 'RefSeq Genes',
-          annotation: 'https://s3.amazonaws.com/igv.org.genomes/hg38/refGene.sorted.txt.gz'
+          path: 'https://s3.amazonaws.com/igv.org.genomes/hg38/refGene.sorted.txt.gz'
         }
+        */
       ]
 
       const SAMPLE_TRACKS = []
