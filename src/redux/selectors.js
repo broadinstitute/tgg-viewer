@@ -143,6 +143,21 @@ export const getTracks = createSelector(
       }
     })
 
+
+    igvTracks.push({
+      name: 'Gencode v32 Genes',
+      format: "refgene",
+      url: "gs://macarthurlab-rnaseq/reference_tracks/gencode_v32_knownGene.sorted.txt.gz",
+      indexUrl: "gs://macarthurlab-rnaseq/reference_tracks/gencode_v32_knownGene.sorted.txt.gz.tbi",
+      indexed: true,
+      height: 350,
+      visibilityWindow: -1,
+      displayMode: "EXPANDED",
+      order: 1000001,
+      color: "rgb(76,171,225)",
+      oauthToken: getGoogleAccessToken,
+    })
+
     return igvTracks
   }
 )
