@@ -1,12 +1,13 @@
 import { createSelector } from 'reselect'
 import { getGoogleAccessToken } from '../utils/googleAuth'
-import { MOTIFS } from './constants'
+import { MOTIFS } from '../constants'
 
 export const getLocus = state => state.locus
 export const getGenome = state => state.genome
 export const getSamplesInfo = state => state.samplesInfo
 export const getSelectedSampleNames = state => state.selectedSampleNames
 export const getSjOptions = state => state.sjOptions
+export const getVcfOptions = state => state.vcfOptions
 export const getBamOptions = state => state.bamOptions
 
 
@@ -43,8 +44,9 @@ export const getSelectedSamples = createSelector(
 export const getTracks = createSelector(
   getSelectedSamples,
   getSjOptions,
+  getVcfOptions,
   getBamOptions,
-  (selectedSamples, sjOptions, bamOptions) => {
+  (selectedSamples, sjOptions, vcfOptions, bamOptions) => {
     const igvTracks = []
 
     selectedSamples.forEach((sample) => {
@@ -108,8 +110,7 @@ export const getTracks = createSelector(
         })
       }
 
-      /*
-      if (sample.vcf) {
+      if (vcfOptions.showVcfs && sample.vcf) {
         //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
         console.log(`Adding ${sample.vcf} track`)
 
@@ -118,12 +119,13 @@ export const getTracks = createSelector(
           format: 'vcf',
           url: sample.vcf,
           indexUrl: `${sample.vcf}.tbi`,
-          oauthToken: getGoogleAccessToken,
-          name: sample.name,
+          name: `${sample.name} vcf`,
           displayMode: 'SQUISHED',
+          height: vcfOptions.trackHeight,
+          oauthToken: getGoogleAccessToken,
         })
       }
-      */
+
       if (bamOptions.showBams && sample.bam) {
         //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
         console.log(`Adding ${sample.bam} track`)
@@ -132,10 +134,11 @@ export const getTracks = createSelector(
           type: 'alignment',
           url: sample.bam,
           name: `${sample.name} bam`,
-          alignmentShading: bamOptions.alignmentShading,
+          height: bamOptions.trackHeight,
+          colorBy: bamOptions.colorBy,
+          viewAsPairs: bamOptions.viewAsPairs,
           showSoftClips: bamOptions.showSoftClips,
           oauthToken: getGoogleAccessToken,
-          //...trackOptions,
         })
       }
     })

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from "styled-components"
 import { Checkbox, Icon, Popup } from 'semantic-ui-react'
 import { connect } from 'react-redux'
-import { getSamplesInfo, getSelectedSampleNames, getSjOptions, getBamOptions } from '../redux/selectors'
+import { getSamplesInfo, getSelectedSampleNames, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
 
 
 
@@ -62,7 +62,6 @@ const SampleDetails = ({sample}) => {
     <StyledPopup inverted
       content={sample.description}
       position="right center"
-      on="click"
       trigger={
         <Icon style={{marginLeft: '10px'}} name="question circle outline" />
       } /> : null)
@@ -74,9 +73,11 @@ class LeftSideBar extends React.Component
     samplesInfo: PropTypes.array,
     selectedSampleNames: PropTypes.array,
     sjOptions: PropTypes.object,
+    vcfOptions: PropTypes.object,
     bamOptions: PropTypes.object,
     updateSelectedSampleNames: PropTypes.func,
     updateSjOptions: PropTypes.func,
+    updateVcfOptions: PropTypes.func,
     updateBamOptions: PropTypes.func,
   }
 
@@ -84,6 +85,7 @@ class LeftSideBar extends React.Component
     //const params = new URLSearchParams(window.location.search)
     return (
       <div>
+        <Checkbox label="show VCF tracks" defaultChecked={this.props.vcfOptions.showVcfs} onChange={(e, data) => this.props.updateVcfOptions({ showVcfs: data.checked })} />
         <Checkbox label="show BAM tracks" defaultChecked={this.props.bamOptions.showBams} onChange={(e, data) => this.props.updateBamOptions({ showBams: data.checked })} />
 
         <SamplesPanel
@@ -99,6 +101,7 @@ const mapStateToProps = state => ({
   selectedSampleNames: getSelectedSampleNames(state),
   samplesInfo: getSamplesInfo(state),
   sjOptions: getSjOptions(state),
+  vcfOptions: getVcfOptions(state),
   bamOptions: getBamOptions(state),
 
 })
@@ -113,6 +116,12 @@ const mapDispatchToProps = dispatch => ({
   updateSjOptions: (newSettings) => {
     dispatch({
       type: 'UPDATE_SJ_OPTIONS',
+      updates: newSettings,
+    })
+  },
+  updateVcfOptions: (newSettings) => {
+    dispatch({
+      type: 'UPDATE_VCF_OPTIONS',
       updates: newSettings,
     })
   },

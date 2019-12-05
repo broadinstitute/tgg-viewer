@@ -1,6 +1,4 @@
 import React from 'react'
-import './App.css'
-
 import { Provider } from 'react-redux'
 
 import BaseLayout from './components/BaseLayout'
@@ -14,5 +12,3 @@ function App() {
 }
 
 export default App
-
-//import 'semantic-ui-css/semantic-custom.css'

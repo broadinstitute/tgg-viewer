@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import styled from "styled-components"
 import { Checkbox, Icon, Popup } from 'semantic-ui-react'
 import { connect } from 'react-redux'
-import { getSamplesInfo, getSelectedSampleNames, getSjOptions, getBamOptions } from '../redux/selectors'
-import { MOTIFS } from '../redux/constants'
+import { getSamplesInfo, getSelectedSampleNames, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
+import { MOTIFS } from '../constants'
 
 
 const CategoryH3 = styled.h3` 
@@ -27,8 +27,8 @@ const StyledPopup = styled(Popup)`
   opacity: 0.95;
 `
 
-const SjOptionsPanel = ({ sjOptions, updateSjOptions, value=null }) => {
-  const handleTextInput = (e, name) => {
+const SjOptionsPanel = ({ sjOptions, updateSjOptions }) => {
+  const handleTextInput = (e, name, value=null) => {
     if (e.keyCode === 13) {
       updateSjOptions({ [name]: value || e.target.value })
     }
@@ -36,7 +36,7 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions, value=null }) => {
 
   return <div>
     <CategoryH3>JUNCTION TRACK OPTIONS</CategoryH3><br />
-    <OptionDiv>Track height: <OptionInput type="text" defaultValue={sjOptions.trackHeight} onKeyUp={e => handleTextInput(e, 'trackHeight', value=parseInt(e.target.value))} /> px</OptionDiv>
+    <OptionDiv>Track height: <OptionInput type="text" defaultValue={sjOptions.trackHeight} onKeyUp={e => handleTextInput(e, 'trackHeight', parseInt(e.target.value))} /> px</OptionDiv>
     <OptionDiv><Checkbox label="Show coverage" defaultChecked={!sjOptions.hideCoverage} onChange={(e, data) => updateSjOptions({ hideCoverage: !data.checked })} /></OptionDiv>
     <OptionDiv><Checkbox label="Show known junctions" defaultChecked={!sjOptions.hideAnnotated} onChange={(e, data) => updateSjOptions({ hideAnnotated: !data.checked })} /></OptionDiv>
     <OptionDiv><Checkbox label="Show unknown junctions" defaultChecked={!sjOptions.hideUnannotated} onChange={(e, data) => updateSjOptions({ hideUnannotated: !data.checked })} /></OptionDiv>
@@ -80,11 +80,11 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions, value=null }) => {
     <CategoryH3>JUNCTION TRACK FILTERS</CategoryH3><br />
     <div>
       <OptionDiv>Uniquely-mapped reads:</OptionDiv>
-      at least <OptionInput type="text" defaultValue={sjOptions.minUniquelyMappedReads} onKeyUp={e => handleTextInput(e, 'minUniquelyMappedReads', value=parseInt(e.target.value))} />
+      at least <OptionInput type="text" defaultValue={sjOptions.minUniquelyMappedReads} onKeyUp={e => handleTextInput(e, 'minUniquelyMappedReads', parseInt(e.target.value))} />
     </div>
     <div>
       <OptionDiv>Total reads:</OptionDiv>
-      at least <OptionInput type="text"  defaultValue={sjOptions.minTotalReads} onKeyUp={e => handleTextInput(e, 'minTotalReads', value=parseInt(e.target.value))} />
+      at least <OptionInput type="text"  defaultValue={sjOptions.minTotalReads} onKeyUp={e => handleTextInput(e, 'minTotalReads', parseInt(e.target.value))} />
     </div>
     <div>
       <OptionDiv>Fraction multi-mapped:
@@ -96,11 +96,11 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions, value=null }) => {
             <Icon style={{marginLeft: '8px'}} name="question circle outline" />
           } />
       </OptionDiv>
-      at most <OptionInput type="text" defaultValue={sjOptions.maxFractionMultiMappedReads} onKeyUp={e => handleTextInput(e, 'maxFractionMultiMappedReads', value=parseInt(e.target.value))} />
+      at most <OptionInput type="text" defaultValue={sjOptions.maxFractionMultiMappedReads} onKeyUp={e => handleTextInput(e, 'maxFractionMultiMappedReads', parseInt(e.target.value))} />
     </div>
     <div>
       <OptionDiv>Splice overhang base-pairs:</OptionDiv>
-      at least <OptionInput type="text" defaultValue={sjOptions.minSplicedAlignmentOverhang} onKeyUp={e => handleTextInput(e, 'minSplicedAlignmentOverhang', value=parseInt(e.target.value))} />
+      at least <OptionInput type="text" defaultValue={sjOptions.minSplicedAlignmentOverhang} onKeyUp={e => handleTextInput(e, 'minSplicedAlignmentOverhang', parseInt(e.target.value))} />
     </div>
     <div>
       <OptionDiv>Donor/Acceptor Motifs:</OptionDiv>
@@ -113,18 +113,57 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions, value=null }) => {
   </div>
 }
 
-const BamOptionsPanel = ( { bamOptions, updateBamOptions }) => <div>
+const BamOptionsPanel = ( { bamOptions, updateBamOptions }) => {
+  const handleTextInput = (e, name, value=null) => {
+    if (e.keyCode === 13) {
+      updateBamOptions({ [name]: value || e.target.value })
+    }
+  }
 
-</div>
+  return <div>
+    <CategoryH3>BAM TRACK OPTIONS</CategoryH3><br />
+    <OptionDiv>Track height: <OptionInput type="text" defaultValue={bamOptions.trackHeight} onKeyUp={e => handleTextInput(e, 'trackHeight', parseInt(e.target.value))} /> px</OptionDiv>
+    <OptionDiv>Color by:</OptionDiv>
+    <OptionDiv>
+      <select defaultValue={bamOptions.colorBy} onChange={e => updateBamOptions({ colorBy: e.target.value })}>
+        <option value="strand">Strand</option>
+        <option value="firstOfPairStrand">First-of-pair strand</option>
+        <option value="pairOrientation">Pair orientation</option>
+        <option value="fragmentLength">Insert size (TLEN)</option>
+        <option value="none">None</option>
+      </select>
+    </OptionDiv>
+    <OptionDiv><Checkbox label="View as pairs" defaultChecked={bamOptions.viewAsPairs} onChange={(e, data) => updateBamOptions({ viewAsPairs: data.checked })} /></OptionDiv>
+    <OptionDiv><Checkbox label="Show soft-clips" defaultChecked={bamOptions.showSoftClips} onChange={(e, data) => updateBamOptions({ showSoftClips: data.checked })} /></OptionDiv>
+  </div>
+}
+
+
+
+const VcfOptionsPanel = ( { vcfOptions, updateVcfOptions }) => {
+  const handleTextInput = (e, name, value=null) => {
+    if (e.keyCode === 13) {
+      updateVcfOptions({ [name]: value || e.target.value })
+    }
+  }
+
+  return <div>
+    <CategoryH3>VCF TRACK OPTIONS</CategoryH3><br />
+    <OptionDiv>Track height: <OptionInput type="text" defaultValue={vcfOptions.trackHeight} onKeyUp={e => handleTextInput(e, 'trackHeight', parseInt(e.target.value))} /> px</OptionDiv>
+  </div>
+}
 
 
 class RightSideBar extends React.Component
 {
   static propTypes = {
     sjOptions: PropTypes.object,
+    vcfOptions: PropTypes.object,
+    bamOptions: PropTypes.object,
     samplesInfo: PropTypes.array,
     selectedSampleNames: PropTypes.array,
     updateSjOptions: PropTypes.func,
+    updateVcfOptions: PropTypes.func,
     updateBamOptions: PropTypes.func,
     updateSelectedSampleNames: PropTypes.func,
   }
@@ -139,12 +178,17 @@ class RightSideBar extends React.Component
         bamOptions={this.props.bamOptions}
         updateBamOptions={this.props.updateBamOptions}
       />
+      <VcfOptionsPanel
+        vcfOptions={this.props.vcfOptions}
+        updateVcfOptions={this.props.updateVcfOptions}
+      />
     </div>
   }
 }
 
 const mapStateToProps = state => ({
   sjOptions: getSjOptions(state),
+  vcfOptions: getVcfOptions(state),
   bamOptions: getBamOptions(state),
   selectedSampleNames: getSelectedSampleNames(state),
   samplesInfo: getSamplesInfo(state),
@@ -166,6 +210,12 @@ const mapDispatchToProps = dispatch => ({
   updateBamOptions: (newSettings) => {
     dispatch({
       type: 'UPDATE_BAM_OPTIONS',
+      updates: newSettings,
+    })
+  },
+  updateVcfOptions: (newSettings) => {
+    dispatch({
+      type: 'UPDATE_VCF_OPTIONS',
       updates: newSettings,
     })
   },

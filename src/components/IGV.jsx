@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import igv from 'igv'
 import { connect } from 'react-redux'
 
-import { getGenome, getLocus, getTracks, getSjOptions, getBamOptions } from '../redux/selectors'
+import { getGenome, getLocus, getTracks, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
 
 const IGV_SETTINGS = {
   showKaryo: false,
@@ -40,6 +40,7 @@ class IGV extends React.Component {
     locusChangedHandler: PropTypes.func,
     trackRemovedHandler: PropTypes.func,
     sjOptions: PropTypes.object,
+    vcfOptions: PropTypes.object,
     bamOptions: PropTypes.object,
   }
 
@@ -97,7 +98,8 @@ class IGV extends React.Component {
       const nextTrackSettings = nextTrackSettingsByTrackName[track.name]
       if (nextTrackSettings) {
         if ( (nextProps.sjOptions !== this.props.sjOptions && ['merged', 'wig', 'junctions'].includes(track.type) ) ||
-             (nextProps.bamOptions !== this.props.bamOptions && 'bam' === track.type)
+             (nextProps.vcfOptions !== this.props.vcfOptions && 'variant' === track.type) ||
+             (nextProps.bamOptions !== this.props.bamOptions && 'alignment' === track.type)
         ) {
           this.browser.removeTrackByName(track.name)
           this.browser.loadTrack(nextTrackSettings)
@@ -155,6 +157,7 @@ const mapStateToProps = state => ({
   locus: getLocus(state),
   tracks: getTracks(state),
   sjOptions: getSjOptions(state),
+  vcfOptions: getVcfOptions(state),
   bamOptions: getBamOptions(state),
 })
 

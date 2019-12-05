@@ -15,6 +15,7 @@ const rootReducer = combineReducers(Object.assign({
   samplesInfo: zeroActionsReducer,
   selectedSampleNames: createSingleValueReducer('UPDATE_SELECTED_SAMPLES', []),
   sjOptions: createSingleObjectReducer('UPDATE_SJ_OPTIONS'),
+  vcfOptions: createSingleObjectReducer('UPDATE_VCF_OPTIONS'),
   bamOptions: createSingleObjectReducer('UPDATE_BAM_OPTIONS'),
 }))
 

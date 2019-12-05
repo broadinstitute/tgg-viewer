@@ -4,7 +4,6 @@ import thunkMiddleware from 'redux-thunk'
 import jsurl from 'jsurl'
 
 import { loadState, saveState } from '../utils/localStorage'
-import { MOTIFS } from './constants'
 
 const INITIAL_STATE = {
   genome: 'hg38',
@@ -27,18 +26,23 @@ const INITIAL_STATE = {
     labelMotif: true,
     labelIsAnnotatedJunction: false,
     labelIsAnnotatedJunctionValue: " [A]",
-    ...MOTIFS.reduce((acc, motif) => { return { ...acc, [`hideMotif${motif}`]: false } }, {}),
+  },
+  vcfOptions: {
+    trackHeight: 50,
   },
   bamOptions: {
     trackHeight: 100,
     showSoftClips: true,
-    alignmentShading: 'strand',
+    colorBy: 'strand',
+
   },
-  samplesInfo: window.INITIAL_TRACKS || [],
+  samplesInfo: [],
+
+  ...(window.IGV_SETTINGS || {}),
 }
 
 const PERSIST_STATE_IN_URL = [
-  'locus', 'selectedSampleNames', 'sjOptions', 'bamOptions',
+  'locus', 'selectedSampleNames', 'sjOptions', 'vcfOptions', 'bamOptions',
 ]
 
 const PERSIST_STATE_IN_LOCAL_STORAGE = []
