@@ -5,7 +5,7 @@ import igv from 'igv'
 import { connect } from 'react-redux'
 
 import { getGenome, getLocus, getTracks, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
-import { googleSignIn, initGoogleClient } from '../utils/googleAuth'
+import { getGoogleUserEmail, googleSignIn, initGoogleClient } from '../utils/googleAuth'
 
 const IGV_SETTINGS = {
   showIdeogram: true,
@@ -39,6 +39,7 @@ class IGV extends React.Component {
     tracks: PropTypes.array.isRequired,
     locusChangedHandler: PropTypes.func,
     trackRemovedHandler: PropTypes.func,
+    userChangedHandler: PropTypes.func,
     sjOptions: PropTypes.object,
     vcfOptions: PropTypes.object,
     bamOptions: PropTypes.object,
@@ -70,8 +71,11 @@ class IGV extends React.Component {
       tracks: this.props.tracks,
     }
 
+    // TODO check if any tracks need google sign-in
     await initGoogleClient()
     await googleSignIn()
+    let googleUserEmail = await getGoogleUserEmail()
+    this.props.userChangedHandler(googleUserEmail)
 
     igv.createBrowser(this.container, igvBrowserOptions).then((browser) => {
       this.browser = browser
@@ -98,6 +102,8 @@ class IGV extends React.Component {
     console.log('IGV.nextProps:', nextProps )
     // update or remove existing tracks
     for (let track of this.props.tracks) {
+      // TODO check if any tracks need google sign-in
+
       const nextTrackSettings = nextTrackSettingsByTrackName[track.name]
       if (nextTrackSettings) {
         if ( (nextProps.sjOptions !== this.props.sjOptions && ['merged', 'wig', 'junctions'].includes(track.type) ) ||
@@ -135,6 +141,16 @@ class IGV extends React.Component {
 }
 
 
+const mapStateToProps = state => ({
+  genome: getGenome(state),
+  locus: getLocus(state),
+  tracks: getTracks(state),
+  sjOptions: getSjOptions(state),
+  vcfOptions: getVcfOptions(state),
+  bamOptions: getBamOptions(state),
+})
+
+
 const mapDispatchToProps = dispatch => ({
   locusChangedHandler: (event) => {
     const newLocus = event.label.replace(/,/g, '')
@@ -144,6 +160,14 @@ const mapDispatchToProps = dispatch => ({
       newValue: newLocus,
     })
   },
+
+  userChangedHandler: (googleUserEmail) => {
+    dispatch({
+      type: 'UPDATE_USER',
+      updates: {googleUserEmail}
+    })
+  },
+
   /*
   trackRemovedHandler: (track) => {
     const trackName = track.name
@@ -152,16 +176,7 @@ const mapDispatchToProps = dispatch => ({
       newValue: selectedSampleNames,
     })
   },
-  */
-})
-
-const mapStateToProps = state => ({
-  genome: getGenome(state),
-  locus: getLocus(state),
-  tracks: getTracks(state),
-  sjOptions: getSjOptions(state),
-  vcfOptions: getVcfOptions(state),
-  bamOptions: getBamOptions(state),
+   */
 })
 
 export { IGV as IGVComponent }

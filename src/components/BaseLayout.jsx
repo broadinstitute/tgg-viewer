@@ -4,6 +4,7 @@ import { Grid } from 'semantic-ui-react'
 import LeftSideBar from './LeftSideBar'
 import RightSideBar from './RightSideBar'
 import IGV from './IGV'
+import UserInfo from './UserInfo'
 
 const StyledDiv = styled.div`
   padding: 10px 20px;
@@ -18,6 +19,7 @@ export default () => (
         </Grid.Column>
         <Grid.Column width={12}>
           <IGV />
+          <UserInfo />
         </Grid.Column>
         <Grid.Column width={2}>
           <RightSideBar />

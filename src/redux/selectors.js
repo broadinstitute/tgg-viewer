@@ -9,7 +9,7 @@ export const getSelectedSampleNames = state => state.selectedSampleNames
 export const getSjOptions = state => state.sjOptions
 export const getVcfOptions = state => state.vcfOptions
 export const getBamOptions = state => state.bamOptions
-
+export const getUser = state => state.user
 
 /**
  * Expects sample info like:
