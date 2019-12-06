@@ -165,19 +165,19 @@ class LeftSideBar extends React.Component
         <CategoryH3>TRACK TYPES TO SHOW PER SAMPLE</CategoryH3>
         <OptionDiv>
           <Checkbox label="RNA splice-junctions" defaultChecked={this.props.sjOptions.showJunctions} onChange={(e, data) => this.props.updateSjOptions({ showJunctions: data.checked })} />
-          <SampleColorLabelsContainer><JunctionsIcon /></SampleColorLabelsContainer>
+          <SampleColorLabelsContainer><Popup content={'This color stripe marks samples that have splice junction data. Select this checkbox to show a splice junction track for each sample selected below.'} position="right center" trigger={<JunctionsIcon />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <OptionDiv>
           <Checkbox label="RNA coverage" defaultChecked={this.props.sjOptions.showCoverage} onChange={(e, data) => this.props.updateSjOptions({ showCoverage: data.checked })} />
-          <SampleColorLabelsContainer><CoverageIcon /></SampleColorLabelsContainer>
+          <SampleColorLabelsContainer><Popup content={'This color stripe marks samples that have coverage data. Select this checkbox to show a coverage track for each sample selected below.'} position="right center" trigger={<CoverageIcon />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <OptionDiv>
           <Checkbox label="BAM track" defaultChecked={this.props.bamOptions.showBams} onChange={(e, data) => this.props.updateBamOptions({ showBams: data.checked })} />
-          <SampleColorLabelsContainer><BamIcon /></SampleColorLabelsContainer>
+          <SampleColorLabelsContainer><Popup content={'This color stripe marks samples that have alignment data. Select this checkbox to show a bam track for each sample selected below.'} position="right center" trigger={<BamIcon />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <OptionDiv>
           <Checkbox label="VCF track" defaultChecked={this.props.vcfOptions.showVcfs} onChange={(e, data) => this.props.updateVcfOptions({ showVcfs: data.checked })} />
-          <SampleColorLabelsContainer><VcfIcon /></SampleColorLabelsContainer>
+          <SampleColorLabelsContainer><Popup content={'This color stripe marks samples that have splice junction data. Select this checkbox to show a vcf track for each sample selected below.'} position="right center" trigger={<VcfIcon />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <SamplesPanel
           samplesInfo={this.props.samplesInfo}
