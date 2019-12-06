@@ -18,8 +18,6 @@ class GoogleAuth extends React.Component
 
   async componentDidMount() {
 
-    await initGoogleClient()
-    await googleSignIn()
     this.googleUserEmail = await getGoogleUserEmail()
     this.setState({googleUserEmail: this.googleUserEmail})
   }

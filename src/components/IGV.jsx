@@ -5,6 +5,7 @@ import igv from 'igv'
 import { connect } from 'react-redux'
 
 import { getGenome, getLocus, getTracks, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
+import { googleSignIn, initGoogleClient } from '../utils/googleAuth'
 
 const IGV_SETTINGS = {
   showIdeogram: true,
@@ -56,7 +57,7 @@ class IGV extends React.Component {
 
   render = () => <StyledDiv><div ref={this.setContainerElement} /></StyledDiv>
 
-  componentDidMount() {
+  async componentDidMount() {
 
     if (!this.container) {
       return
@@ -68,6 +69,9 @@ class IGV extends React.Component {
       genome: this.props.genome,
       tracks: this.props.tracks,
     }
+
+    await initGoogleClient()
+    await googleSignIn()
 
     igv.createBrowser(this.container, igvBrowserOptions).then((browser) => {
       this.browser = browser
