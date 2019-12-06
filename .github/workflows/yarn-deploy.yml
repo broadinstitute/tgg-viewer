@@ -13,11 +13,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm install -g yarn
+    - run: |
+        npm install -g yarn
+        yarn build
 
     - name: yarn build & deploy
       uses: docker://peaceiris/gh-pages:v2
