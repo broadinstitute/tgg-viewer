@@ -1,4 +1,4 @@
-name: Node CI
+name: Yarn Build & Deploy
 
 on: [push, pull_request] # Run on Push and Pull Requests
 
@@ -18,7 +18,12 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install -g yarn
-    - name: yarn install, build, and test
-      run: |
-        yarn install
-        yarn run deploy
+
+    - name: yarn build & deploy
+      uses: docker://peaceiris/gh-pages:v2
+      env:
+        PERSONAL_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
+        PUBLISH_BRANCH: gh-pages
+        PUBLISH_DIR: ./public
+  
+        
