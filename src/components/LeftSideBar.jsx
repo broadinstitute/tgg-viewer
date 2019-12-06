@@ -18,7 +18,7 @@ const CategoryDetails = styled.div`
 `
 
 const OptionDiv = styled.div`
-  padding-top:3px;
+  padding-top: 3px;
 `
 
 const StyledPopup = styled(Popup)`
@@ -35,8 +35,8 @@ const StyledIcon = styled.div.attrs({ name: "stop" })`
 
 
 const JunctionsIcon = styled(StyledIcon)`
-   color: #FADB52;
-   border: 3px solid #FADB52
+   color: #B0B0EC;
+   border: 3px solid #B0B0EC;
 `
 
 const CoverageIcon = styled(StyledIcon)`
@@ -90,22 +90,29 @@ const SampleColorLabelsWithPopup = ({sample}) => <Popup
   />
 
 
-const CategoryPanel = ({category}) =>
+const CategoryPanel = ({category, selectedSampleNames, updateSelectedSampleNames}) =>
   <div>
     <CategoryH3>{category.name.toUpperCase()}</CategoryH3>
     {
       category.samples.length >= 10 && <CategoryDetails>{`(N=${category.samples.length}) `}</CategoryDetails>
     }
+    <div>
+      <a href="#" onClick={(e) => {
+        e.preventDefault()
+        const sampleNamesInCategory =  new Set(category.samples.map(s => s.name))
+        updateSelectedSampleNames(selectedSampleNames.filter(x => !sampleNamesInCategory.has(x)))
+      }}>Clear All</a>
+    </div>
   </div>
 
 
 const SamplesPanel = ({samplesInfo, selectedSampleNames, updateSelectedSampleNames}) =>
   samplesInfo.map(category =>
     <div key={category.name}>
-      <CategoryPanel category={category} />
+      <CategoryPanel category={category} selectedSampleNames={selectedSampleNames} updateSelectedSampleNames={updateSelectedSampleNames} />
       {
         category.samples.map(sample =>
-          <SamplePanel key={sample.name} sample={sample} selectedSampleNames={selectedSampleNames} updateSelectedSampleNames={updateSelectedSampleNames}/>
+          <SamplePanel key={sample.name} sample={sample} selectedSampleNames={selectedSampleNames} updateSelectedSampleNames={updateSelectedSampleNames} />
         )
       }
     </div>,
@@ -115,7 +122,7 @@ const SamplePanel = ({sample, selectedSampleNames, updateSelectedSampleNames}) =
   <NoWrapDiv>
     <Checkbox
       label={sample.name}
-      defaultChecked={selectedSampleNames.includes(sample.name)}
+      checked={selectedSampleNames.includes(sample.name)}
       data-sample={sample.name}
       onChange={(e, data) =>
         updateSelectedSampleNames(

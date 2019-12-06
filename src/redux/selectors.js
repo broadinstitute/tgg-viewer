@@ -140,6 +140,7 @@ export const getTracks = createSelector(
         igvTracks.push({
           type: 'alignment',
           url: sample.bam,
+          indexed: true,
           name: `${sample.name} bam`,
           height: bamOptions.trackHeight,
           colorBy: bamOptions.colorBy,
