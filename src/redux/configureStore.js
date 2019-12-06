@@ -10,7 +10,8 @@ const INITIAL_STATE = {
   locus: 'chr15:92,835,700-93,031,800',
   sjOptions: {
     trackHeight: 170,
-    hideCoverage: false,
+    showCoverage: true,
+    showJunctions: true,
     hideAnnotated: false,
     hideUnannotated: false,
     colorBy: 'strand',
@@ -28,13 +29,12 @@ const INITIAL_STATE = {
     labelIsAnnotatedJunctionValue: " [A]",
   },
   vcfOptions: {
-    trackHeight: 50,
+    displayMode: "EXPANDED",
   },
   bamOptions: {
-    trackHeight: 100,
+    trackHeight: 200,
     showSoftClips: true,
     colorBy: 'strand',
-
   },
   samplesInfo: [],
 

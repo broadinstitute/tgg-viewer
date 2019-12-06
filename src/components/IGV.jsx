@@ -7,8 +7,7 @@ import { connect } from 'react-redux'
 import { getGenome, getLocus, getTracks, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
 
 const IGV_SETTINGS = {
-  showKaryo: false,
-  showIdeogram: false,
+  showIdeogram: true,
   showNavigation: true,
   showRuler: true,
   showCenterGuide: true,

@@ -35,9 +35,8 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions }) => {
   }
 
   return <div>
-    <CategoryH3>JUNCTION TRACK OPTIONS</CategoryH3><br />
+    <CategoryH3>JUNCTION TRACK <br />OPTIONS</CategoryH3><br />
     <OptionDiv>Track height: <OptionInput type="text" defaultValue={sjOptions.trackHeight} onKeyUp={e => handleTextInput(e, 'trackHeight', parseInt(e.target.value))} /> px</OptionDiv>
-    <OptionDiv><Checkbox label="Show coverage" defaultChecked={!sjOptions.hideCoverage} onChange={(e, data) => updateSjOptions({ hideCoverage: !data.checked })} /></OptionDiv>
     <OptionDiv><Checkbox label="Show known junctions" defaultChecked={!sjOptions.hideAnnotated} onChange={(e, data) => updateSjOptions({ hideAnnotated: !data.checked })} /></OptionDiv>
     <OptionDiv><Checkbox label="Show unknown junctions" defaultChecked={!sjOptions.hideUnannotated} onChange={(e, data) => updateSjOptions({ hideUnannotated: !data.checked })} /></OptionDiv>
 
@@ -121,8 +120,10 @@ const BamOptionsPanel = ( { bamOptions, updateBamOptions }) => {
   }
 
   return <div>
-    <CategoryH3>BAM TRACK OPTIONS</CategoryH3><br />
+    <CategoryH3>BAM TRACK <br />OPTIONS</CategoryH3><br />
     <OptionDiv>Track height: <OptionInput type="text" defaultValue={bamOptions.trackHeight} onKeyUp={e => handleTextInput(e, 'trackHeight', parseInt(e.target.value))} /> px</OptionDiv>
+    <OptionDiv><Checkbox label="View as pairs" defaultChecked={bamOptions.viewAsPairs} onChange={(e, data) => updateBamOptions({ viewAsPairs: data.checked })} /></OptionDiv>
+    <OptionDiv><Checkbox label="Show soft-clips" defaultChecked={bamOptions.showSoftClips} onChange={(e, data) => updateBamOptions({ showSoftClips: data.checked })} /></OptionDiv>
     <OptionDiv>Color by:</OptionDiv>
     <OptionDiv>
       <select defaultValue={bamOptions.colorBy} onChange={e => updateBamOptions({ colorBy: e.target.value })}>
@@ -133,23 +134,22 @@ const BamOptionsPanel = ( { bamOptions, updateBamOptions }) => {
         <option value="none">None</option>
       </select>
     </OptionDiv>
-    <OptionDiv><Checkbox label="View as pairs" defaultChecked={bamOptions.viewAsPairs} onChange={(e, data) => updateBamOptions({ viewAsPairs: data.checked })} /></OptionDiv>
-    <OptionDiv><Checkbox label="Show soft-clips" defaultChecked={bamOptions.showSoftClips} onChange={(e, data) => updateBamOptions({ showSoftClips: data.checked })} /></OptionDiv>
   </div>
 }
 
 
 
 const VcfOptionsPanel = ( { vcfOptions, updateVcfOptions }) => {
-  const handleTextInput = (e, name, value=null) => {
-    if (e.keyCode === 13) {
-      updateVcfOptions({ [name]: value || e.target.value })
-    }
-  }
 
   return <div>
-    <CategoryH3>VCF TRACK OPTIONS</CategoryH3><br />
-    <OptionDiv>Track height: <OptionInput type="text" defaultValue={vcfOptions.trackHeight} onKeyUp={e => handleTextInput(e, 'trackHeight', parseInt(e.target.value))} /> px</OptionDiv>
+    <CategoryH3>VCF TRACK <br />OPTIONS</CategoryH3><br />
+    <OptionDiv>
+      Display mode: &nbsp; <select defaultValue={vcfOptions.displayMode} onChange={e => updateVcfOptions({ displayMode: e.target.value })}>
+        <option value="COLLAPSED">Collapse</option>
+        <option value="SQUISHED">Squish</option>
+        <option value="EXPANDED">Expand</option>
+      </select>
+    </OptionDiv>
   </div>
 }
 
@@ -170,18 +170,18 @@ class RightSideBar extends React.Component
 
   render() {
     return <div>
-      <SjOptionsPanel
-        sjOptions={this.props.sjOptions}
-        updateSjOptions={this.props.updateSjOptions}
-      />
-      <BamOptionsPanel
+      {this.props.bamOptions.showBams && <BamOptionsPanel
         bamOptions={this.props.bamOptions}
         updateBamOptions={this.props.updateBamOptions}
-      />
-      <VcfOptionsPanel
+      />}
+      {this.props.vcfOptions.showVcfs && <VcfOptionsPanel
         vcfOptions={this.props.vcfOptions}
         updateVcfOptions={this.props.updateVcfOptions}
-      />
+      />}
+      {(this.props.sjOptions.showCoverage || this.props.sjOptions.showJunctions) && <SjOptionsPanel
+        sjOptions={this.props.sjOptions}
+        updateSjOptions={this.props.updateSjOptions}
+      />}
     </div>
   }
 }

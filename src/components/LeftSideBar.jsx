@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import { getSamplesInfo, getSelectedSampleNames, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
 
 
-
 const CategoryH3 = styled.h3` 
   display: inline-block;
   margin: 12px 0px 0px 0px !important;
@@ -18,9 +17,78 @@ const CategoryDetails = styled.div`
   white-space: nowrap;
 `
 
+const OptionDiv = styled.div`
+  padding-top:3px;
+`
+
 const StyledPopup = styled(Popup)`
   opacity: 0.95;
 `
+
+const StyledIcon = styled.div.attrs({ name: "stop" })`
+  display: inline-block;
+  width: 6px;
+  border-radius: 1px;
+  height: 10px;
+  cursor: pointer;
+`
+
+
+const JunctionsIcon = styled(StyledIcon)`
+   color: #FADB52;
+   border: 3px solid #FADB52
+`
+
+const CoverageIcon = styled(StyledIcon)`
+   color: #B5D29A;
+   border: 3px solid #B5D29A;
+`
+
+const BamIcon = styled(StyledIcon)`
+   color: #5CB6EA;
+   border: 3px solid #5CB6EA;
+`
+
+const VcfIcon = styled(StyledIcon)`
+   color: #E6A01B;
+   border: 3px solid #E6A01B;
+`
+
+const SampleColorLabelsContainer = styled.span`
+  padding-left: 5px;
+  white-space: nowrap;
+`
+
+const NoWrapDiv = styled.div`
+  white-space: nowrap;
+`
+
+const SampleColorLabelsWithPopup = ({sample}) => <Popup
+    content={
+      <table>
+        <tbody>
+          {sample.junctions && <tr><td style={{ paddingRight: '10px' }}><b>Junctions:</b></td><td><NoWrapDiv>{sample.junctions}</NoWrapDiv></td></tr>}
+          {sample.coverage && <tr><td><b>Coverage:</b></td><td><NoWrapDiv>{sample.coverage}</NoWrapDiv></td></tr>}
+          {sample.bam && <tr><td><b>Bam:</b></td><td><NoWrapDiv>{sample.bam}</NoWrapDiv></td></tr>}
+          {sample.vcf && <tr><td><b>Vcf:</b></td><td><NoWrapDiv>{sample.vcf}</NoWrapDiv></td></tr>}
+          <tr><td colSpan={2}><div style={{fontSize: 'small', color: 'grey', marginTop: '10px' }}>(click to copy paths)</div></td></tr>
+        </tbody>
+      </table>
+    }
+    position="right center"
+    trigger={
+      <SampleColorLabelsContainer onClick={() =>
+        navigator.clipboard.writeText(`${(sample.bam+"\n") || ""}${(sample.junctions+"\n") || ""}${(sample.coverage+"\n") || ""}${(sample.vcf+"\n") || ""}`)
+      }>
+        {sample.junctions && <JunctionsIcon />}
+        {sample.coverage && <CoverageIcon />}
+        {sample.bam && <BamIcon />}
+        {sample.vcf && <VcfIcon />}
+      </SampleColorLabelsContainer>
+    }
+    style={{ marginLeft: '2px' }}
+  />
+
 
 const CategoryPanel = ({category}) =>
   <div>
@@ -44,18 +112,20 @@ const SamplesPanel = ({samplesInfo, selectedSampleNames, updateSelectedSampleNam
   )
 
 const SamplePanel = ({sample, selectedSampleNames, updateSelectedSampleNames}) =>
-  <div>
+  <NoWrapDiv>
     <Checkbox
       label={sample.name}
       defaultChecked={selectedSampleNames.includes(sample.name)}
+      data-sample={sample.name}
       onChange={(e, data) =>
         updateSelectedSampleNames(
-          data.checked ? [...selectedSampleNames, data.label] : selectedSampleNames.filter(x => x !== data.label),
+          data.checked ? [...selectedSampleNames, data['data-sample']] : selectedSampleNames.filter(x => x !== data['data-sample']),
         )
       }
     />
     <SampleDetails sample={sample} />
-  </div>
+    <SampleColorLabelsWithPopup sample={sample} />
+  </NoWrapDiv>
 
 const SampleDetails = ({sample}) => {
   return (sample.description ?
@@ -85,9 +155,23 @@ class LeftSideBar extends React.Component
     //const params = new URLSearchParams(window.location.search)
     return (
       <div>
-        <Checkbox label="show VCF tracks" defaultChecked={this.props.vcfOptions.showVcfs} onChange={(e, data) => this.props.updateVcfOptions({ showVcfs: data.checked })} />
-        <Checkbox label="show BAM tracks" defaultChecked={this.props.bamOptions.showBams} onChange={(e, data) => this.props.updateBamOptions({ showBams: data.checked })} />
-
+        <CategoryH3>TRACK TYPES TO SHOW PER SAMPLE</CategoryH3>
+        <OptionDiv>
+          <Checkbox label="RNA splice-junctions" defaultChecked={this.props.sjOptions.showJunctions} onChange={(e, data) => this.props.updateSjOptions({ showJunctions: data.checked })} />
+          <SampleColorLabelsContainer><JunctionsIcon /></SampleColorLabelsContainer>
+        </OptionDiv>
+        <OptionDiv>
+          <Checkbox label="RNA coverage" defaultChecked={this.props.sjOptions.showCoverage} onChange={(e, data) => this.props.updateSjOptions({ showCoverage: data.checked })} />
+          <SampleColorLabelsContainer><CoverageIcon /></SampleColorLabelsContainer>
+        </OptionDiv>
+        <OptionDiv>
+          <Checkbox label="BAM track" defaultChecked={this.props.bamOptions.showBams} onChange={(e, data) => this.props.updateBamOptions({ showBams: data.checked })} />
+          <SampleColorLabelsContainer><BamIcon /></SampleColorLabelsContainer>
+        </OptionDiv>
+        <OptionDiv>
+          <Checkbox label="VCF track" defaultChecked={this.props.vcfOptions.showVcfs} onChange={(e, data) => this.props.updateVcfOptions({ showVcfs: data.checked })} />
+          <SampleColorLabelsContainer><VcfIcon /></SampleColorLabelsContainer>
+        </OptionDiv>
         <SamplesPanel
           samplesInfo={this.props.samplesInfo}
           selectedSampleNames={this.props.selectedSampleNames}

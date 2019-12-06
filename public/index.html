@@ -10,37 +10,37 @@
       const REFERENCE_TRACKS = [
         {
           name: 'GTEx 100 Muscle',
-          description: '100 GTEx muscle samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all 100 samples.',
+          description: '100 randomly-chosen GTEx v3 muscle samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all 100 samples.',
           junctions: `${REFERENCE_DATA_ROOT}/muscle_100_GTEx_samples.SJ.out.tab.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/muscle_100_GTEx_samples.bigWig`,
         },
         {
           name: 'GTEx 100 Blood',
-          description: '100 GTEx blood samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all 100 samples.',
+          description: '100 randomly-chosen GTEx v3 blood samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all 100 samples.',
           junctions: `${REFERENCE_DATA_ROOT}/blood_100_GTEx_samples.SJ.out.tab.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/blood_100_GTEx_samples.bigWig`,
         },
         {
           name: 'GTEx 100 Fibs',
-          description: '100 GTEx fibroblast samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all 100 samples.',
+          description: '100 randomly-chosen GTEx v3 fibroblast samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all 100 samples.',
           junctions: `${REFERENCE_DATA_ROOT}/fibs_100_GTEx_samples.SJ.out.tab.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/fibs_100_GTEx_samples.bigWig`,
         },
         {
           name: 'GTEx All Muscle',
-          description: '803 GTEx muscle samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all samples.',
+          description: 'All 803 GTEx v3 muscle samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all samples.',
           junctions: `${REFERENCE_DATA_ROOT}/GTEX_muscle.803_samples.SJ.out.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/GTEX_muscle.803_samples.bigWig`,
         },
         {
           name: 'GTEx All Blood',
-          description: '755 GTEx blood samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all samples.',
+          description: 'All 755 GTEx v3 blood samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all samples.',
           junctions: `${REFERENCE_DATA_ROOT}/GTEX_blood.755_samples.SJ.out.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/GTEX_blood.755_samples.bigWig`,
         },
         {
           name: 'GTEx All Fibs',
-          description: '504 GTEx fibroblast samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all samples.',
+          description: 'All 504 GTEx v3 fibroblast samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all samples.',
           junctions: `${REFERENCE_DATA_ROOT}/GTEX_fibs.504_samples.SJ.out.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/GTEX_fibs.504_samples.bigWig`,
         },
@@ -90,7 +90,7 @@
 
       const INITIAL_TRACKS = [
         {
-          name: 'Reference Tracks',
+          name: 'Reference Data',
           samples: REFERENCE_TRACKS,
         },
         {
@@ -104,7 +104,8 @@
         locus: 'chr15:92,835,700-93,031,800',
         sjOptions: {
           trackHeight: 170,
-          hideCoverage: false,
+          showCoverage: true,
+          showJunctions: true,
           hideAnnotated: false,
           hideUnannotated: false,
           colorBy: 'strand',
@@ -122,10 +123,10 @@
           labelIsAnnotatedJunctionValue: " [A]",
         },
         vcfOptions: {
-          trackHeight: 100,
+          displayMode: 'EXPANDED',
         },
         bamOptions: {
-          trackHeight: 100,
+          trackHeight: 200,
           showSoftClips: true,
           alignmentShading: 'strand',
         },

@@ -7,7 +7,7 @@ import IGV from './IGV'
 import GoogleAuth from './GoogleAuth'
 
 const StyledDiv = styled.div`
-  padding: 10px 20px
+  padding: 10px 20px;
 `
 
 export default () => (

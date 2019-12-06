@@ -49,16 +49,17 @@ export const getTracks = createSelector(
   (selectedSamples, sjOptions, vcfOptions, bamOptions) => {
     const igvTracks = []
 
-    selectedSamples.forEach((sample) => {
+    selectedSamples.forEach((sample, i) => {
       //docs @ https://github.com/igvteam/igv.js/wiki/Wig-Track
       let junctionsTrack
-      if (sample.junctions && (!sjOptions.hideAnnotated || !sjOptions.hideUnannotated)) {
+      if (sample.junctions && sjOptions.showJunctions) {
         junctionsTrack = {
           type: 'junctions',
           format: 'bed',
           url: sample.junctions,
           indexURL: `${sample.junctions}.tbi`,
           oauthToken: getGoogleAccessToken,
+          order: i*10,
           name: sample.name,
           height: sjOptions.trackHeight,
           minUniquelyMappedReads: sjOptions.minUniquelyMappedReads,
@@ -80,7 +81,7 @@ export const getTracks = createSelector(
       }
 
       let coverageTrack
-      if(sample.coverage && !sjOptions.hideCoverage) {
+      if(sample.coverage && sjOptions.showCoverage) {
         coverageTrack = {
           type: 'wig',
           format: 'bigwig',
@@ -88,47 +89,53 @@ export const getTracks = createSelector(
           oauthToken: getGoogleAccessToken,
           name: sample.name,
           height: sjOptions.trackHeight,
+          order: i*10 + 1,
         }
       }
 
       if (coverageTrack && junctionsTrack) {
+        console.log(`Adding ${sample.junctions} & ${sample.coverage} track #`, i*10 + 2)
         igvTracks.push({
           type: 'merged',
           name: sample.name,
           height: sjOptions.trackHeight,
           tracks: [coverageTrack, junctionsTrack],
+          order: i*10 + 2,
         })
-      } else if (coverageTrack) {
-        igvTracks.push(coverageTrack)
       } else if (junctionsTrack) {
-        //igvTracks.push(junctionsTrack)
+        console.log(`Adding ${sample.junctions} track #`, i*10 )
         igvTracks.push({
           type: 'merged',
           name: sample.name,
           height: sjOptions.trackHeight,
           tracks: [junctionsTrack],
+          order: i*10 + 3,
         })
+      } else if (coverageTrack) {
+        console.log(`Adding ${sample.coverage} track #`, i*10 + 1)
+        igvTracks.push(coverageTrack)
       }
 
       if (vcfOptions.showVcfs && sample.vcf) {
         //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
-        console.log(`Adding ${sample.vcf} track`)
+        console.log(`Adding ${sample.vcf} track #`, i*10 + 4)
 
         igvTracks.push({
           type: 'variant',
           format: 'vcf',
           url: sample.vcf,
           indexUrl: `${sample.vcf}.tbi`,
+          indexed: true,
           name: `${sample.name} vcf`,
-          displayMode: 'SQUISHED',
-          height: vcfOptions.trackHeight,
+          displayMode: vcfOptions.displayMode,
           oauthToken: getGoogleAccessToken,
+          order: i*10 + 4,
         })
       }
 
       if (bamOptions.showBams && sample.bam) {
         //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
-        console.log(`Adding ${sample.bam} track`)
+        console.log(`Adding ${sample.bam} track #`, i*10 + 5)
 
         igvTracks.push({
           type: 'alignment',
@@ -139,6 +146,7 @@ export const getTracks = createSelector(
           viewAsPairs: bamOptions.viewAsPairs,
           showSoftClips: bamOptions.showSoftClips,
           oauthToken: getGoogleAccessToken,
+          order: i*10 + 5,
         })
       }
     })
