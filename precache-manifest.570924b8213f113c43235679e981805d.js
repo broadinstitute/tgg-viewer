@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "44588eeb2cd59d00ec2c16d95cc6973c",
+    "revision": "80e728e329a2fc29ce7a93234ee78e0c",
     "url": "/rnaseq-viewer/index.html"
   },
   {
-    "revision": "5b2c0ba475052643390c",
+    "revision": "027bc36d47d3ddd5d7ec",
     "url": "/rnaseq-viewer/static/css/main.afab66cc.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/rnaseq-viewer/static/js/2.2577fb64.chunk.js"
   },
   {
-    "revision": "5b2c0ba475052643390c",
-    "url": "/rnaseq-viewer/static/js/main.c7b48ce8.chunk.js"
+    "revision": "027bc36d47d3ddd5d7ec",
+    "url": "/rnaseq-viewer/static/js/main.90f74807.chunk.js"
   },
   {
     "revision": "f667b9ccb10f72de1b4c",
