@@ -27,6 +27,42 @@ const StyledPopup = styled(Popup)`
   opacity: 0.95;
 `
 
+const ColorLegendIcon = styled(Icon)`
+  margin-top: 5px !important;
+`
+
+const ColorByLegend = ({ colorBy }) => {
+  if ( colorBy === "strand" ) {
+    return  <div>
+      <ColorLegendIcon name="stop" style={{ color: '#b0b0ec' }} /> plus
+      <ColorLegendIcon name="stop" style={{ color: '#ecb0b0', marginLeft: '10px' }} /> minus
+    </div>
+  } else if ( colorBy === "motif" ) {
+    // IGV.js Dark2 color palette
+    return  <div>
+      <ColorLegendIcon name="stop" style={{ color: 'rgb(27,158,119)' }} /> GT/AG <br />
+      <ColorLegendIcon name="stop" style={{ color: 'rgb(217,95,2)' }} /> CT/AC <br />
+      <ColorLegendIcon name="stop" style={{ color: 'rgb(117,112,179)' }} /> GC/AG <br />
+      <ColorLegendIcon name="stop" style={{ color: 'rgb(231,41,138)' }} /> CT/GC <br />
+      <ColorLegendIcon name="stop" style={{ color: 'rgb(102,166,30)' }} /> AT/AC <br />
+      <ColorLegendIcon name="stop" style={{ color: 'rgb(230,171,2)' }} /> GT/AT <br />
+      <ColorLegendIcon name="stop" style={{ color: 'rgb(166,118,29)' }} /> non-canonical <br />
+    </div>
+  } else if ( colorBy === "numUniqueReads" || colorBy === "numReads" ) {
+    return  <div>
+      <ColorLegendIcon name="stop" style={{ color: 'blue' }} /> reads > 5
+      <ColorLegendIcon name="stop" style={{ color: '#AAAAAA', marginLeft: '10px' }} /> reads ≤ 5
+    </div>
+  } else if ( colorBy === "isAnnotatedJunction" ) {
+    return  <div>
+      <ColorLegendIcon name="stop" style={{ color: '#b0b0ec' }} /> known junction <br />
+      <ColorLegendIcon name="stop" style={{ color: 'orange'  }} /> unknown junction
+    </div>
+  } else {
+    return <div></div>
+  }
+}
+
 const SjOptionsPanel = ({ sjOptions, updateSjOptions }) => {
   const handleTextInput = (e, name, value=null) => {
     if (e.keyCode === 13) {
@@ -37,9 +73,6 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions }) => {
   return <div>
     <CategoryH3>JUNCTION TRACK <br />OPTIONS</CategoryH3><br />
     <OptionDiv>Track height: <OptionInput type="text" defaultValue={sjOptions.trackHeight} onKeyUp={e => handleTextInput(e, 'trackHeight', parseInt(e.target.value))} /> px</OptionDiv>
-    <OptionDiv><Checkbox label="Show known junctions" defaultChecked={!sjOptions.hideAnnotated} onChange={(e, data) => updateSjOptions({ hideAnnotated: !data.checked })} /></OptionDiv>
-    <OptionDiv><Checkbox label="Show unknown junctions" defaultChecked={!sjOptions.hideUnannotated} onChange={(e, data) => updateSjOptions({ hideUnannotated: !data.checked })} /></OptionDiv>
-
     <OptionDiv>Color by:</OptionDiv>
     <OptionDiv>
       <select defaultValue={sjOptions.colorBy} onChange={e => updateSjOptions({ colorBy: e.target.value })}>
@@ -49,6 +82,7 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions }) => {
         <option value="numReads"># total reads</option>
         <option value="isAnnotatedJunction">is known junction</option>
       </select>
+      <ColorByLegend colorBy={sjOptions.colorBy} />
     </OptionDiv>
     <OptionDiv>Junction thickness:</OptionDiv>
     <OptionDiv>
@@ -77,6 +111,8 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions }) => {
     </OptionDiv>
 
     <CategoryH3>JUNCTION TRACK FILTERS</CategoryH3><br />
+    <OptionDiv><Checkbox label="Show known junctions" defaultChecked={!sjOptions.hideAnnotated} onChange={(e, data) => updateSjOptions({ hideAnnotated: !data.checked })} /></OptionDiv>
+    <OptionDiv><Checkbox label="Show unknown junctions" defaultChecked={!sjOptions.hideUnannotated} onChange={(e, data) => updateSjOptions({ hideUnannotated: !data.checked })} /></OptionDiv>
     <div>
       <OptionDiv>Uniquely-mapped reads:</OptionDiv>
       at least <OptionInput type="text" defaultValue={sjOptions.minUniquelyMappedReads} onKeyUp={e => handleTextInput(e, 'minUniquelyMappedReads', parseInt(e.target.value))} />
