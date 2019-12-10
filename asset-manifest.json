@@ -5,16 +5,16 @@
     "main.js.map": "/rnaseq-viewer/static/js/main.90f74807.chunk.js.map",
     "runtime-main.js": "/rnaseq-viewer/static/js/runtime-main.d3df2425.js",
     "runtime-main.js.map": "/rnaseq-viewer/static/js/runtime-main.d3df2425.js.map",
-    "static/js/2.2577fb64.chunk.js": "/rnaseq-viewer/static/js/2.2577fb64.chunk.js",
-    "static/js/2.2577fb64.chunk.js.map": "/rnaseq-viewer/static/js/2.2577fb64.chunk.js.map",
+    "static/js/2.bc1a0ef7.chunk.js": "/rnaseq-viewer/static/js/2.bc1a0ef7.chunk.js",
+    "static/js/2.bc1a0ef7.chunk.js.map": "/rnaseq-viewer/static/js/2.bc1a0ef7.chunk.js.map",
     "index.html": "/rnaseq-viewer/index.html",
-    "precache-manifest.570924b8213f113c43235679e981805d.js": "/rnaseq-viewer/precache-manifest.570924b8213f113c43235679e981805d.js",
+    "precache-manifest.4cdb0df8e8f3be77f5b5ed3cd8368e90.js": "/rnaseq-viewer/precache-manifest.4cdb0df8e8f3be77f5b5ed3cd8368e90.js",
     "service-worker.js": "/rnaseq-viewer/service-worker.js",
     "static/css/main.afab66cc.chunk.css.map": "/rnaseq-viewer/static/css/main.afab66cc.chunk.css.map"
   },
   "entrypoints": [
     "static/js/runtime-main.d3df2425.js",
-    "static/js/2.2577fb64.chunk.js",
+    "static/js/2.bc1a0ef7.chunk.js",
     "static/css/main.afab66cc.chunk.css",
     "static/js/main.90f74807.chunk.js"
   ]
