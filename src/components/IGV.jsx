@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import igv from 'igv'
+import igv from 'igv/dist/igv.esm'
 import { connect } from 'react-redux'
 
 import { getGenome, getLocus, getTracks, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
