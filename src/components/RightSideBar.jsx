@@ -201,7 +201,6 @@ class RightSideBar extends React.Component
     updateSjOptions: PropTypes.func,
     updateVcfOptions: PropTypes.func,
     updateBamOptions: PropTypes.func,
-    updateSelectedSampleNames: PropTypes.func,
   }
 
   render() {
@@ -231,12 +230,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateSelectedSampleNames: (selectedSampleNames) => {
-    dispatch({
-      type: 'UPDATE_SELECTED_SAMPLES',
-      newValue: selectedSampleNames,
-    })
-  },
   updateSjOptions: (newSettings) => {
     dispatch({
       type: 'UPDATE_SJ_OPTIONS',

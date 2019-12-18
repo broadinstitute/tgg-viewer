@@ -100,7 +100,7 @@ const CategoryPanel = ({category, selectedSampleNames, updateSelectedSampleNames
       <a href="#" onClick={(e) => {
         e.preventDefault()
         const sampleNamesInCategory =  new Set(category.samples.map(s => s.name))
-        updateSelectedSampleNames(selectedSampleNames.filter(x => !sampleNamesInCategory.has(x)))
+        updateSelectedSampleNames('SET', selectedSampleNames.filter(x => !sampleNamesInCategory.has(x)))
       }}>Clear All</a>
     </div>
   </div>
@@ -124,11 +124,7 @@ const SamplePanel = ({sample, selectedSampleNames, updateSelectedSampleNames}) =
       label={sample.name}
       checked={selectedSampleNames.includes(sample.name)}
       data-sample={sample.name}
-      onChange={(e, data) =>
-        updateSelectedSampleNames(
-          data.checked ? [...selectedSampleNames, data['data-sample']] : selectedSampleNames.filter(x => x !== data['data-sample']),
-        )
-      }
+      onChange={(e, data) => updateSelectedSampleNames( data.checked ? 'ADD' : 'REMOVE', [ data['data-sample'] ]) }
     />
     <SampleDetails sample={sample} />
     <SampleColorLabelsWithPopup sample={sample} />
@@ -194,14 +190,13 @@ const mapStateToProps = state => ({
   sjOptions: getSjOptions(state),
   vcfOptions: getVcfOptions(state),
   bamOptions: getBamOptions(state),
-
 })
 
 const mapDispatchToProps = dispatch => ({
-  updateSelectedSampleNames: (selectedSampleNames) => {
+  updateSelectedSampleNames: (action, selectedSampleNames) => {
     dispatch({
-      type: 'UPDATE_SELECTED_SAMPLES',
-      newValue: selectedSampleNames,
+      type: `${action}_SELECTED_SAMPLE_NAMES`,
+      values: selectedSampleNames,
     })
   },
   updateSjOptions: (newSettings) => {

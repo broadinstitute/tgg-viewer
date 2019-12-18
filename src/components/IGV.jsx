@@ -168,15 +168,12 @@ const mapDispatchToProps = dispatch => ({
     })
   },
 
-  /*
   trackRemovedHandler: (track) => {
-    const trackName = track.name
     dispatch({
-      type: 'UPDATE_SELECTED_SAMPLES',
-      newValue: selectedSampleNames,
+      type: 'REMOVE_SELECTED_SAMPLE_NAMES',
+      values: [track.name],
     })
   },
-   */
 })
 
 export { IGV as IGVComponent }

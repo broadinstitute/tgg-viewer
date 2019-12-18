@@ -216,7 +216,7 @@ export const createArrayReducer = (actionTypeSuffix, initialState = [], debug = 
           return state
         }
 
-        let newState;
+        let newState
         if (action.type === `SET_${actionTypeSuffix}`) {
           newState = [ ...action.values ]            // make a copy of action.values
         } else if (action.type === `ADD_${actionTypeSuffix}`) {

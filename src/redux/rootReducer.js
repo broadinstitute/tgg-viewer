@@ -4,6 +4,7 @@ import {
   zeroActionsReducer,
   createSingleValueReducer,
   createSingleObjectReducer,
+  createArrayReducer,
 } from './utils/reducerFactories'
 
 
@@ -13,7 +14,7 @@ const rootReducer = combineReducers(Object.assign({
   genome: zeroActionsReducer,
   locus: createSingleValueReducer('UPDATE_LOCUS', ''),
   samplesInfo: zeroActionsReducer,
-  selectedSampleNames: createSingleValueReducer('UPDATE_SELECTED_SAMPLES', []),
+  selectedSampleNames: createArrayReducer('SELECTED_SAMPLE_NAMES'),
   sjOptions: createSingleObjectReducer('UPDATE_SJ_OPTIONS'),
   vcfOptions: createSingleObjectReducer('UPDATE_VCF_OPTIONS'),
   bamOptions: createSingleObjectReducer('UPDATE_BAM_OPTIONS'),
