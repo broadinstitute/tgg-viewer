@@ -6,7 +6,7 @@
  * http://facebook.github.io/jest/docs/expect.html
  * https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#running-tests
  */
-import { zeroActionsReducer, createSingleValueReducer, createSingleObjectReducer, createObjectsByIdReducer } from './reducerFactories'
+import { zeroActionsReducer, createSingleValueReducer, createSingleObjectReducer, createArrayReducer, createObjectsByIdReducer } from './reducerFactories'
 
 
 describe('reducerUtils tests', () => {
@@ -78,6 +78,36 @@ describe('reducerUtils tests', () => {
     // test valid action results
     const action = { type: 'UPDATE_TEST_ACTION', updates: { key2: 2, key3: 3, newKey: 4 } }
     expect(singleObjectReducer(undefined, action)).toEqual({ key1: 1, key2: 2, key3: 3, newKey: 4 })
+  })
+
+
+
+  /****************************/
+  /** Test arrayReducer */
+  /****************************/
+  test('createArrayReducer test initialization', () => {
+    const arrayReducerWithInitialState = createArrayReducer('NUMBERS', [1])
+    expect(arrayReducerWithInitialState()).toEqual([1])
+
+    const arrayReducerWithoutInitialState = createArrayReducer('NUMBERS')
+    expect(arrayReducerWithoutInitialState()).toEqual([])
+  })
+
+
+  test('createSingleObjectReducer test update action', () => {
+    const initialState = [1, 2, 3]
+    const arrayReducer = createArrayReducer('NUMBERS', initialState)
+
+    // test undefined or invalid actions
+    expect(arrayReducer()).toEqual(initialState)
+    expect(arrayReducer(initialState)).toEqual(initialState)
+    expect(arrayReducer(initialState, { type: 'UNKNOWN_ACTION' })).toEqual(initialState)
+    expect(arrayReducer(initialState, { type: 'SET_NUMBERS', values: 'invalid value'})).toEqual(initialState)
+
+    // test valid action results
+    expect(arrayReducer(undefined, {type: 'ADD_NUMBERS', values: [10, 11]})).toEqual([1, 2, 3, 10, 11])
+    expect(arrayReducer(undefined, {type: 'REMOVE_NUMBERS', values: [1,  11, 2, 10, 8, 9]})).toEqual([3])
+    expect(arrayReducer(undefined, {type: 'SET_NUMBERS', values: [1, 2, 5]})).toEqual([1, 2, 5])
   })
 
 

@@ -159,6 +159,87 @@ export const createSingleObjectReducer = (updateActionType, initialState = {}, d
   return reducer
 }
 
+
+/**
+ * Factory function that creates a reducer for managing an array of items.
+ * The reducer supports 'ADD' and 'REMOVE' actions for adding/removing one or more items from the array.
+ * It also supports a 'SET' action that replaces the existing array with a new one (or can be used to set
+ * it to an empty array).
+ *
+ * An example use case is a list of track names in IGV:
+ *
+ *    [ 'Sample1', 'Sample2']
+ *
+ * This function can be used to create a reducer for this state:
+ *
+ *    const samplesReducer = createArrayReducer('SAMPLES', [ 'Sample1', 'Sample2'])
+ *
+ * Here, the argument 'SAMPLES' means the reducer will support the following action types:
+ *    'ADD_SAMPLES'     (to add one or more samples to the end of the list)
+ *    'REMOVE_SAMPLES'  (to remove or more samples from the list)
+ *    'SET_SAMPLES'     (to replace existing samples with a new array of 0 or more samples)
+ *
+ * After this, an 'ADD_SAMPLES' action can be dispatched as follows:
+ *
+ *    dispatch({
+ *      type: 'ADD_SAMPLES',
+ *      values: ['Sample3', 'Sample4']
+ *    })
+ *
+ * which will cause the state object to be updated to:
+ *
+ *    [ 'Sample1', 'Sample2', 'Sample3', 'Sample4']
+ *
+ * These reducers can also be used with combineReducers(..):
+ *
+ *    const rootReducer = combineReducers({
+ *        samples: createArrayReducer('SAMPLES', ['Sample1', 'Sample2']),
+ *        tags: createArrayReducer('TAGS'),
+ *        other: ..,
+ *        ..
+ *    })
+ *
+ * @param updateActionType (string) action.type that will later be used to update the state object.
+ */
+export const createArrayReducer = (actionTypeSuffix, initialState = [], debug = false) => {
+  const reducer = (state = initialState, action) => {
+    if (!action) {
+      return state
+    }
+
+    switch (action.type) {
+      case `SET_${actionTypeSuffix}`:
+      case `ADD_${actionTypeSuffix}`:
+      case `REMOVE_${actionTypeSuffix}`: {
+        if (!Array.isArray(action.values)) {
+          console.error(`Invalid ${action.type} action: action.values is undefined or not an array: `, action)
+          return state
+        }
+
+        let newState;
+        if (action.type === `SET_${actionTypeSuffix}`) {
+          newState = [ ...action.values ]            // make a copy of action.values
+        } else if (action.type === `ADD_${actionTypeSuffix}`) {
+          newState = [ ...state, ...action.values ]
+        } else {
+          const valuesToRemove = action.values
+          newState = state.filter(v => !valuesToRemove.includes(v))
+        }
+
+        if (debug) {
+          console.log('createArrayReducer: applying action: ', action, 'State changing from ', state, ' to ', newState)
+        }
+        return newState
+      }
+
+      default:
+        return state
+    }
+  }
+
+  return reducer
+}
+
 /**
  * Factory function that creates a reducer for managing a state object that looks like:
  *
