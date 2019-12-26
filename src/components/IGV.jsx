@@ -50,6 +50,7 @@ class IGV extends React.Component {
 
     this.container = null
     this.browser = null
+    this.ignoreNextTrackRemovedEvent = false
   }
 
   setContainerElement = (element) => {
@@ -85,7 +86,13 @@ class IGV extends React.Component {
       }
 
       if (this.props.trackRemovedHandler) {
-        this.browser.on('trackremoved', this.props.trackRemovedHandler)
+        this.browser.on('trackremoved', e => {
+          if (!this.ignoreNextTrackRemovedEvent) {
+            this.props.trackRemovedHandler(e)
+          } else {
+            this.ignoreNextTrackRemovedEvent = false
+          }
+        })
       }
     })
   }
@@ -110,6 +117,7 @@ class IGV extends React.Component {
              (nextProps.vcfOptions !== this.props.vcfOptions && 'variant' === track.type) ||
              (nextProps.bamOptions !== this.props.bamOptions && 'alignment' === track.type)
         ) {
+          this.ignoreNextTrackRemovedEvent = true
           this.browser.removeTrackByName(track.name)
           this.browser.loadTrack(nextTrackSettings)
         }
@@ -120,6 +128,7 @@ class IGV extends React.Component {
       } else {
         // remove track that was de-selected
         try {
+          this.ignoreNextTrackRemovedEvent = true
           this.browser.removeTrackByName(track.name)
         } catch(e) {
           console.warn('Unable to remove track', track.name, e)

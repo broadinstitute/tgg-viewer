@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { getGoogleAccessToken } from '../utils/googleAuth'
-import { MOTIFS } from '../constants'
+import { MOTIFS, DEFAULT_COLOR_BY_NUM_READS_THRESHOLD } from '../constants'
 
 export const getLocus = state => state.locus
 export const getGenome = state => state.genome
@@ -69,11 +69,13 @@ export const getTracks = createSelector(
           thicknessBasedOn: sjOptions.thicknessBasedOn, //options: numUniqueReads (default), numReads, isAnnotatedJunction
           bounceHeightBasedOn: sjOptions.bounceHeightBasedOn, //options: random (default), distance, thickness
           colorBy: sjOptions.colorBy, //options: numUniqueReads (default), numReads, isAnnotatedJunction, strand, motif
+          colorByNumReadsThreshold: sjOptions.colorByNumReadsThreshold !== undefined ? sjOptions.colorByNumReadsThreshold : DEFAULT_COLOR_BY_NUM_READS_THRESHOLD,
+          hideStrand: sjOptions.showOnlyPlusStrand ? '-' : (sjOptions.showOnlyMinusStrand ? '+' : undefined),
           labelUniqueReadCount: sjOptions.labelUniqueReadCount,
           labelMultiMappedReadCount: sjOptions.labelMultiMappedReadCount,
           labelTotalReadCount: sjOptions.labelTotalReadCount,
           labelMotif: sjOptions.labelMotif,
-          labelIsAnnotatedJunction: sjOptions.labelIsAnnotatedJunction && sjOptions.labelIsAnnotatedJunctionValue,
+          labelAnnotatedJunction: sjOptions.labelAnnotatedJunction && sjOptions.labelAnnotatedJunctionValue,
           hideAnnotatedJunctions: sjOptions.hideAnnotated,
           hideUnannotatedJunctions: sjOptions.hideUnannotated,
           hideMotifs: MOTIFS.filter( motif => sjOptions[`hideMotif${motif}`] ), //options: 'GT/AG', 'CT/AC', 'GC/AG', 'CT/GC', 'AT/AC', 'GT/AT', 'non-canonical'

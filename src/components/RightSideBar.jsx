@@ -1,10 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from "styled-components"
-import { Checkbox, Icon, Popup } from 'semantic-ui-react'
+import { Checkbox, Icon, Popup, Radio } from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import { getSamplesInfo, getSelectedSampleNames, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
-import { MOTIFS } from '../constants'
+import { MOTIFS, DEFAULT_COLOR_BY_NUM_READS_THRESHOLD } from '../constants'
 
 
 const CategoryH3 = styled.h3` 
@@ -31,13 +31,21 @@ const ColorLegendIcon = styled(Icon)`
   margin-top: 5px !important;
 `
 
-const ColorByLegend = ({ colorBy }) => {
-  if ( colorBy === "strand" ) {
+const StyledRadio = styled(Radio)`
+  label {
+    margin-left: 10px;
+    margin-bottom: 10px;
+    padding-left: 1.4em !important;
+  }
+`
+
+const ColorByLegend = ({ sjOptions, handleTextInput }) => {
+  if ( sjOptions.colorBy === "strand" ) {
     return  <div>
       <ColorLegendIcon name="stop" style={{ color: '#b0b0ec' }} /> plus
       <ColorLegendIcon name="stop" style={{ color: '#ecb0b0', marginLeft: '10px' }} /> minus
     </div>
-  } else if ( colorBy === "motif" ) {
+  } else if ( sjOptions.colorBy === "motif" ) {
     // IGV.js Dark2 color palette
     return  <div>
       <ColorLegendIcon name="stop" style={{ color: 'rgb(27,158,119)' }} /> GT/AG <br />
@@ -48,15 +56,24 @@ const ColorByLegend = ({ colorBy }) => {
       <ColorLegendIcon name="stop" style={{ color: 'rgb(230,171,2)' }} /> GT/AT <br />
       <ColorLegendIcon name="stop" style={{ color: 'rgb(166,118,29)' }} /> non-canonical <br />
     </div>
-  } else if ( colorBy === "numUniqueReads" || colorBy === "numReads" ) {
+  } else if ( sjOptions.colorBy === "numUniqueReads" || sjOptions.colorBy === "numReads" ) {
     return  <div>
-      <ColorLegendIcon name="stop" style={{ color: 'blue' }} /> reads > 5
-      <ColorLegendIcon name="stop" style={{ color: '#AAAAAA', marginLeft: '10px' }} /> reads ≤ 5
+      # reads<ColorLegendIcon name="stop" style={{ color: '#AAAAAA', marginLeft: '10px' }} />
+      &nbsp;≤ &nbsp;
+      <OptionInput
+        type="text"
+        defaultValue={sjOptions.colorByNumReadsThreshold !== undefined ? sjOptions.colorByNumReadsThreshold : DEFAULT_COLOR_BY_NUM_READS_THRESHOLD}
+        onKeyUp={e => handleTextInput(e, 'colorByNumReadsThreshold')}
+        style={{ width: '35px'}}
+      />
+      &nbsp; &lt; &nbsp;
+      <ColorLegendIcon name="stop" style={{ color: 'blue' }} />
+
     </div>
-  } else if ( colorBy === "isAnnotatedJunction" ) {
+  } else if ( sjOptions.colorBy === "isAnnotatedJunction" ) {
     return  <div>
       <ColorLegendIcon name="stop" style={{ color: '#b0b0ec' }} /> known junction <br />
-      <ColorLegendIcon name="stop" style={{ color: 'orange'  }} /> unknown junction
+      <ColorLegendIcon name="stop" style={{ color: 'orange'  }} /> novel junction
     </div>
   } else {
     return <div></div>
@@ -82,7 +99,7 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions }) => {
         <option value="numReads"># total reads</option>
         <option value="isAnnotatedJunction">is known junction</option>
       </select>
-      <ColorByLegend colorBy={sjOptions.colorBy} />
+      <ColorByLegend sjOptions={sjOptions} handleTextInput={handleTextInput} />
     </OptionDiv>
     <OptionDiv>Junction thickness:</OptionDiv>
     <OptionDiv>
@@ -106,13 +123,21 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions }) => {
     <OptionDiv><Checkbox label="# total reads" defaultChecked={sjOptions.labelTotalReadCount} onChange={(e, data) => updateSjOptions({ labelTotalReadCount: data.checked })} /></OptionDiv>
     <OptionDiv><Checkbox label="donor/acceptor motif" defaultChecked={sjOptions.labelMotif} onChange={(e, data) => updateSjOptions({ labelMotif: data.checked })} /></OptionDiv>
     <OptionDiv>
-      <Checkbox label="known junction:" defaultChecked={sjOptions.labelIsAnnotatedJunction} onChange={(e, data) => updateSjOptions({ labelIsAnnotatedJunction: data.checked })} />
-      <OptionInput type="text" defaultValue={sjOptions.labelIsAnnotatedJunctionValue} onKeyUp={e => handleTextInput(e, 'labelIsAnnotatedJunctionValue')} style={{ width: '35px'}}  />
+      <Checkbox label="known junction:" defaultChecked={sjOptions.labelAnnotatedJunction} onChange={(e, data) => updateSjOptions({ labelAnnotatedJunction: data.checked })} />
+      <OptionInput type="text" defaultValue={sjOptions.labelAnnotatedJunctionValue} onKeyUp={e => handleTextInput(e, 'labelAnnotatedJunctionValue')} style={{ width: '35px'}}  />
     </OptionDiv>
 
     <CategoryH3>JUNCTION TRACK FILTERS</CategoryH3><br />
+    <OptionDiv>
+      Show Strands:
+      <StyledRadio label="both" name="strandButton" checked={!sjOptions.showOnlyPlusStrand && !sjOptions.showOnlyMinusStrand} onChange={(e, data) => data.checked && updateSjOptions({ showOnlyPlusStrand: false, showOnlyMinusStrand: false })} />
+      <StyledRadio label="plus" name="strandButton" checked={sjOptions.showOnlyPlusStrand} onChange={(e, data) => data.checked && updateSjOptions({ showOnlyPlusStrand: true, showOnlyMinusStrand: false })} />
+      <StyledRadio label="minus" name="strandButton" checked={sjOptions.showOnlyMinusStrand} onChange={(e, data) => data.checked && updateSjOptions({ showOnlyPlusStrand: false, showOnlyMinusStrand: true })} />
+    </OptionDiv>
+    <OptionDiv><Checkbox label="Show novel junctions" defaultChecked={!sjOptions.hideUnannotated} onChange={(e, data) => updateSjOptions({ hideUnannotated: !data.checked })} /></OptionDiv>
+
     <OptionDiv><Checkbox label="Show known junctions" defaultChecked={!sjOptions.hideAnnotated} onChange={(e, data) => updateSjOptions({ hideAnnotated: !data.checked })} /></OptionDiv>
-    <OptionDiv><Checkbox label="Show unknown junctions" defaultChecked={!sjOptions.hideUnannotated} onChange={(e, data) => updateSjOptions({ hideUnannotated: !data.checked })} /></OptionDiv>
+    <OptionDiv><Checkbox label="Show novel junctions" defaultChecked={!sjOptions.hideUnannotated} onChange={(e, data) => updateSjOptions({ hideUnannotated: !data.checked })} /></OptionDiv>
     <div>
       <OptionDiv>Uniquely-mapped reads:</OptionDiv>
       at least <OptionInput type="text" defaultValue={sjOptions.minUniquelyMappedReads} onKeyUp={e => handleTextInput(e, 'minUniquelyMappedReads', parseInt(e.target.value))} />

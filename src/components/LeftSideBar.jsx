@@ -10,6 +10,7 @@ const CategoryH3 = styled.h3`
   display: inline-block;
   margin: 12px 0px 0px 0px !important;
 `
+
 const CategoryDetails = styled.div`
   display: inline-block;
   margin: 0px 0px 0px 15px;
@@ -32,7 +33,6 @@ const StyledIcon = styled.div.attrs({ name: "stop" })`
   height: 10px;
   cursor: pointer;
 `
-
 
 const JunctionsIcon = styled(StyledIcon)`
    color: #B0B0EC;

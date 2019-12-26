@@ -25,8 +25,8 @@ const INITIAL_STATE = {
     labelMultiMappedReadCount: true,
     labelTotalReadCount: false,
     labelMotif: true,
-    labelIsAnnotatedJunction: false,
-    labelIsAnnotatedJunctionValue: " [A]",
+    labelAnnotatedJunction: false,
+    labelAnnotatedJunctionValue: " [A]",
   },
   vcfOptions: {
     displayMode: "EXPANDED",
