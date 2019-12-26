@@ -86,12 +86,12 @@ class IGV extends React.Component {
       }
 
       if (this.props.trackRemovedHandler) {
-        this.browser.on('trackremoved', e => {
+        this.browser.on('trackremoved', track => {
           if (!this.ignoreNextTrackRemovedEvent) {
-            this.props.trackRemovedHandler(e)
-          } else {
-            this.ignoreNextTrackRemovedEvent = false
+            this.props.trackRemovedHandler(track)
           }
+
+          this.ignoreNextTrackRemovedEvent = false
         })
       }
     })
