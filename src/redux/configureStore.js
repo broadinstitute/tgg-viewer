@@ -45,7 +45,9 @@ const PERSIST_STATE_IN_URL = [
   'locus', 'selectedSampleNames', 'sjOptions', 'vcfOptions', 'bamOptions',
 ]
 
-const PERSIST_STATE_IN_LOCAL_STORAGE = []
+const PERSIST_STATE_IN_LOCAL_STORAGE = [
+  'leftSideBarLocusList', 'rightSideBarLocusList',
+]
 
 const persistStoreMiddleware = store => next => (action) => {
   const result = next(action)
