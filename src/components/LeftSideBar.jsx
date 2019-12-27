@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from "styled-components"
-import { Checkbox, Icon, Popup } from 'semantic-ui-react'
 import { connect } from 'react-redux'
-import { getSamplesInfo, getSelectedSampleNames, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
+import styled from 'styled-components'
+import { Checkbox, Icon, Popup } from 'semantic-ui-react'
+import { LocusList } from './LocusList'
+import { getLeftSideBarLocusList, getSamplesInfo, getSelectedSampleNames, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
 
 
 const CategoryH3 = styled.h3` 
@@ -143,11 +144,14 @@ const SampleDetails = ({sample}) => {
 class LeftSideBar extends React.Component
 {
   static propTypes = {
+    locusList: PropTypes.array,
     samplesInfo: PropTypes.array,
     selectedSampleNames: PropTypes.array,
     sjOptions: PropTypes.object,
     vcfOptions: PropTypes.object,
     bamOptions: PropTypes.object,
+    setLocus: PropTypes.func,
+    setLocusList: PropTypes.func,
     updateSelectedSampleNames: PropTypes.func,
     updateSjOptions: PropTypes.func,
     updateVcfOptions: PropTypes.func,
@@ -158,6 +162,7 @@ class LeftSideBar extends React.Component
     //const params = new URLSearchParams(window.location.search)
     return (
       <div>
+        <LocusList locusList={this.props.locusList} setLocusList={this.props.setLocusList} />
         <CategoryH3>TRACK TYPES TO SHOW PER SAMPLE</CategoryH3>
         <OptionDiv>
           <Checkbox label="RNA splice-junctions" defaultChecked={this.props.sjOptions.showJunctions} onChange={(e, data) => this.props.updateSjOptions({ showJunctions: data.checked })} />
@@ -185,6 +190,7 @@ class LeftSideBar extends React.Component
 }
 
 const mapStateToProps = state => ({
+  locusList: getLeftSideBarLocusList(state),
   selectedSampleNames: getSelectedSampleNames(state),
   samplesInfo: getSamplesInfo(state),
   sjOptions: getSjOptions(state),
@@ -193,6 +199,18 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  setLocus: (locus) => {
+    dispatch({
+      type: 'UPDATE_LOCUS',
+      newValue: locus,
+    })
+  },
+  setLocusList: (locusList) => {
+    dispatch({
+      type: 'SET_LEFT_SIDE_BAR_LOCUS_LIST',
+      values: locusList,
+    })
+  },
   updateSelectedSampleNames: (action, selectedSampleNames) => {
     dispatch({
       type: `${action}_SELECTED_SAMPLE_NAMES`,

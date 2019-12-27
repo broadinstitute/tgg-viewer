@@ -102,6 +102,10 @@ class IGV extends React.Component {
       return false
     }
 
+    if (nextProps.locus !== this.props.locus) {
+      this.browser.search(nextProps.locus)
+    }
+
     let nextTrackSettingsByTrackName = nextProps.tracks.reduce((acc, item) => {
       return {[item.name]: item, ...acc}
     }, {})

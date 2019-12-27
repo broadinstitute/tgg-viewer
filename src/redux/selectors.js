@@ -3,6 +3,8 @@ import { getGoogleAccessToken } from '../utils/googleAuth'
 import { MOTIFS, DEFAULT_COLOR_BY_NUM_READS_THRESHOLD } from '../constants'
 
 export const getLocus = state => state.locus
+export const getRightSideBarLocusList = state => state.rightSideBarLocusList
+export const getLeftSideBarLocusList = state => state.leftSideBarLocusList
 export const getGenome = state => state.genome
 export const getSamplesInfo = state => state.samplesInfo
 export const getSelectedSampleNames = state => state.selectedSampleNames

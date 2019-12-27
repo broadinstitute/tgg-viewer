@@ -1,9 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from "styled-components"
-import { Checkbox, Icon, Popup, Radio } from 'semantic-ui-react'
 import { connect } from 'react-redux'
-import { getSamplesInfo, getSelectedSampleNames, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
+import styled from 'styled-components'
+import { Checkbox, Icon, Popup, Radio } from 'semantic-ui-react'
+import { LocusList } from './LocusList'
+import { getRightSideBarLocusList, getSamplesInfo, getSelectedSampleNames, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
 import { MOTIFS, DEFAULT_COLOR_BY_NUM_READS_THRESHOLD } from '../constants'
 
 
@@ -218,11 +219,14 @@ const VcfOptionsPanel = ( { vcfOptions, updateVcfOptions }) => {
 class RightSideBar extends React.Component
 {
   static propTypes = {
+    locusList: PropTypes.array,
     sjOptions: PropTypes.object,
     vcfOptions: PropTypes.object,
     bamOptions: PropTypes.object,
     samplesInfo: PropTypes.array,
     selectedSampleNames: PropTypes.array,
+    setLocus: PropTypes.func,
+    setLocusList: PropTypes.func,
     updateSjOptions: PropTypes.func,
     updateVcfOptions: PropTypes.func,
     updateBamOptions: PropTypes.func,
@@ -230,6 +234,8 @@ class RightSideBar extends React.Component
 
   render() {
     return <div>
+      <LocusList locusList={this.props.locusList} setLocusList={this.props.setLocusList} />
+
       {this.props.bamOptions.showBams && <BamOptionsPanel
         bamOptions={this.props.bamOptions}
         updateBamOptions={this.props.updateBamOptions}
@@ -247,6 +253,7 @@ class RightSideBar extends React.Component
 }
 
 const mapStateToProps = state => ({
+  locusList: getRightSideBarLocusList(state),
   sjOptions: getSjOptions(state),
   vcfOptions: getVcfOptions(state),
   bamOptions: getBamOptions(state),
@@ -255,6 +262,18 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
+  setLocus: (locus) => {
+    dispatch({
+      type: 'UPDATE_LOCUS',
+      newValue: locus,
+    })
+  },
+  setLocusList: (locusList) => {
+    dispatch({
+      type: 'SET_RIGHT_SIDE_BAR_LOCUS_LIST',
+      values: locusList,
+    })
+  },
   updateSjOptions: (newSettings) => {
     dispatch({
       type: 'UPDATE_SJ_OPTIONS',
