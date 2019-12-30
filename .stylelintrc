@@ -7,6 +7,6 @@
     "comment-empty-line-before": null,
     "comment-whitespace-inside": null,
     "color-hex-length": null,
-    "selector-pseudo-class-no-unknown": null,
+    "selector-pseudo-class-no-unknown": null
   }
 }

@@ -234,7 +234,12 @@ class RightSideBar extends React.Component
 
   render() {
     return <div>
-      <LocusList locusList={this.props.locusList} setLocusList={this.props.setLocusList} />
+      <LocusList
+        name="Right Side Bar"
+        locusList={this.props.locusList}
+        setLocus={this.props.setLocus}
+        setLocusList={this.props.setLocusList}
+      />
 
       {this.props.bamOptions.showBams && <BamOptionsPanel
         bamOptions={this.props.bamOptions}

@@ -1,4 +1,9 @@
 {
+  "extends": [
+    "airbnb",
+    "plugin:react-perf/recommended"
+  ],
+
   "parser": "babel-eslint",
   "parserOptions": {
     "ecmaFeatures": {
@@ -40,11 +45,10 @@
     "no-class-assign": 0,
     "react/jsx-filename-extension": [ 1, { "extensions": [".js", ".jsx"]} ],
     "react/require-default-props": 0,
-    "react/require-optimization": 0,
+    "react/require-optimization": 2,
     "react/jsx-max-props-per-line": 0,
     "react/jsx-no-target-blank": 0,
     "spaced-comment": 0,
-
 
     "jsx-a11y/iframe-has-title": 0,
     "jsx-a11y/tabindex-no-positive": 0,
