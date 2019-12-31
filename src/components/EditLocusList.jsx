@@ -55,7 +55,7 @@ class EditLocusListButtonAndModal extends React.Component {
   }
 }
 
-export const LocusList = ({name, locusList, setLocus, setLocusList}) => {
+export const EditLocusList = ({name, locusList, setLocus, setLocusList}) => {
 
   return <div>
     {

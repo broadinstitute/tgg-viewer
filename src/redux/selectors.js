@@ -6,8 +6,8 @@ export const getLocus = state => state.locus
 export const getRightSideBarLocusList = state => state.rightSideBarLocusList
 export const getLeftSideBarLocusList = state => state.leftSideBarLocusList
 export const getGenome = state => state.genome
-export const getSamplesInfo = state => state.samplesInfo
-export const getSelectedSampleNames = state => state.selectedSampleNames
+export const getSamplesInCategories = state => state.samplesInCategories
+export const getSelectedSampleNamesByCategoryName = state => state.selectedSampleNamesByCategoryName
 export const getSjOptions = state => state.sjOptions
 export const getVcfOptions = state => state.vcfOptions
 export const getBamOptions = state => state.bamOptions
@@ -36,22 +36,40 @@ export const getUser = state => state.user
  * ]
  */
 
-export const getSelectedSamples = createSelector(
-  getSamplesInfo,
-  getSelectedSampleNames,
-  (samplesInfo, selectedSampleNames) => samplesInfo.map(category => category.samples).flat().filter(s => selectedSampleNames.includes(s.name)),
-)
+
+
+export const getSamplesByCategoryName = createSelector(
+  getSamplesInCategories,
+  (samplesInCategories) => {
+    return samplesInCategories.reduce((acc, category) => {
+      return { ...acc, [category.categoryName]: category.samples }
+    }, {})
+  })
+
+
+
+export const getSelectedSamplesByCategoryName = createSelector(
+  getSelectedSampleNamesByCategoryName,
+  getSamplesByCategoryName,
+  (selectedSampleNamesByCategoryName, samplesByCategoryName) => {
+    return Object.entries(selectedSampleNamesByCategoryName).reduce((acc, [categoryName, selectedSampleNames]) => {
+      if (!samplesByCategoryName[categoryName]) {
+        return acc
+      }
+      return { ...acc, [categoryName]: samplesByCategoryName[categoryName].filter(sample => selectedSampleNames.includes(sample.name)) }
+    }, {})
+  })
 
 
 export const getTracks = createSelector(
-  getSelectedSamples,
+  getSelectedSamplesByCategoryName,
   getSjOptions,
   getVcfOptions,
   getBamOptions,
-  (selectedSamples, sjOptions, vcfOptions, bamOptions) => {
+  (selectedSamplesByCategoryName, sjOptions, vcfOptions, bamOptions) => {
     const igvTracks = []
 
-    selectedSamples.forEach((sample, i) => {
+    Object.values(selectedSamplesByCategoryName).forEach((selectedSamples) => selectedSamples.forEach((sample, i) => {
       //docs @ https://github.com/igvteam/igv.js/wiki/Wig-Track
       let junctionsTrack
       if (sample.junctions && sjOptions.showJunctions) {
@@ -154,7 +172,7 @@ export const getTracks = createSelector(
           order: i*10 + 5,
         })
       }
-    })
+    }))
 
 
     igvTracks.push({

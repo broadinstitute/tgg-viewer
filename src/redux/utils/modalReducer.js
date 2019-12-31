@@ -16,9 +16,6 @@ export const closeModal = (modalName, confirmed) => (dispatch, getState) => {
   }
 }
 
-export const cancelCloseModal = modalName => dispatch =>
-  dispatch({ type: UPDATE_MODAL_STATE, updatesById: { [modalName]: { confirming: false } } })
-
 // root reducer
 export default {
   modals: createObjectsByIdReducer(UPDATE_MODAL_STATE),

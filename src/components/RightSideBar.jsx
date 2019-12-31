@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Checkbox, Icon, Popup, Radio } from 'semantic-ui-react'
-import { LocusList } from './LocusList'
-import { getRightSideBarLocusList, getSamplesInfo, getSelectedSampleNames, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
+import { EditLocusList } from './EditLocusList'
+import { getRightSideBarLocusList, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
 import { MOTIFS, DEFAULT_COLOR_BY_NUM_READS_THRESHOLD } from '../constants'
 
 
@@ -223,8 +223,6 @@ class RightSideBar extends React.Component
     sjOptions: PropTypes.object,
     vcfOptions: PropTypes.object,
     bamOptions: PropTypes.object,
-    samplesInfo: PropTypes.array,
-    selectedSampleNames: PropTypes.array,
     setLocus: PropTypes.func,
     setLocusList: PropTypes.func,
     updateSjOptions: PropTypes.func,
@@ -234,7 +232,7 @@ class RightSideBar extends React.Component
 
   render() {
     return <div>
-      <LocusList
+      <EditLocusList
         name="Right Side Bar"
         locusList={this.props.locusList}
         setLocus={this.props.setLocus}
@@ -262,8 +260,6 @@ const mapStateToProps = state => ({
   sjOptions: getSjOptions(state),
   vcfOptions: getVcfOptions(state),
   bamOptions: getBamOptions(state),
-  selectedSampleNames: getSelectedSampleNames(state),
-  samplesInfo: getSamplesInfo(state),
 })
 
 const mapDispatchToProps = dispatch => ({

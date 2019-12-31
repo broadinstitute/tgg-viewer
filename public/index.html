@@ -7,59 +7,59 @@
 
     <script>
       const REFERENCE_DATA_ROOT = 'gs://macarthurlab-rnaseq/reference_tracks/GTEx_ref_data'
-      const REFERENCE_TRACKS = [
+      const REFERENCE_DATA_INFO_LIST = [
         {
           name: 'GTEx 100 Muscle',
           description: '100 randomly-chosen GTEx v3 muscle samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all 100 samples.',
-          junctions: `${REFERENCE_DATA_ROOT}/muscle_100_GTEx_samples.SJ.out.tab.bed.gz`,
+          junctions: `${REFERENCE_DATA_ROOT}/muscle_100_GTEx_samples.junctions.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/muscle_100_GTEx_samples.bigWig`,
         },
         {
           name: 'GTEx 100 Blood',
           description: '100 randomly-chosen GTEx v3 blood samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all 100 samples.',
-          junctions: `${REFERENCE_DATA_ROOT}/blood_100_GTEx_samples.SJ.out.tab.bed.gz`,
+          junctions: `${REFERENCE_DATA_ROOT}/blood_100_GTEx_samples.junctions.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/blood_100_GTEx_samples.bigWig`,
         },
         {
           name: 'GTEx 100 Fibs',
           description: '100 randomly-chosen GTEx v3 fibroblast samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all 100 samples.',
-          junctions: `${REFERENCE_DATA_ROOT}/fibs_100_GTEx_samples.SJ.out.tab.bed.gz`,
+          junctions: `${REFERENCE_DATA_ROOT}/fibs_100_GTEx_samples.junctions.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/fibs_100_GTEx_samples.bigWig`,
         },
         {
           name: 'GTEx All Muscle',
           description: 'All 803 GTEx v3 muscle samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all samples.',
-          junctions: `${REFERENCE_DATA_ROOT}/GTEX_muscle.803_samples.SJ.out.bed.gz`,
+          junctions: `${REFERENCE_DATA_ROOT}/GTEX_muscle.803_samples.junctions.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/GTEX_muscle.803_samples.bigWig`,
         },
         {
           name: 'GTEx All Blood',
           description: 'All 755 GTEx v3 blood samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all samples.',
-          junctions: `${REFERENCE_DATA_ROOT}/GTEX_blood.755_samples.SJ.out.bed.gz`,
+          junctions: `${REFERENCE_DATA_ROOT}/GTEX_blood.755_samples.junctions.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/GTEX_blood.755_samples.bigWig`,
         },
         {
           name: 'GTEx All Fibs',
           description: 'All 504 GTEx v3 fibroblast samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all samples.',
-          junctions: `${REFERENCE_DATA_ROOT}/GTEX_fibs.504_samples.SJ.out.bed.gz`,
+          junctions: `${REFERENCE_DATA_ROOT}/GTEX_fibs.504_samples.junctions.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/GTEX_fibs.504_samples.bigWig`,
         },
         {
           name: 'GTEx All Muscle - Norm.',
           description: 'All 803 GTEx v3 muscle samples combined by summing raw coverage values across all samples and also summing normalized splice-junction-spanning read counts across all samples. The normalization is done by computing the normalized read count for each junction as normalized_read_count = raw_read_count * scalar. Here scalar = average_unique_reads_per_muscle_sample / (total_unqiue_reads_in_this_sample * number_of_muscle_samples), and average_unique_reads_per_muscle_sample = (total_unqiue_reads_in_all_muscle_samples / number_of_muscle_samples)',
-          junctions: `${REFERENCE_DATA_ROOT}/GTEX_muscle.803_samples.normalized.SJ.out.bed.gz`,
+          junctions: `${REFERENCE_DATA_ROOT}/GTEX_muscle.803_samples.normalized.junctions.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/GTEX_muscle.803_samples.bigWig`,
         },
         {
           name: 'GTEx All Blood - Norm.',
           description: 'All 755 GTEx v3 blood samples combined by summing raw coverage values across all samples and also summing normalized splice-junction-spanning read counts across all samples. The normalization is done by computing the normalized read count for each junction as normalized_read_count = raw_read_count * scalar. Here scalar = average_unique_reads_per_blood_sample / (total_unqiue_reads_in_this_sample * number_of_blood_samples), and average_unique_reads_per_blood_sample = (total_unqiue_reads_in_all_blood_samples / number_of_blood_samples)',
-          junctions: `${REFERENCE_DATA_ROOT}/GTEX_blood.755_samples.normalized.SJ.out.bed.gz`,
+          junctions: `${REFERENCE_DATA_ROOT}/GTEX_blood.755_samples.normalized.junctions.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/GTEX_blood.755_samples.bigWig`,
         },
         {
           name: 'GTEx All Fibs - Norm.',
           description: 'All 504 GTEx v3 fibroblast samples combined by summing raw coverage values across all samples and also summing normalized splice-junction-spanning read counts across all samples. The normalization is done by computing the normalized read count for each junction as normalized_read_count = raw_read_count * scalar. Here scalar = average_unique_reads_per_fibs_sample / (total_unqiue_reads_in_this_sample * number_of_fibs_samples), and average_unique_reads_per_fibs_sample = (total_unqiue_reads_in_all_fibs_samples / number_of_fibs_samples)',
-          junctions: `${REFERENCE_DATA_ROOT}/GTEX_fibs.504_samples.normalized.SJ.out.bed.gz`,
+          junctions: `${REFERENCE_DATA_ROOT}/GTEX_fibs.504_samples.normalized.junctions.bed.gz`,
           coverage: `${REFERENCE_DATA_ROOT}/GTEX_fibs.504_samples.bigWig`,
         },
         /*
@@ -75,8 +75,8 @@
         */
       ]
 
-      const SAMPLE_TRACKS = []
       const SAMPLE_DATA_ROOT = 'gs://macarthurlab-rnaseq'
+      const SAMPLE_INFO_LIST = []
 
       /*
       SAMPLE_TRACKS.push(...['sampleA.chr15-92835700-93031800', 'sampleB.chr15-92835700-93031800', 'samples_A_and_B.chr15-92835700-93031800']
@@ -84,7 +84,7 @@
           return {
             name: prefix,
             coverage: `gs://seqr-hail/splice_junction_track_test_cases/${prefix}.bigWig`,
-            junctions: `gs://seqr-hail/splice_junction_track_test_cases/${prefix}.SJ.out.bed.gz`,
+            junctions: `gs://seqr-hail/splice_junction_track_test_cases/${prefix}.junctions.bed.gz`,
           }
         }))
        */
@@ -92,13 +92,13 @@
       const HAS_VCF = '1179-1, 1211-1, 126BG_CB_M1, 146BO_JB_M1, B09-24-1RNA_UNKNOWN, B09-40-1M, B11-11-1M, B11-48-1M, B12-21-1M, B13-07-1M, B13-07-1RNA, 149BP_AB_M1, 153BR_JB_M1, B14-130-1M, B14-78-1-U, 163BV_JE_M1, 164BW_KC_M1, 167BZ_SP_M1, 204H_AM_M1, 205E_BD_M1, 210DB_BW_M1, 227DJ_JP_M1, BON_B09-27-1_1, 247DT_SH_M1, 250DV_LR_M1, 251DW_SD_M1, 252DX_DC_M1, 253DY_HA_M1, BON_B14-75-1_1, 254DZ_WP_M1, 255EA_GC_M1, 26I_SK_M1, 37L_NA_M1, BON_B15-76-2_2, BON_B16-75-1_2, 41M_MW_M1, 431-1_A_3, 431-2_A_2, 432-3_A_2, 437-2_A_2, 437-3_A_2, 447-3_A_3, 46N_RL_M1, 65T_CR_M1, 81AB_MM_M1, 9C_DH_M1, B12-30RNA, B14-07RNA, B15-15_1_1, BB0280_CH_AffF_2, BEG_1025-1_T999_R1, BEG_1078-1_T1071_R1, BEG_1230-1_T1227_R1, BEG_14-4_T65_R1, BEG_1438-1_T1339_R1, BEG_851-1_T840_R1, BEG_887-1_T1240_R1, BEG_916-1_T916_R1, BON_B12-71_2_R1, BON_B13-55_1_2, BON_B14-20_1, BON_B14-51_1_2, BON_B15-125_1_2, BON_B15-98_1_2, BON_B16-19_1, BON_B16-50_1_2, BON_B16-57_1_2, BON_B16_30_1_1, BON_B16_80_1_1, BON_B17-23_1_R1, BON_B17-28_1_R1, BON_B18-24_1_R1, BON_B18-54_1_R1, BON_UC473_1, CLA_143BN_BB_2, CLA_179CI_GG_2, CLA_180CJ_DP_2, CLA_214DF_AB_2, CLA_329FK_RR_2, CLA_388HV_XX_1, CLA_62R_CaM_3, CLA_79Z_CP_2, HK006_0016_R1, HK010_0026_R1, HK011_0029_R1, HK018_0047_2, HK024_0065_R1, HK028_0073_R1, HK044_0109_R1, HK069-0177_2, HK072-001_2, HK085-001_R1, HK088-001_2, HK101-001_R1, HK106-001_R1, ICCV_458_10CC06258_02, LIA_EDW01_1, MAN_0063_01_02, MAN_0063_01_03, MAN_1001_01_M1_D1, MBRU030_2, MCOP008_001_2, MESP014_2, MESP021_001_2, MESP039_2, MGLA003_001_2, MMAD002_001_2, MTEH041_001_2, MUN_FAM1_CTRL_01_R1, MUN_FAM1_CTRL_03_R1, NH12-1413, NH12-843_Fibroblasts, NH12-843_MyoD_Day5, OUN_HK124_001_R1, RGP_248_3, RGP_273_3_R1, RGP_54_3_2, RGP_56_3_3, RGP_7_1_2, RGP_7_2_2, RGP_7_3_2, RGP_7_4_2, RGP_7_5_2, RGP_94_3_2, TOP_MAAC031_F_Muscle1, UWA_FAM7_PT_D16-1243_2, VCGS_FAM11_32_2, VCGS_FAM12_36_2, VCGS_FAM147_459_2, VCGS_FAM148_462_2, VCGS_FAM149_465_2, VCGS_FAM150_468_2, VCGS_FAM1_1_2, VCGS_FAM22_69_2, VCGS_FAM26_81_2, VCGS_FAM27_84_2, VCGS_FAM29_90_R1, VCGS_FAM2_4_2, VCGS_FAM31_97_2, VCGS_FAM39_123_R1, VCGS_FAM3_7_2, VCGS_FAM41_129_2, VCGS_FAM42_132_2, VCGS_FAM49_153_R1, VCGS_FAM4_13_2, VCGS_FAM52_162_3, VCGS_FAM58_181_R1, VCGS_FAM61_190_R1, VCGS_FAM67_209_R1, VCGS_FAM73_227_2, VCGS_FAM84_260_R1'.split(', ')
 
 
-      SAMPLE_TRACKS.push(...'1179-1, 1211-1, 1258-1, 126BG_CB_M1, 146BO_JB_M1, 149BP_AB_M1, 153BR_JB_M1, 163BV_JE_M1, 164BW_KC_M1, 167BZ_SP_M1, 204H_AM_M1, 205E_BD_M1, 210DB_BW_M1, 227DJ_JP_M1, 247DT_SH_M1, 250DV_LR_M1, 251DW_SD_M1, 252DX_DC_M1, 253DY_HA_M1, 254DZ_WP_M1, 255EA_GC_M1, 26I_SK_M1, 361AL_CC_M1, 373HQ_BTG_M1, 37L_NA_M1, 41M_MW_M1, 431-1_A_3, 431-2_A_2, 432-3_A_2, 437-2_A_2, 437-3_A_2, 447-3_A_3, 46N_RL_M1, 65T_CR_M1, 81AB_MM_M1, 9C_DH_M1, B09-24-1RNA_UNKNOWN, B09-25-1RNA, B09-40-1M, B10-02-1RNA, B11-11-1M, B11-25-1M, B11-48-1M, B12-21-1M, B12-30RNA, B13-07-1M, B13-07-1RNA, B13-15RNA, B13-52-1M, B14-07RNA, B14-117-1RNA-2, B14-130-1M, B14-48-1RNA, B14-70-1RNA, B14-78-1-U, B15-15_1_1, B15-25_1_2, B15-28_1_1, B16-47_1_2, B16-48_1_1, BB0280_CH_AffF_2, BEG_1025-1_T999_R1, BEG_1078-1_T1071_R1, BEG_1230-1_T1227_R1, BEG_14-4_T65_R1, BEG_1438-1_T1339_R1, BEG_851-1_T840_R1, BEG_887-1_T1240_R1, BEG_916-1_T916_R1, BON_B09-27-1_1, BON_B12-33-2_1, BON_B12-71_2_R1, BON_B12-74-1_1, BON_B12-76-1_2, BON_B13-55_1_2, BON_B14-163-1_2, BON_B14-20_1, BON_B14-51_1_2, BON_B14-60-1_2, BON_B14-71-2_1, BON_B14-75-1_1, BON_B15-118_1, BON_B15-125_1_2, BON_B15-26_1_1, BON_B15-76-2_2, BON_B15-98_1_2, BON_B16-19_1, BON_B16-22_1, BON_B16-50_1_2, BON_B16-53-1_1, BON_B16-57_1_2, BON_B16-75-1_2, BON_B16_30_1_1, BON_B16_80_1_1, BON_B17-23_1_R1, BON_B17-28_1_R1, BON_B18-24_1_R1, BON_B18-25_1_R1, BON_B18-54_1_R1, BON_UC219-1_1, BON_UC473_1, CLA_143BN_BB_2, CLA_179CI_GG_2, CLA_180CJ_DP_2, CLA_214DF_AB_2, CLA_329FK_RR_2, CLA_338FT_DM_2, CLA_388HV_XX_1, CLA_62R_CaM_2, CLA_62R_CaM_3, CLA_79Z_CP_2, HK006_0016_R1, HK010_0026_R1, HK011_0029_R1, HK018_0047_2, HK024_0065_R1, HK028_0073_R1, HK044_0109_R1, HK069-0177_2, HK072-001_2, HK085-001_R1, HK088-001_2, HK101-001_R1, HK106-001_R1, ICCV_458_10CC06258_02, K1157-1-4, LIA_EDW01_1, LIA_MAS02_2, LIA_TIS03_2, MAN_0063_01_02, MAN_0063_01_03, MAN_1001_01_M1_D1, MBEL028_001_3, MBEL028_002_1, MBRU030_2, MCOP008_001_2, MESP014_2, MESP021_001_2, MESP039_2, MGLA003_001_2, MMAD002_001_2, MTEH041_001_2, MUN_FAM1_CTRL_01_R1, MUN_FAM1_CTRL_03_R1, MUN_FAM1_CTRL_04_R1, MUN_FAM2_TOTALMDC1A1_02_R1, MUN_FAM2_TOTALMDC1A1_03_R1, MUN_FAM2_TOTALMDC1A1_04_R1, MUN_FAM2_TOTALMDC1A1_05_R1, MUN_FAM3_PARTIALMDC1A1_02_R1, MUN_FAM3_PARTIALMDC1A1_03_R1, MUN_FAM3_PARTIALMDC1A1_05_R1, MUN_FAM4_ATYPICALMDC1A_01_R3, M_0146-01-H1, NH11-441, NH12-1413, NH12-843_Fibroblasts, NH12-843_MyoD_Day5, OUN_HK018_0047_R1, OUN_HK047_0116_R1, OUN_HK079_001_R1, OUN_HK080_001_R1, OUN_HK081_001_R1, OUN_HK112_001_R1, OUN_HK116_001_R1, OUN_HK124_001_R1, OUN_HK137_001_R1, RGP_248_3, RGP_273_3_R1, RGP_54_3_2, RGP_56_3_3, RGP_7_1_2, RGP_7_2_2, RGP_7_3_2, RGP_7_4_2, RGP_7_5_2, RGP_94_3_2, RGP_94_4_2, RP-1850_MUN_FAM1_CTRL_02_R1_v1_RNA_OnPrem, RP-1850_MUN_FAM3_PARTIALMDC1A1_01_R1_v2_RNA_OnPrem, RP-1850_MUN_FAM4_ATYPICALMDC1A_01_R1_v2_RNA_OnPrem, RP-1850_MUN_FAM4_ATYPICALMDC1A_01_R2_v2_RNA_OnPrem, RP-1850_MUN_FAM5_SIBLINGMDC1A_01_R1_v2_RNA_OnPrem, RP-1850_MUN_FAM5_SIBLINGMDC1A_01_R2_v2_RNA_OnPrem, RP-1850_MUN_FAM5_SIBLINGMDC1A_01_R3_v2_RNA_OnPrem, SRPK3_EM__1, SRPK3_JAP_1, SRPK3_USA_1, SWE_36223_1, SWE_36326_1, T1244, T238, T757, T850, T892, TOP_MAAC031_F_Muscle1, UC223-1RNA, UC305-1M, UC316-1M, UC368-1M, UC393-1M, UC84-1RNA, UWA_FAM7_PT_D16-1243_2, VCGS_DLS_FAM1_1_R1, VCGS_FAM11_32_2, VCGS_FAM12_36_2, VCGS_FAM147_459_2, VCGS_FAM148_462_2, VCGS_FAM149_465_2, VCGS_FAM150_468_2, VCGS_FAM1_1_2, VCGS_FAM22_69_2, VCGS_FAM26_81_2, VCGS_FAM27_84_2, VCGS_FAM29_90_R1, VCGS_FAM2_4_2, VCGS_FAM31_97_2, VCGS_FAM39_123_R1, VCGS_FAM3_7_2, VCGS_FAM41_129_2, VCGS_FAM42_132_2, VCGS_FAM49_153_R1, VCGS_FAM4_13_2, VCGS_FAM52_162_3, VCGS_FAM58_181_R1, VCGS_FAM61_190_R1, VCGS_FAM67_209_R1, VCGS_FAM73_227_2, VCGS_FAM84_260_R1, VIL_17_097, VIL_17_098, VIL_17_099, VIL_17_105, VIL_17_106, VIL_17_107, VIL_17_110, VIL_17_111, VIL_17_120, VIL_17_121, VIL_17_141, VIL_17_150, VIL_17_151, VIL_17_152, VIL_17_163, VIL_17_164, VIL_18_045, VIL_18_046, VIL_18_061, VIL_18_120, RP-1118_MAN_1438-01-M1_R1_v2_RNA_OnPrem, RP-2034_RGP_800_3_2_v2_RNA_OnPrem, RP-2073_193CP_LS_R1_v3_RNA_OnPrem, RP-2073_92AI_SM_R1_v2_RNA_OnPrem, RP-2073_INMR_GB_408_R1_v2_RNA_OnPrem, RP-2073_INMR_GI_456_R1_v2_RNA_OnPrem, RP-2073_INMR_HW_389_R1_v3_RNA_OnPrem, RP-2073_INMR_HZ_401_R1_v3_RNA_OnPrem, RP-2073_INMR_IG_561_R1_v3_RNA_OnPrem, RP-2073_INMR_IK_581_R1_v3_RNA_OnPrem, RP-2073_INMR_IV_615_R1_v3_RNA_OnPrem'
+      SAMPLE_INFO_LIST.push(...'1179-1, 1211-1, 1258-1, 126BG_CB_M1, 146BO_JB_M1, 149BP_AB_M1, 153BR_JB_M1, 163BV_JE_M1, 164BW_KC_M1, 167BZ_SP_M1, 204H_AM_M1, 205E_BD_M1, 210DB_BW_M1, 227DJ_JP_M1, 247DT_SH_M1, 250DV_LR_M1, 251DW_SD_M1, 252DX_DC_M1, 253DY_HA_M1, 254DZ_WP_M1, 255EA_GC_M1, 26I_SK_M1, 361AL_CC_M1, 373HQ_BTG_M1, 37L_NA_M1, 41M_MW_M1, 431-1_A_3, 431-2_A_2, 432-3_A_2, 437-2_A_2, 437-3_A_2, 447-3_A_3, 46N_RL_M1, 65T_CR_M1, 81AB_MM_M1, 9C_DH_M1, B09-24-1RNA_UNKNOWN, B09-25-1RNA, B09-40-1M, B10-02-1RNA, B11-11-1M, B11-25-1M, B11-48-1M, B12-21-1M, B12-30RNA, B13-07-1M, B13-07-1RNA, B13-15RNA, B13-52-1M, B14-07RNA, B14-117-1RNA-2, B14-130-1M, B14-48-1RNA, B14-70-1RNA, B14-78-1-U, B15-15_1_1, B15-25_1_2, B15-28_1_1, B16-47_1_2, B16-48_1_1, BB0280_CH_AffF_2, BEG_1025-1_T999_R1, BEG_1078-1_T1071_R1, BEG_1230-1_T1227_R1, BEG_14-4_T65_R1, BEG_1438-1_T1339_R1, BEG_851-1_T840_R1, BEG_887-1_T1240_R1, BEG_916-1_T916_R1, BON_B09-27-1_1, BON_B12-33-2_1, BON_B12-71_2_R1, BON_B12-74-1_1, BON_B12-76-1_2, BON_B13-55_1_2, BON_B14-163-1_2, BON_B14-20_1, BON_B14-51_1_2, BON_B14-60-1_2, BON_B14-71-2_1, BON_B14-75-1_1, BON_B15-118_1, BON_B15-125_1_2, BON_B15-26_1_1, BON_B15-76-2_2, BON_B15-98_1_2, BON_B16-19_1, BON_B16-22_1, BON_B16-50_1_2, BON_B16-53-1_1, BON_B16-57_1_2, BON_B16-75-1_2, BON_B16_30_1_1, BON_B16_80_1_1, BON_B17-23_1_R1, BON_B17-28_1_R1, BON_B18-24_1_R1, BON_B18-25_1_R1, BON_B18-54_1_R1, BON_UC219-1_1, BON_UC473_1, CLA_143BN_BB_2, CLA_179CI_GG_2, CLA_180CJ_DP_2, CLA_214DF_AB_2, CLA_329FK_RR_2, CLA_338FT_DM_2, CLA_388HV_XX_1, CLA_62R_CaM_2, CLA_62R_CaM_3, CLA_79Z_CP_2, HK006_0016_R1, HK010_0026_R1, HK011_0029_R1, HK018_0047_2, HK024_0065_R1, HK028_0073_R1, HK044_0109_R1, HK069-0177_2, HK072-001_2, HK085-001_R1, HK088-001_2, HK101-001_R1, HK106-001_R1, ICCV_458_10CC06258_02, K1157-1-4, LIA_EDW01_1, LIA_MAS02_2, LIA_TIS03_2, MAN_0063_01_02, MAN_0063_01_03, MAN_1001_01_M1_D1, MBEL028_001_3, MBEL028_002_1, MBRU030_2, MCOP008_001_2, MESP014_2, MESP021_001_2, MESP039_2, MGLA003_001_2, MMAD002_001_2, MTEH041_001_2, MUN_FAM1_CTRL_01_R1, MUN_FAM1_CTRL_03_R1, MUN_FAM1_CTRL_04_R1, MUN_FAM2_TOTALMDC1A1_02_R1, MUN_FAM2_TOTALMDC1A1_03_R1, MUN_FAM2_TOTALMDC1A1_04_R1, MUN_FAM2_TOTALMDC1A1_05_R1, MUN_FAM3_PARTIALMDC1A1_02_R1, MUN_FAM3_PARTIALMDC1A1_03_R1, MUN_FAM3_PARTIALMDC1A1_05_R1, MUN_FAM4_ATYPICALMDC1A_01_R3, M_0146-01-H1, NH11-441, NH12-1413, NH12-843_Fibroblasts, NH12-843_MyoD_Day5, OUN_HK018_0047_R1, OUN_HK047_0116_R1, OUN_HK079_001_R1, OUN_HK080_001_R1, OUN_HK081_001_R1, OUN_HK112_001_R1, OUN_HK116_001_R1, OUN_HK124_001_R1, OUN_HK137_001_R1, RGP_248_3, RGP_273_3_R1, RGP_54_3_2, RGP_56_3_3, RGP_7_1_2, RGP_7_2_2, RGP_7_3_2, RGP_7_4_2, RGP_7_5_2, RGP_94_3_2, RGP_94_4_2, RP-1850_MUN_FAM1_CTRL_02_R1_v1_RNA_OnPrem, RP-1850_MUN_FAM3_PARTIALMDC1A1_01_R1_v2_RNA_OnPrem, RP-1850_MUN_FAM4_ATYPICALMDC1A_01_R1_v2_RNA_OnPrem, RP-1850_MUN_FAM4_ATYPICALMDC1A_01_R2_v2_RNA_OnPrem, RP-1850_MUN_FAM5_SIBLINGMDC1A_01_R1_v2_RNA_OnPrem, RP-1850_MUN_FAM5_SIBLINGMDC1A_01_R2_v2_RNA_OnPrem, RP-1850_MUN_FAM5_SIBLINGMDC1A_01_R3_v2_RNA_OnPrem, SRPK3_EM__1, SRPK3_JAP_1, SRPK3_USA_1, SWE_36223_1, SWE_36326_1, T1244, T238, T757, T850, T892, TOP_MAAC031_F_Muscle1, UC223-1RNA, UC305-1M, UC316-1M, UC368-1M, UC393-1M, UC84-1RNA, UWA_FAM7_PT_D16-1243_2, VCGS_DLS_FAM1_1_R1, VCGS_FAM11_32_2, VCGS_FAM12_36_2, VCGS_FAM147_459_2, VCGS_FAM148_462_2, VCGS_FAM149_465_2, VCGS_FAM150_468_2, VCGS_FAM1_1_2, VCGS_FAM22_69_2, VCGS_FAM26_81_2, VCGS_FAM27_84_2, VCGS_FAM29_90_R1, VCGS_FAM2_4_2, VCGS_FAM31_97_2, VCGS_FAM39_123_R1, VCGS_FAM3_7_2, VCGS_FAM41_129_2, VCGS_FAM42_132_2, VCGS_FAM49_153_R1, VCGS_FAM4_13_2, VCGS_FAM52_162_3, VCGS_FAM58_181_R1, VCGS_FAM61_190_R1, VCGS_FAM67_209_R1, VCGS_FAM73_227_2, VCGS_FAM84_260_R1, VIL_17_097, VIL_17_098, VIL_17_099, VIL_17_105, VIL_17_106, VIL_17_107, VIL_17_110, VIL_17_111, VIL_17_120, VIL_17_121, VIL_17_141, VIL_17_150, VIL_17_151, VIL_17_152, VIL_17_163, VIL_17_164, VIL_18_045, VIL_18_046, VIL_18_061, VIL_18_120, RP-1118_MAN_1438-01-M1_R1_v2_RNA_OnPrem, RP-2034_RGP_800_3_2_v2_RNA_OnPrem, RP-2073_193CP_LS_R1_v3_RNA_OnPrem, RP-2073_92AI_SM_R1_v2_RNA_OnPrem, RP-2073_INMR_GB_408_R1_v2_RNA_OnPrem, RP-2073_INMR_GI_456_R1_v2_RNA_OnPrem, RP-2073_INMR_HW_389_R1_v3_RNA_OnPrem, RP-2073_INMR_HZ_401_R1_v3_RNA_OnPrem, RP-2073_INMR_IG_561_R1_v3_RNA_OnPrem, RP-2073_INMR_IK_581_R1_v3_RNA_OnPrem, RP-2073_INMR_IV_615_R1_v3_RNA_OnPrem'
         .split(', ')
         .map((name) => {
           const x = {
             name,
             coverage: `${SAMPLE_DATA_ROOT}/bigWig/${name}.bigWig`,
-            junctions: `${SAMPLE_DATA_ROOT}/junctions_bed_for_igv_js/${name}.SJ.out.bed.gz`,
+            junctions: `${SAMPLE_DATA_ROOT}/junctions_bed_for_igv_js/${name}.junctions.bed.gz`,
             bam: `${SAMPLE_DATA_ROOT}/star/${name}.Aligned.sortedByCoord.out.bam`,
           }
           if (HAS_VCF.includes(name)) {
@@ -107,14 +107,14 @@
           return x
         }))
 
-      const INITIAL_TRACKS = [
+      window.INITIAL_SAMPLES_IN_CATEGORIES = [
         {
-          name: 'Reference Data',
-          samples: REFERENCE_TRACKS,
+          categoryName: 'Reference Data',
+          samples: REFERENCE_DATA_INFO_LIST,
         },
         {
-          name: 'Samples',
-          samples: SAMPLE_TRACKS,
+          categoryName: 'Samples',
+          samples: SAMPLE_INFO_LIST,
         },
       ]
 
@@ -149,14 +149,13 @@
           showSoftClips: true,
           alignmentShading: 'strand',
         },
-        samplesInfo: INITIAL_TRACKS,
+        samplesInCategories: INITIAL_SAMPLES_IN_CATEGORIES,
+        selectedSampleNamesByCategoryName: {},
       }
 
     </script>
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css" />
-
-
   </head>
   <body>
     <div id="root"></div>

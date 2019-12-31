@@ -3,8 +3,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Checkbox, Icon, Popup } from 'semantic-ui-react'
-import { LocusList } from './LocusList'
-import { getLeftSideBarLocusList, getSamplesInfo, getSelectedSampleNames, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
+import { EditLocusList } from './EditLocusList'
+import { AddOrEditSamplePaths } from './EditSamplePaths'
+import { getLeftSideBarLocusList, getSamplesInCategories, getSelectedSampleNamesByCategoryName, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
 
 
 const CategoryH3 = styled.h3` 
@@ -91,41 +92,45 @@ const SampleColorLabelsWithPopup = ({sample}) => <Popup
   />
 
 
-const CategoryPanel = ({category, selectedSampleNames, updateSelectedSampleNames}) =>
+const CategoryPanel = ({category, updateSelectedSampleNames}) =>
   <div>
-    <CategoryH3>{category.name.toUpperCase()}</CategoryH3>
+    <CategoryH3>{category.categoryName.toUpperCase()}</CategoryH3>
     {
       category.samples.length >= 10 && <CategoryDetails>{`(N=${category.samples.length}) `}</CategoryDetails>
     }
-    <div>
-      <a href="#" onClick={(e) => {
-        e.preventDefault()
-        const sampleNamesInCategory =  new Set(category.samples.map(s => s.name))
-        updateSelectedSampleNames('SET', selectedSampleNames.filter(x => !sampleNamesInCategory.has(x)))
-      }}>Clear All</a>
-    </div>
+    {
+      category.samples.length > 0 &&
+      <div>
+        <a href="#" onClick={(e) => {
+          e.preventDefault()
+          updateSelectedSampleNames('SET', category.categoryName, [])
+        }}>Uncheck All</a>
+      </div>
+    }
   </div>
 
 
-const SamplesPanel = ({samplesInfo, selectedSampleNames, updateSelectedSampleNames}) =>
-  samplesInfo.map(category =>
-    <div key={category.name}>
-      <CategoryPanel category={category} selectedSampleNames={selectedSampleNames} updateSelectedSampleNames={updateSelectedSampleNames} />
+const SamplesPanel = ({samplesInCategories, selectedSampleNamesByCategoryName, updateSelectedSampleNames}) =>
+  samplesInCategories.map(category =>
+    <div key={category.categoryName}>
+      <CategoryPanel category={category} updateSelectedSampleNames={updateSelectedSampleNames} />
       {
-        category.samples.map(sample =>
-          <SamplePanel key={sample.name} sample={sample} selectedSampleNames={selectedSampleNames} updateSelectedSampleNames={updateSelectedSampleNames} />
-        )
+        category.samples.map(sample => {
+          const selectedSampleNames = selectedSampleNamesByCategoryName[category.categoryName] || []
+          return <SamplePanel key={sample.name} sample={sample} categoryName={category.categoryName} selectedSampleNames={selectedSampleNames} updateSelectedSampleNames={updateSelectedSampleNames} />
+        })
       }
+      <AddOrEditSamplePaths name={category.categoryName} samplePaths={category.samples.map(sample => sample.name)} />
     </div>,
   )
 
-const SamplePanel = ({sample, selectedSampleNames, updateSelectedSampleNames}) =>
+const SamplePanel = ({sample, categoryName, selectedSampleNames, updateSelectedSampleNames}) =>
   <NoWrapDiv>
     <Checkbox
       label={sample.name}
       checked={selectedSampleNames.includes(sample.name)}
       data-sample={sample.name}
-      onChange={(e, data) => updateSelectedSampleNames( data.checked ? 'ADD' : 'REMOVE', [ data['data-sample'] ]) }
+      onChange={(e, data) => updateSelectedSampleNames( data.checked ? 'ADD' : 'REMOVE', categoryName, [ data['data-sample'] ]) }
     />
     <SampleDetails sample={sample} />
     <SampleColorLabelsWithPopup sample={sample} />
@@ -145,8 +150,8 @@ class LeftSideBar extends React.Component
 {
   static propTypes = {
     locusList: PropTypes.array,
-    samplesInfo: PropTypes.array,
-    selectedSampleNames: PropTypes.array,
+    samplesInCategories: PropTypes.array,
+    selectedSampleNamesByCategoryName: PropTypes.object,
     sjOptions: PropTypes.object,
     vcfOptions: PropTypes.object,
     bamOptions: PropTypes.object,
@@ -162,7 +167,7 @@ class LeftSideBar extends React.Component
     //const params = new URLSearchParams(window.location.search)
     return (
       <div>
-        <LocusList name="Left Side Bar" locusList={this.props.locusList} setLocus={this.props.setLocus} setLocusList={this.props.setLocusList} />
+        <EditLocusList name="Left Side Bar" locusList={this.props.locusList} setLocus={this.props.setLocus} setLocusList={this.props.setLocusList} />
         <CategoryH3>TRACK TYPES TO SHOW PER SAMPLE</CategoryH3>
         <OptionDiv>
           <Checkbox label="RNA splice-junctions" defaultChecked={this.props.sjOptions.showJunctions} onChange={(e, data) => this.props.updateSjOptions({ showJunctions: data.checked })} />
@@ -181,8 +186,8 @@ class LeftSideBar extends React.Component
           <SampleColorLabelsContainer><Popup content={'This color stripe marks samples that have splice junction data. Select this checkbox to show a vcf track for each sample selected below.'} position="right center" trigger={<VcfIcon />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <SamplesPanel
-          samplesInfo={this.props.samplesInfo}
-          selectedSampleNames={this.props.selectedSampleNames}
+          samplesInCategories={this.props.samplesInCategories}
+          selectedSampleNamesByCategoryName={this.props.selectedSampleNamesByCategoryName}
           updateSelectedSampleNames={this.props.updateSelectedSampleNames}
         />
       </div>)
@@ -191,8 +196,8 @@ class LeftSideBar extends React.Component
 
 const mapStateToProps = state => ({
   locusList: getLeftSideBarLocusList(state),
-  selectedSampleNames: getSelectedSampleNames(state),
-  samplesInfo: getSamplesInfo(state),
+  samplesInCategories: getSamplesInCategories(state),
+  selectedSampleNamesByCategoryName: getSelectedSampleNamesByCategoryName(state),
   sjOptions: getSjOptions(state),
   vcfOptions: getVcfOptions(state),
   bamOptions: getBamOptions(state),
@@ -211,10 +216,11 @@ const mapDispatchToProps = dispatch => ({
       values: locusList,
     })
   },
-  updateSelectedSampleNames: (action, selectedSampleNames) => {
+  updateSelectedSampleNames: (actionType, categoryName, selectedSampleNames) => {
     dispatch({
-      type: `${action}_SELECTED_SAMPLE_NAMES`,
-      values: selectedSampleNames,
+      type: `${actionType}_SELECTED_SAMPLE_NAMES`,
+      categoryName: categoryName,
+      selectedSampleNames: selectedSampleNames,
     })
   },
   updateSjOptions: (newSettings) => {

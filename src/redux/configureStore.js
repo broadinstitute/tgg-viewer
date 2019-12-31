@@ -36,13 +36,13 @@ const INITIAL_STATE = {
     showSoftClips: true,
     colorBy: 'strand',
   },
-  samplesInfo: [],
+  samplesInCategories: [],
 
   ...(window.IGV_SETTINGS || {}),
 }
 
 const PERSIST_STATE_IN_URL = [
-  'locus', 'selectedSampleNames', 'sjOptions', 'vcfOptions', 'bamOptions',
+  'locus', 'selectedSampleNamesByCategoryName', 'sjOptions', 'vcfOptions', 'bamOptions',
 ]
 
 const PERSIST_STATE_IN_LOCAL_STORAGE = [
