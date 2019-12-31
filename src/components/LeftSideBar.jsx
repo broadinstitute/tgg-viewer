@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Checkbox, Icon, Popup } from 'semantic-ui-react'
 import { EditLocusList } from './EditLocusList'
-import { AddOrEditSamplePaths } from './EditSamplePaths'
+import AddOrEditSamplePaths from './EditSamplePaths'
 import { getLeftSideBarLocusList, getSamplesInCategories, getSelectedSampleNamesByCategoryName, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
 
 
@@ -120,7 +120,7 @@ const SamplesPanel = ({samplesInCategories, selectedSampleNamesByCategoryName, u
           return <SamplePanel key={sample.name} sample={sample} categoryName={category.categoryName} selectedSampleNames={selectedSampleNames} updateSelectedSampleNames={updateSelectedSampleNames} />
         })
       }
-      <AddOrEditSamplePaths name={category.categoryName} samplePaths={category.samples.map(sample => sample.name)} />
+      <AddOrEditSamplePaths category={category} />
     </div>,
   )
 

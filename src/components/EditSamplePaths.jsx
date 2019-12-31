@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 import Modal from './Modal'
 import { Form, Icon, Popup, Radio, TextArea } from 'semantic-ui-react'
@@ -35,8 +36,8 @@ class EditSamplePathsButtonAndModal extends React.Component {
 
   static propTypes = {
     name: PropTypes.string,
-    samplePaths: PropTypes.array,
-    setSamplePaths: PropTypes.func,
+    samples: PropTypes.array,
+    setSamples: PropTypes.func,
     trigger: PropTypes.node,
   }
 
@@ -46,12 +47,10 @@ class EditSamplePathsButtonAndModal extends React.Component {
     this.state = { format: 'basic' }
 
     // TextArea refs don't work - probably because its a pure component, so use this hack
-    this.textAreaValue = (Object.values(this.props.samplePaths) || []).join('\n')
+    this.textAreaValue = (this.props.samples || []).map(sample => Object.keys(sample).filter(key => key !== 'name' && key !== 'description').map(key => sample[key])).flat().join('\n')
   }
 
   render = () => {
-    const samplePaths = this.props.samplePaths
-    const samplePathsFormat = this.props.setSamplePathsFormat
     const title = `${this.props.name} Paths`
 
     const radioButtonOnChangeHandler = (e, data) => {
@@ -142,21 +141,31 @@ class EditSamplePathsButtonAndModal extends React.Component {
   }
 }
 
-export const AddOrEditSamplePaths = ({name, samplePaths, setSamplePaths}) => {
-  samplePaths = samplePaths || []
-
+const AddOrEditSamplePaths = ({category, updateSamples}) => {
   return <div>
     <EditSamplePathsButtonAndModal
-      name={name}
-      samplePaths={[]}
-      setSamplePaths={setSamplePaths}
-      trigger={<LinkButton>Add {samplePaths.length === 0 && this.props.name} Paths</LinkButton>}
+      name={category.categoryName}
+      samples={[]}
+      setSamples={(samples) => updateSamples('ADD', category.categoryName, samples)}
+      trigger={<LinkButton>Add {category.samples.length === 0 ? this.props.name : null} Paths</LinkButton>}
     />
-    {samplePaths.length > 0 && <EditSamplePathsButtonAndModal
-      name={name}
-      samplePaths={samplePaths}
-      setSamplePaths={setSamplePaths}
+    {category.samples.length > 0 && <EditSamplePathsButtonAndModal
+      name={category.categoryName}
+      samples={category.samples}
+      setSamples={(samples) => updateSamples('SET', category.categoryName, samples)}
       trigger={<LinkButton>Edit Paths</LinkButton>}
     />}
   </div>
 }
+
+const mapDispatchToProps = dispatch => ({
+  updateSamples: (actionType, categoryName, samples) => {
+    dispatch({
+      type: `${actionType}_SAMPLES`,
+      categoryName: categoryName,
+      samples: samples,
+    })
+  },
+})
+
+export default connect(null, mapDispatchToProps)(AddOrEditSamplePaths)
