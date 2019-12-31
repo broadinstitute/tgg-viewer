@@ -65,17 +65,23 @@ class CustomModal extends React.Component
   }
 
   handleClose = () => {
-    this.props.close()
+    let doClose = true
     if (this.props.handleClose) {
-      this.props.handleClose()
+      doClose = this.props.handleClose()
+    }
+    if (doClose) {
+      this.props.close()
     }
   }
 
   handleSave = () => {
+    let doClose = true
     if (this.props.handleSave) {
-      this.props.handleSave()
+      doClose = this.props.handleSave()
     }
-    this.props.close()
+    if (doClose) {
+      this.props.close()
+    }
   }
 
   render() {

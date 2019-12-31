@@ -4,28 +4,16 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Checkbox, Icon, Popup, Radio } from 'semantic-ui-react'
 import { EditLocusList } from './EditLocusList'
+import { CategoryH3, OptionDiv, StyledPopup } from './SideBarUtils'
 import { getRightSideBarLocusList, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
 import { MOTIFS, DEFAULT_COLOR_BY_NUM_READS_THRESHOLD } from '../constants'
 
-
-const CategoryH3 = styled.h3` 
-  display: inline-block;
-  margin: 12px 0px 0px 0px !important;
-`
-
-const OptionDiv = styled.div`
-  padding-top:3px;
-`
 
 const OptionInput = styled.input`
   display: inline;
   width: 50px;
   margin-left: 5px;
   padding-left: 5px;
-`
-
-const StyledPopup = styled(Popup)`
-  opacity: 0.95;
 `
 
 const ColorLegendIcon = styled(Icon)`

@@ -36,7 +36,6 @@ const INITIAL_STATE = {
     showSoftClips: true,
     colorBy: 'strand',
   },
-  samplesInCategories: [],
 
   ...(window.IGV_SETTINGS || {}),
 }
@@ -46,7 +45,7 @@ const PERSIST_STATE_IN_URL = [
 ]
 
 const PERSIST_STATE_IN_LOCAL_STORAGE = [
-  'leftSideBarLocusList', 'rightSideBarLocusList',
+  'samplesInCategories', 'leftSideBarLocusList', 'rightSideBarLocusList',
 ]
 
 const persistStoreMiddleware = store => next => (action) => {

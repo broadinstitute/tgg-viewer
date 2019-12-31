@@ -4,28 +4,16 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Checkbox, Icon, Popup } from 'semantic-ui-react'
 import { EditLocusList } from './EditLocusList'
+import { CategoryH3, OptionDiv, StyledPopup } from './SideBarUtils'
 import AddOrEditSamplePaths from './EditSamplePaths'
 import { getLeftSideBarLocusList, getSamplesInCategories, getSelectedSampleNamesByCategoryName, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
 
-
-const CategoryH3 = styled.h3` 
-  display: inline-block;
-  margin: 12px 0px 0px 0px !important;
-`
 
 const CategoryDetails = styled.div`
   display: inline-block;
   margin: 0px 0px 0px 15px;
   color: #999;
   white-space: nowrap;
-`
-
-const OptionDiv = styled.div`
-  padding-top: 3px;
-`
-
-const StyledPopup = styled(Popup)`
-  opacity: 0.95;
 `
 
 const StyledIcon = styled.div.attrs({ name: "stop" })`
@@ -96,7 +84,7 @@ const CategoryPanel = ({category, updateSelectedSampleNames}) =>
   <div>
     <CategoryH3>{category.categoryName.toUpperCase()}</CategoryH3>
     {
-      category.samples.length >= 10 && <CategoryDetails>{`(N=${category.samples.length}) `}</CategoryDetails>
+      category.samples.length >= 12 && <CategoryDetails>{`(N=${category.samples.length}) `}</CategoryDetails>
     }
     {
       category.samples.length > 0 &&
