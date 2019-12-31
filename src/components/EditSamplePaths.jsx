@@ -293,7 +293,7 @@ class EditSamplePathsButtonAndModal extends React.Component {
 const AddOrEditSamplePaths = ({category, updateSamples}) => {
   return <div>
     <EditSamplePathsButtonAndModal
-      //key={`${JSON.stringify(category.samples)}_add`}
+      key={`${JSON.stringify(category.samples)}_add`}
       title={`Add ${category.categoryName}`}
       categoryName={category.categoryName}
       samples={[]}
@@ -301,7 +301,7 @@ const AddOrEditSamplePaths = ({category, updateSamples}) => {
       trigger={<LinkButton>Add {category.samples.length === 0 ? category.categoryName : null} Paths</LinkButton>}
     />
     {category.samples.length > 0 && <EditSamplePathsButtonAndModal
-      //key={`${JSON.stringify(category.samples)}_edit`}
+      key={`${JSON.stringify(category.samples)}_edit`}
       title={`Edit ${category.categoryName}`}
       categoryName={category.categoryName}
       samples={category.samples}
