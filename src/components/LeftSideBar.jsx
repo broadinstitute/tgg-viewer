@@ -99,13 +99,13 @@ const CategoryPanel = ({category, updateSelectedSampleNames}) =>
 
 
 const SamplesPanel = ({samplesInCategories, selectedSampleNamesByCategoryName, updateSelectedSampleNames}) =>
-  samplesInCategories.map(category =>
-    <div key={category.categoryName}>
+  samplesInCategories.map((category, i) =>
+    <div key={category.categoryName || i}>
       <CategoryPanel category={category} updateSelectedSampleNames={updateSelectedSampleNames} />
       {
-        category.samples.map(sample => {
+        category.samples.map((sample, j) => {
           const selectedSampleNames = selectedSampleNamesByCategoryName[category.categoryName] || []
-          return <SamplePanel key={sample.name} sample={sample} categoryName={category.categoryName} selectedSampleNames={selectedSampleNames} updateSelectedSampleNames={updateSelectedSampleNames} />
+          return <SamplePanel key={sample.name || j} sample={sample} categoryName={category.categoryName} selectedSampleNames={selectedSampleNames} updateSelectedSampleNames={updateSelectedSampleNames} />
         })
       }
       <AddOrEditSamplePaths category={category} />

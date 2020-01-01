@@ -96,6 +96,7 @@ class EditSamplePathsButtonAndModal extends React.Component {
           if (!acc[filePrefix]) {
             acc[filePrefix] = {}
           }
+          acc[filePrefix].name = filePrefix
           acc[filePrefix][SUPPORTED_FILE_EXTENSIONS[ext]] = samplePath
         }
         return acc
@@ -166,7 +167,7 @@ class EditSamplePathsButtonAndModal extends React.Component {
   render = () => {
     const title = `${this.props.title} Paths`
 
-    const someSamplesHaveDescription = this.props.samples.some(sample => sample.description)
+    const someSamplesHaveDescriptionOrMultipleDataFiles = this.props.samples.some(sample => sample.description || Object.keys(sample).filter(key => key !== 'name' && key !== 'description').length > 1)
 
     return <Modal
       title={title}
@@ -195,12 +196,12 @@ class EditSamplePathsButtonAndModal extends React.Component {
         <br />
         <div>
           <b>Format:</b>
-          <StyledRadio name="format" label="basic" disabled={someSamplesHaveDescription} checked={this.state.format === "basic"} onChange={this.formatRadioButtonChangeHandler} />
+          <StyledRadio name="format" label="basic" disabled={someSamplesHaveDescriptionOrMultipleDataFiles} checked={this.state.format === "basic"} onChange={this.formatRadioButtonChangeHandler} />
           <StyledPopup trigger={<Icon style={{marginLeft: '8px'}} name="question circle outline" />} content={
             <div>
               {
-                someSamplesHaveDescription && <div>
-                  <b>[Disabled]</b> because some samples have a description, and basic format has no way to specify descriptions.<br />
+                someSamplesHaveDescriptionOrMultipleDataFiles && <div>
+                  <b>[Disabled]</b> because some samples have multiple data files and/or a description.<br />
                   <br />
                 </div>
               }
@@ -234,6 +235,7 @@ class EditSamplePathsButtonAndModal extends React.Component {
                   &nbsp; coverage: gs://your-bucket/dir/sample-name1.bigWig <br />
                   &nbsp; junctions: gs://your-bucket/dir2/sample-name1.junctions.bed.gz <br />
                   &nbsp; bam: gs://your-bucket/dir3/sample-name1.bam <br />
+                  &nbsp; vcf: gs://your-bucket/dir3/sample-name1-wgs-variants.vcf.gz <br />
                 - name: sample2 <br />
                   &nbsp; coverage: gs://your-bucket/dir/sample2.bigWig <br />
                   &nbsp; junctions: gs://your-bucket/dir2/sample2.junctions.bed.gz <br />
@@ -246,11 +248,20 @@ class EditSamplePathsButtonAndModal extends React.Component {
               <div>
                 <b>JSON format</b>:<br />
                 <br />
-                Identical to YAML, but represented using the JSON hierarchical format.<br />
-
-                gs:// bucket paths of .bigWig, .junctions.bed.gz, .vcf.gz, and/or .bam or .cram files.
-                These formats are supported: yaml, json, or a simple list of paths separated by commas, spaces or new lines.
-                .json format
+                Identical to YAML, but represented in the JSON format.<br />
+                <ExampleDiv>
+                  {'[{'}<br />
+                    "name": "sample1",<br />
+                    "coverage": "gs://your-bucket/dir/sample-name1.bigWig",<br />
+                    "junctions": "gs://your-bucket/dir2/sample-name1.junctions.bed.gz",<br />
+                    "bam": "gs://your-bucket/dir3/sample-name1.bam",<br />
+                    "vcf": "gs://your-bucket/dir3/sample-name1-wgs-variants.vcf.gz"<br />
+                  {'}, {'}<br />
+                    "name": "sample2",<br />
+                    "coverage": "gs://your-bucket/dir/sample2.bigWig",<br />
+                    "junctions": "gs://your-bucket/dir2/sample2.junctions.bed.gz"<br />
+                  {'}]'}<br />
+                </ExampleDiv>
               </div>
             }
           />

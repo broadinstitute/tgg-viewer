@@ -3,6 +3,10 @@
 const RNA_VIEWER_CLIENT_ID = '61200892608-qphtf65o323setqdcfj4hnf601mmetvs.apps.googleusercontent.com'
 
 export const initGoogleClient = () => new Promise(resolve => {
+  if (typeof gapi === 'undefined') {
+    return
+  }
+
   // init all gapi modules
   gapi.load('client:auth2', () => {
     gapi.client.load('storage', 'v1', () => {
