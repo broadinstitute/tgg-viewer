@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/rnaseq-viewer/precache-manifest.0fa10010dd4c6e6d1c6505f480c2fa34.js"
+  "/rnaseq-viewer/precache-manifest.a85fa97f7468fd5548492f64036585cc.js"
 );
 
 self.addEventListener('message', (event) => {
