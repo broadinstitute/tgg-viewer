@@ -76,7 +76,7 @@ const selectedSampleNamesByCategoryNameReducer = (state, action) => {
 const rootReducer = combineReducers(Object.assign({
   genome: zeroActionsReducer,
   locus: createSingleValueReducer('UPDATE_LOCUS', ''),
-  rightSideBarLocusList: createArrayReducer('RIGHT_SIDE_BAR_LOCUS_LIST', ['DMD', 'TTN']),
+  rightSideBarLocusList: createArrayReducer('RIGHT_SIDE_BAR_LOCUS_LIST'),
   leftSideBarLocusList: createArrayReducer('LEFT_SIDE_BAR_LOCUS_LIST'),
   samplesInCategories: samplesInCategoriesReducer,
   selectedSampleNamesByCategoryName: selectedSampleNamesByCategoryNameReducer,
