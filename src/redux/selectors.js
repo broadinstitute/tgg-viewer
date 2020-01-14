@@ -74,7 +74,7 @@ export const getTracks = createSelector(
       let junctionsTrack
       if (sample.junctions && sjOptions.showJunctions) {
         junctionsTrack = {
-          type: 'junctions',
+          type: 'spliceJunctions',
           format: 'bed',
           url: sample.junctions,
           indexURL: `${sample.junctions}.tbi`,

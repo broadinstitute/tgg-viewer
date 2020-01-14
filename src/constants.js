@@ -1,7 +1,7 @@
 
 export const SUPPORTED_FILE_EXTENSIONS = {
   '.bigWig': 'coverage',
-  '.junctions.bed.gz': 'junctions',
+  '.junctions.bed.gz': 'spliceJunctions',
   '.bam': 'bam',
   '.cram': 'bam',
   '.vcf.gz': 'vcf',

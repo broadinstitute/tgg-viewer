@@ -106,7 +106,7 @@ class IGV extends React.Component {
 
       const nextTrackSettings = nextTrackSettingsByTrackName[track.name]
       if (nextTrackSettings) {
-        if ( (nextProps.sjOptions !== this.props.sjOptions && ['merged', 'wig', 'junctions'].includes(track.type) ) ||
+        if ( (nextProps.sjOptions !== this.props.sjOptions && ['merged', 'wig', 'spliceJunctions'].includes(track.type) ) ||
              (nextProps.vcfOptions !== this.props.vcfOptions && 'variant' === track.type) ||
              (nextProps.bamOptions !== this.props.bamOptions && 'alignment' === track.type)
         ) {
