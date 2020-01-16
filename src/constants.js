@@ -1,9 +1,13 @@
 
 export const SUPPORTED_FILE_EXTENSIONS = {
   '.bigWig': 'coverage',
+  '.junctions.bed': 'spliceJunctions',
+  '.spliceJunctions.bed': 'spliceJunctions',
   '.junctions.bed.gz': 'spliceJunctions',
+  '.spliceJunctions.bed.gz': 'spliceJunctions',
   '.bam': 'bam',
   '.cram': 'bam',
+  '.vcf': 'vcf',
   '.vcf.gz': 'vcf',
 }
 

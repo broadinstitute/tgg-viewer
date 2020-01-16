@@ -40,9 +40,13 @@ const INITIAL_STATE = {
   ...(window.IGV_SETTINGS || {}),
 }
 
-const PERSIST_STATE_IN_URL = [
-  'locus', 'selectedSampleNamesByCategoryName', 'sjOptions', 'vcfOptions', 'bamOptions',
-]
+const PERSIST_STATE_IN_URL = {
+  'locus': 'locus',
+  'selectedSampleNamesByCategoryName': 'selectedSamples',
+  'sjOptions': 'sjOptions',
+  'bamOptions': 'bamOptions',
+  'vcfOptions': 'vcfOptions',
+}
 
 const PERSIST_STATE_IN_LOCAL_STORAGE = [
   'samplesInCategories', 'leftSideBarLocusList', 'rightSideBarLocusList',
@@ -53,16 +57,17 @@ const persistStoreMiddleware = store => next => (action) => {
   const nextState = store.getState()
   PERSIST_STATE_IN_LOCAL_STORAGE.forEach((key) => { saveState(key, nextState[key]) })
 
-  const stateToSave = Object.keys(nextState)
-    .filter(key => PERSIST_STATE_IN_URL.includes(key))
-    .reduce((obj, key) => {
-      return {
-        ...obj,
-        [key]: nextState[key],
-      }
-    }, {})
+  const hashString = Object.keys(nextState)
+    .filter(key => (key in PERSIST_STATE_IN_URL))
+    .reduce((hashKeyValueList, key) => {
+      const value = key === 'locus' ? nextState[key].replace(',', '') : jsurl.stringify(nextState[key])
+      return [
+        ...hashKeyValueList,
+        `${PERSIST_STATE_IN_URL[key]}=${value}`,
+      ]
+    }, []).join('&')
 
-  window.location.hash = `#${jsurl.stringify(stateToSave)}`
+  window.location.hash = '#' + hashString
 
   return result
 }
@@ -91,8 +96,25 @@ export const configureStore = (
     }
   })
 
+  const REVERSE_KEY_NAME_LOOKUP = Object.entries(PERSIST_STATE_IN_URL).reduce((acc, [key, value]) => { return { ...acc, [value]: key } }, {})
+  const hashString = window.location.hash.replace(/^#/, '')
+  const objFromHash = hashString.split('&').reduce((acc, keyValue) => {
+    let keyValueList = keyValue.split('=')
+    let key = (keyValueList[0] in REVERSE_KEY_NAME_LOOKUP) ? REVERSE_KEY_NAME_LOOKUP[keyValueList[0]] : keyValueList[0]
+    if (key === 'locus') {
+      acc[key] = keyValueList[1]
+    } else {
+      try {
+        acc[key] = jsurl.parse(keyValueList[1])
+      } catch(e) {
+        console.error("Couldn't parse value for ", keyValueList[0], ": ", keyValueList[1])
+      }
+    }
+    return acc
+  }, {})
+
   //values from url override values from local storage
-  initialState = { ...initialState, ...jsurl.parse(window.location.hash.replace(/^#/, '')) }
+  initialState = { ...initialState, ...objFromHash }
 
   console.log('Initializing store to:', initialState)
 
