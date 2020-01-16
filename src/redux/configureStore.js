@@ -46,6 +46,7 @@ const PERSIST_STATE_IN_URL = {
   'sjOptions': 'sjOptions',
   'bamOptions': 'bamOptions',
   'vcfOptions': 'vcfOptions',
+  'initialSettingsUrl': 'initialSettingUrl',
 }
 
 const PERSIST_STATE_IN_LOCAL_STORAGE = [
