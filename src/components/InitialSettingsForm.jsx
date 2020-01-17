@@ -36,7 +36,7 @@ class InitialSettingsForm extends React.Component
         <StyledInput
           label="Initial settings:"
           defaultValue={this.props.initialSettingsUrl}
-          placeholder="URL of .yaml or .json settings file (eg. http://.../template.json)"
+          placeholder="URL of .yaml or .json settings file (eg. http://.../settings.json)"
         />
         <StyledButton content='Save URL' />
     </StyledDiv>

@@ -44,6 +44,12 @@ const VcfIcon = styled(StyledIcon)`
    border: 3px solid #E6A01B;
 `
 
+const LinkButton = styled.a`
+  cursor: pointer;
+  padding: 10px 10px 10px 0px;
+  display: inline-block;
+`
+
 const SampleColorLabelsContainer = styled.span`
   padding-left: 5px;
   white-space: nowrap;
@@ -89,10 +95,10 @@ const CategoryPanel = ({category, updateSelectedSampleNames}) =>
     {
       category.samples.length > 0 &&
       <div>
-        <a href="#" onClick={(e) => {
+        <LinkButton onClick={(e) => {
           e.preventDefault()
           updateSelectedSampleNames('SET', category.categoryName, [])
-        }}>Uncheck All</a>
+        }}>Uncheck All</LinkButton>
       </div>
     }
   </div>

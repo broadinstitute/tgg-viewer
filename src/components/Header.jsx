@@ -1,22 +1,3 @@
-/*
-
-
-const StyledDiv2 = styled.div`
-  color: #444;
-  display: inline;
-  border-top: #bfbfbf solid 1px;
-  margin-top: 30px !important;
-`
-
-          <StyledDiv style={{ width: "100%" }}>
-
-            <div style={{ textAlign: 'left', display: 'inline' }}>
-              RNA-seq Viewer
-            </div>
-          </StyledDiv>
-
- */
-
 import React from 'react'
 import styled from 'styled-components'
 import { Grid } from 'semantic-ui-react'
