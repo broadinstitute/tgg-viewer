@@ -158,7 +158,7 @@ class LeftSideBar extends React.Component
         <EditLocusList name="Left Side Bar" locusList={this.props.locusList} setLocus={this.props.setLocus} setLocusList={this.props.setLocusList} />
         <CategoryH3>TRACK TYPES TO SHOW PER SAMPLE</CategoryH3>
         <OptionDiv>
-          <Checkbox label="RNA splice-junctions" defaultChecked={this.props.sjOptions.showJunctions} onChange={(e, data) => this.props.updateSjOptions({ showJunctions: data.checked })} />
+          <Checkbox label="RNA splice junctions" defaultChecked={this.props.sjOptions.showJunctions} onChange={(e, data) => this.props.updateSjOptions({ showJunctions: data.checked })} />
           <SampleColorLabelsContainer><Popup content={'This color stripe marks samples that have splice junction data. Select this checkbox to show a splice junction track for each sample selected below.'} position="right center" trigger={<JunctionsIcon />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <OptionDiv>

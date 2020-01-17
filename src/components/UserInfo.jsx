@@ -1,14 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { getUser } from '../redux/selectors'
 import { connect } from 'react-redux'
 
-const StyledDiv = styled.div`
-  text-align: right;
-  margin: 70px 70px 0px 0px;
-  color: #999;
-`
 
 class UserInfo extends React.Component
 {
@@ -18,10 +12,10 @@ class UserInfo extends React.Component
 
   render() {
     if (!this.props.user.googleUserEmail) {
-      return <StyledDiv />
+      return <div>Signing in to Google Buckets...</div>
     }
 
-    return <StyledDiv>Signed in to Google Buckets as <b>{this.props.user.googleUserEmail}</b></StyledDiv>
+    return <div>Signed in to Google Buckets as <b>{this.props.user.googleUserEmail}</b></div>
   }
 }
 

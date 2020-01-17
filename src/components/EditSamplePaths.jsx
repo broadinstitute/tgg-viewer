@@ -6,6 +6,7 @@ import Modal from './Modal'
 import { Form, Icon, Message, Popup, Radio, TextArea } from 'semantic-ui-react'
 import yaml from 'js-yaml'
 import { SUPPORTED_FILE_EXTENSIONS } from '../constants'
+import { getInitialSettings } from '../redux/selectors'
 
 const LinkButton = styled.a`
   cursor: pointer;
@@ -46,6 +47,7 @@ class EditSamplePathsButtonAndModal extends React.Component {
     setSamples: PropTypes.func,
     trigger: PropTypes.node,
     showResetButton: PropTypes.bool,
+    initialSamplesInCategories: PropTypes.object,
   }
 
   getInitialState = () => {
@@ -58,18 +60,11 @@ class EditSamplePathsButtonAndModal extends React.Component {
       errorMessage: null,
     }
   }
+
   constructor(props) {
     super(props)
 
     this.state = this.getInitialState()
-
-    // cache originalSamples for reset button
-    if (this.props.showResetButton) {
-      const originalCategories = window.INITIAL_SAMPLES_IN_CATEGORIES.filter(category => category.categoryName === this.props.categoryName)
-      if (originalCategories.length > 0) {
-        this.originalSamples = originalCategories[0].samples
-      }
-    }
   }
 
   parseTextAreaValueToSamples = (textAreaValue, format) => {
@@ -128,7 +123,7 @@ class EditSamplePathsButtonAndModal extends React.Component {
   }
 
   convertSamplesToTextAreaValue = (samples, format) => {
-    if (samples.length === 0) {
+    if (!samples || samples.length === 0) {
       return ''
     }
 
@@ -159,13 +154,30 @@ class EditSamplePathsButtonAndModal extends React.Component {
     }
   }
 
+  getInitialSamplesInCategory = () => {
+    // cache originalSamples for reset button
+    if (this.props.showResetButton && this.props.initialSamplesInCategories) {
+      const originalCategories = this.props.initialSamplesInCategories.filter(category => category.categoryName === this.props.categoryName)
+      if (originalCategories.length > 0) {
+        return originalCategories[0].samples
+      }
+    }
+
+    return []
+  }
+
   resetButtonClickHandler = () => {
-    const textAreaValue = this.convertSamplesToTextAreaValue(this.originalSamples, this.state.format)
+    const initialSamples = this.getInitialSamplesInCategory()
+    const textAreaValue = this.convertSamplesToTextAreaValue(initialSamples, this.state.format)
     this.setState({ textAreaValue: textAreaValue })
   }
 
   render = () => {
     const title = `${this.props.title} Paths`
+    let initialSamplesInCategory;
+    if (this.props.showResetButton) {
+      initialSamplesInCategory = this.getInitialSamplesInCategory()
+    }
 
     const someSamplesHaveDescriptionOrMultipleDataFiles = this.props.samples.some(sample => sample.description || Object.keys(sample).filter(key => key !== 'name' && key !== 'description').length > 1)
 
@@ -267,8 +279,7 @@ class EditSamplePathsButtonAndModal extends React.Component {
           />
           {
             this.props.showResetButton &&
-            <LinkButton style={{ float: 'right' }} onClick={this.resetButtonClickHandler}>Reset To {this.originalSamples.length} Original Samples</LinkButton>
-
+            <LinkButton style={{ float: 'right' }} onClick={this.resetButtonClickHandler}>Reset To {initialSamplesInCategory ? initialSamplesInCategory.length : 0} Original Samples</LinkButton>
           }
         </div>
       </div>
@@ -284,7 +295,7 @@ class EditSamplePathsButtonAndModal extends React.Component {
       </Form>
 
       <br />
-      <b><i>NOTE:</i></b> These paths will be saved across page refreshes in this browser, but will not be recorded in the page url, so sharing a page link is not sufficient for sharing the paths.
+      <b><i>NOTE:</i></b> These paths will be saved across page refreshes in this browser, but will not be recorded in the page url like other settings. Sharing or saving the page link doesn't include these paths.
       {
         this.state.warningMessage &&
         <Message color='yellow'>
@@ -323,6 +334,11 @@ const AddOrEditSamplePaths = ({category, updateSamples}) => {
   </div>
 }
 
+const mapStateToProps = state => ({
+  initialSamplesInCategories: getInitialSettings(state).samplesInCategories,
+})
+
+
 const mapDispatchToProps = dispatch => ({
   updateSamples: (actionType, categoryName, samples) => {
     dispatch({
@@ -333,4 +349,4 @@ const mapDispatchToProps = dispatch => ({
   },
 })
 
-export default connect(null, mapDispatchToProps)(AddOrEditSamplePaths)
+export default connect(mapStateToProps, mapDispatchToProps)(AddOrEditSamplePaths)

@@ -3,8 +3,10 @@ import styled from 'styled-components'
 import { Grid } from 'semantic-ui-react'
 import LeftSideBar from './LeftSideBar'
 import RightSideBar from './RightSideBar'
-import IGV from './IGV'
+import Header from './Header'
 import UserInfo from './UserInfo'
+import IGV from './IGV'
+import InitialSettingsForm from './InitialSettingsForm'
 
 const StyledDiv = styled.div`
   padding: 10px 20px;
@@ -20,8 +22,10 @@ export default () => (
           <LeftSideBar />
         </Grid.Column>
         <Grid.Column style={{ minWidth: '800px', width: `calc(100% - ${2*SIDE_BAR_WIDTH}px)` }}>
+          <Header />
           <IGV />
-          <UserInfo />
+          <InitialSettingsForm />
+
         </Grid.Column>
         <Grid.Column width={2} style={{ minWidth: `${SIDE_BAR_WIDTH}px` }}>
           <RightSideBar />

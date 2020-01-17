@@ -84,7 +84,8 @@ const rootReducer = combineReducers(Object.assign({
   vcfOptions: createSingleObjectReducer('UPDATE_VCF_OPTIONS'),
   bamOptions: createSingleObjectReducer('UPDATE_BAM_OPTIONS'),
   user: createSingleObjectReducer('UPDATE_USER'),
-  initialSettingsUrl: createSingleObjectReducer('UPDATE_INITIAL_SETTINGS_URL'),
+  initialSettingsUrl: createSingleValueReducer('UPDATE_INITIAL_SETTINGS_URL', ''),
+  initialSettings: createSingleValueReducer('UPDATE_INITIAL_SETTINGS', {}),
 }, modalReducers))
 
 export default rootReducer
