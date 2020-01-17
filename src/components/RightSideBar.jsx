@@ -126,7 +126,6 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions }) => {
     <OptionDiv><Checkbox label="Show novel junctions" defaultChecked={!sjOptions.hideUnannotated} onChange={(e, data) => updateSjOptions({ hideUnannotated: !data.checked })} /></OptionDiv>
 
     <OptionDiv><Checkbox label="Show known junctions" defaultChecked={!sjOptions.hideAnnotated} onChange={(e, data) => updateSjOptions({ hideAnnotated: !data.checked })} /></OptionDiv>
-    <OptionDiv><Checkbox label="Show novel junctions" defaultChecked={!sjOptions.hideUnannotated} onChange={(e, data) => updateSjOptions({ hideUnannotated: !data.checked })} /></OptionDiv>
     <div>
       <OptionDiv>Uniquely-mapped reads:</OptionDiv>
       at least <OptionInput type="text" defaultValue={sjOptions.minUniquelyMappedReads} onKeyUp={e => handleTextInput(e, 'minUniquelyMappedReads', parseInt(e.target.value))} />
