@@ -1,6 +1,6 @@
 {
   "name": "rnaseq_viewer_react_app",
-  "homepage": "https://macarthur-lab.github.io/rnaseq-viewer",
+  "homepage": "https://rnaseq-viewer.broadinstitute.org",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
