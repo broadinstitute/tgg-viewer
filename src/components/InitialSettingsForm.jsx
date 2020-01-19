@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { getInitialSettingsUrl } from '../redux/selectors'
 import { connect } from 'react-redux'
-import { Form, Label, Button, Input } from 'semantic-ui-react'
+import { Button, Input } from 'semantic-ui-react'
 
 const StyledDiv = styled.div`
   color: #999;
@@ -28,7 +28,7 @@ const StyledButton = styled(Button)`
 class InitialSettingsForm extends React.Component
 {
   static propTypes = {
-    initialSettingsUrl: PropTypes.object.isRequired,
+    initialSettingsUrl: PropTypes.string.isRequired,
   }
 
   render() {

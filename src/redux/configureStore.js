@@ -108,7 +108,7 @@ const INITIAL_STATE = {
     labelTotalReadCount: false,
     labelMotif: false,
     labelAnnotatedJunction: false,
-    labelAnnotatedJunctionValue: " [A]",
+    labelAnnotatedJunctionValue: ' [A]',
   },
   vcfOptions: {
     displayMode: 'EXPANDED',
@@ -127,25 +127,25 @@ const INITIAL_STATE = {
 INITIAL_STATE.initialSettings = JSON.parse(JSON.stringify(INITIAL_STATE)) // create a deep-copy of INITIAL_STATE
 
 const PERSIST_KEYS_IN_URL = {
-  'locus': 'locus',
-  'selectedSampleNamesByCategoryName': 'selectedSamples',
-  'sjOptions': 'sjOptions',
-  'bamOptions': 'bamOptions',
-  'vcfOptions': 'vcfOptions',
-  'initialSettingsUrl': 'initialSettingUrl',
+  locus: 'locus',
+  selectedSampleNamesByCategoryName: 'selectedSamples',
+  sjOptions: 'sjOptions',
+  bamOptions: 'bamOptions',
+  vcfOptions: 'vcfOptions',
+  initialSettingsUrl: 'initialSettingUrl',
 }
 
 const PERSIST_KEYS_IN_LOCAL_STORAGE = [
   'samplesInCategories', 'leftSideBarLocusList', 'rightSideBarLocusList',
 ]
 
-const persistStoreMiddleware = store => next => (action) => {
+const persistStoreMiddleware = (store) => (next) => (action) => {
   const result = next(action)
   const nextState = store.getState()
   PERSIST_KEYS_IN_LOCAL_STORAGE.forEach((key) => { saveState(key, nextState[key]) })
 
   const hashString = Object.keys(nextState)
-    .filter(key => (key in PERSIST_KEYS_IN_URL))
+    .filter((key) => (key in PERSIST_KEYS_IN_URL))
     .reduce((hashKeyValueList, key) => {
       const value = key === 'locus' ? nextState[key].replace(',', '') : jsurl.stringify(nextState[key])
       return [
@@ -154,7 +154,7 @@ const persistStoreMiddleware = store => next => (action) => {
       ]
     }, []).join('&')
 
-  window.location.hash = '#' + hashString
+  window.location.hash = `#${hashString}`
 
   return result
 }
@@ -171,7 +171,7 @@ const enhancer = compose(
  * @returns {*}
  */
 export const configureStore = (
-  rootReducer = state => state,
+  rootReducer = (state) => state,
   initialState = INITIAL_STATE,
 ) => {
 
@@ -186,22 +186,26 @@ export const configureStore = (
   const REVERSE_KEY_NAME_LOOKUP = Object.entries(PERSIST_KEYS_IN_URL).reduce((acc, [key, value]) => { return { ...acc, [value]: key } }, {})
   const hashString = window.location.hash.replace(/^#/, '')
   const stateFromUrlHash = hashString.split('&').reduce((acc, keyValue) => {
-    let keyValueList = keyValue.split('=')
-    let key = (keyValueList[0] in REVERSE_KEY_NAME_LOOKUP) ? REVERSE_KEY_NAME_LOOKUP[keyValueList[0]] : keyValueList[0]
+    const keyValueList = keyValue.split('=')
+    const key = (keyValueList[0] in REVERSE_KEY_NAME_LOOKUP) ? REVERSE_KEY_NAME_LOOKUP[keyValueList[0]] : keyValueList[0]
     if (key === 'locus') {
-      acc[key] = keyValueList[1]
+      acc = { ...acc, [key]: keyValueList[1] }
     } else {
       try {
         acc[key] = jsurl.parse(keyValueList[1])
-      } catch(e) {
-        console.error('Couldn\'t parse url hash param', keyValueList[0], ": ", keyValueList[1])
+      } catch (e) {
+        console.error('Couldn\'t parse url hash param', keyValueList[0], ': ', keyValueList[1])
       }
     }
     return acc
   }, {})
 
   //values from url override values from local storage
-  initialState = { ...initialState, ...stateFromUrlHash }
+  if (stateFromUrlHash) {
+    initialState = { ...initialState, ...stateFromUrlHash }
+  } else {
+    initialState = { ...initialState, ...stateFromUrlHash }
+  }
 
   console.log('Initializing store to:')
   console.log(initialState)

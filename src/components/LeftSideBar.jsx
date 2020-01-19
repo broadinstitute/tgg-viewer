@@ -16,7 +16,7 @@ const CategoryDetails = styled.div`
   white-space: nowrap;
 `
 
-const StyledIcon = styled.div.attrs({ name: "stop" })`
+const StyledIcon = styled.div.attrs({ name: 'stop' })`
   display: inline-block;
   width: 6px;
   border-radius: 1px;
@@ -159,36 +159,51 @@ class LeftSideBar extends React.Component
 
   render() {
     //const params = new URLSearchParams(window.location.search)
+    const {
+      locusList,
+      samplesInCategories,
+      selectedSampleNamesByCategoryName,
+      sjOptions,
+      vcfOptions,
+      bamOptions,
+      setLocus,
+      setLocusList,
+      updateSelectedSampleNames,
+      updateSjOptions,
+      updateVcfOptions,
+      updateBamOptions,
+    } = this.props
+
     return (
       <div>
-        <EditLocusList name="Left Side Bar" locusList={this.props.locusList} setLocus={this.props.setLocus} setLocusList={this.props.setLocusList} />
+        <EditLocusList name="Left Side Bar" locusList={locusList} setLocus={setLocus} setLocusList={setLocusList} />
         <CategoryH3>TRACK TYPES TO SHOW PER SAMPLE</CategoryH3>
         <OptionDiv>
-          <Checkbox label="RNA splice junctions" defaultChecked={this.props.sjOptions.showJunctions} onChange={(e, data) => this.props.updateSjOptions({ showJunctions: data.checked })} />
-          <SampleColorLabelsContainer><Popup content={'This color stripe marks samples that have splice junction data. Select this checkbox to show a splice junction track for each sample selected below.'} position="right center" trigger={<JunctionsIcon />} /></SampleColorLabelsContainer>
+          <Checkbox label="RNA splice junctions" defaultChecked={sjOptions.showJunctions} onChange={(e, data) => updateSjOptions({ showJunctions: data.checked })} />
+          <SampleColorLabelsContainer><Popup content="This color stripe marks samples that have splice junction data. Select this checkbox to show a splice junction track for each sample selected below." position="right center" trigger={<JunctionsIcon />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <OptionDiv>
-          <Checkbox label="RNA coverage" defaultChecked={this.props.sjOptions.showCoverage} onChange={(e, data) => this.props.updateSjOptions({ showCoverage: data.checked })} />
-          <SampleColorLabelsContainer><Popup content={'This color stripe marks samples that have coverage data. Select this checkbox to show a coverage track for each sample selected below.'} position="right center" trigger={<CoverageIcon />} /></SampleColorLabelsContainer>
+          <Checkbox label="RNA coverage" defaultChecked={sjOptions.showCoverage} onChange={(e, data) => updateSjOptions({ showCoverage: data.checked })} />
+          <SampleColorLabelsContainer><Popup content="This color stripe marks samples that have coverage data. Select this checkbox to show a coverage track for each sample selected below." position="right center" trigger={<CoverageIcon />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <OptionDiv>
-          <Checkbox label="BAM track" defaultChecked={this.props.bamOptions.showBams} onChange={(e, data) => this.props.updateBamOptions({ showBams: data.checked })} />
-          <SampleColorLabelsContainer><Popup content={'This color stripe marks samples that have alignment data. Select this checkbox to show a bam track for each sample selected below.'} position="right center" trigger={<BamIcon />} /></SampleColorLabelsContainer>
+          <Checkbox label="BAM track" defaultChecked={bamOptions.showBams} onChange={(e, data) => updateBamOptions({ showBams: data.checked })} />
+          <SampleColorLabelsContainer><Popup content="This color stripe marks samples that have alignment data. Select this checkbox to show a bam track for each sample selected below." position="right center" trigger={<BamIcon />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <OptionDiv>
-          <Checkbox label="VCF track" defaultChecked={this.props.vcfOptions.showVcfs} onChange={(e, data) => this.props.updateVcfOptions({ showVcfs: data.checked })} />
-          <SampleColorLabelsContainer><Popup content={'This color stripe marks samples that have splice junction data. Select this checkbox to show a vcf track for each sample selected below.'} position="right center" trigger={<VcfIcon />} /></SampleColorLabelsContainer>
+          <Checkbox label="VCF track" defaultChecked={vcfOptions.showVcfs} onChange={(e, data) => updateVcfOptions({ showVcfs: data.checked })} />
+          <SampleColorLabelsContainer><Popup content="This color stripe marks samples that have splice junction data. Select this checkbox to show a vcf track for each sample selected below." position="right center" trigger={<VcfIcon />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <SamplesPanel
-          samplesInCategories={this.props.samplesInCategories}
-          selectedSampleNamesByCategoryName={this.props.selectedSampleNamesByCategoryName}
-          updateSelectedSampleNames={this.props.updateSelectedSampleNames}
+          samplesInCategories={samplesInCategories}
+          selectedSampleNamesByCategoryName={selectedSampleNamesByCategoryName}
+          updateSelectedSampleNames={updateSelectedSampleNames}
         />
       </div>)
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   locusList: getLeftSideBarLocusList(state),
   samplesInCategories: getSamplesInCategories(state),
   selectedSampleNamesByCategoryName: getSelectedSampleNamesByCategoryName(state),
@@ -197,7 +212,7 @@ const mapStateToProps = state => ({
   bamOptions: getBamOptions(state),
 })
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   setLocus: (locus) => {
     dispatch({
       type: 'UPDATE_LOCUS',
@@ -213,8 +228,8 @@ const mapDispatchToProps = dispatch => ({
   updateSelectedSampleNames: (actionType, categoryName, selectedSampleNames) => {
     dispatch({
       type: `${actionType}_SELECTED_SAMPLE_NAMES`,
-      categoryName: categoryName,
-      selectedSampleNames: selectedSampleNames,
+      categoryName,
+      selectedSampleNames,
     })
   },
   updateSjOptions: (newSettings) => {

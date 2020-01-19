@@ -1,8 +1,9 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { Checkbox, Icon, Popup, Radio } from 'semantic-ui-react'
+import { Checkbox, Icon, Radio } from 'semantic-ui-react'
 import { EditLocusList } from './EditLocusList'
 import { CategoryH3, OptionDiv, StyledPopup } from './SideBarUtils'
 import { getRightSideBarLocusList, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
@@ -29,12 +30,13 @@ const StyledRadio = styled(Radio)`
 `
 
 const ColorByLegend = ({ sjOptions, handleTextInput }) => {
-  if ( sjOptions.colorBy === "strand" ) {
-    return  <div>
-      <ColorLegendIcon name="stop" style={{ color: '#b0b0ec' }} /> plus
-      <ColorLegendIcon name="stop" style={{ color: '#ecb0b0', marginLeft: '10px' }} /> minus
-    </div>
-  } else if ( sjOptions.colorBy === "motif" ) {
+  if (sjOptions.colorBy === 'strand') {
+    return (
+      <div>
+        <ColorLegendIcon name="stop" style={{ color: '#b0b0ec' }} /> plus
+        <ColorLegendIcon name="stop" style={{ color: '#ecb0b0', marginLeft: '10px' }} /> minus
+      </div>)
+  } else if (sjOptions.colorBy === 'motif') {
     // IGV.js Dark2 color palette
     return  <div>
       <ColorLegendIcon name="stop" style={{ color: 'rgb(27,158,119)' }} /> GT/AG <br />
@@ -45,7 +47,7 @@ const ColorByLegend = ({ sjOptions, handleTextInput }) => {
       <ColorLegendIcon name="stop" style={{ color: 'rgb(230,171,2)' }} /> GT/AT <br />
       <ColorLegendIcon name="stop" style={{ color: 'rgb(166,118,29)' }} /> non-canonical <br />
     </div>
-  } else if ( sjOptions.colorBy === "numUniqueReads" || sjOptions.colorBy === "numReads" ) {
+  } else if (sjOptions.colorBy === 'numUniqueReads' || sjOptions.colorBy === 'numReads') {
     return  <div>
       # reads<ColorLegendIcon name="stop" style={{ color: '#AAAAAA', marginLeft: '10px' }} />
       &nbsp;≤ &nbsp;
@@ -57,9 +59,8 @@ const ColorByLegend = ({ sjOptions, handleTextInput }) => {
       />
       &nbsp; &lt; &nbsp;
       <ColorLegendIcon name="stop" style={{ color: 'blue' }} />
-
     </div>
-  } else if ( sjOptions.colorBy === "isAnnotatedJunction" ) {
+  } else if (sjOptions.colorBy === 'isAnnotatedJunction') {
     return  <div>
       <ColorLegendIcon name="stop" style={{ color: '#b0b0ec' }} /> known junction <br />
       <ColorLegendIcon name="stop" style={{ color: 'orange'  }} /> novel junction

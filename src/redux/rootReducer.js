@@ -15,8 +15,8 @@ const samplesInCategoriesReducer = (state, action) => {
     return state || []
   }
 
-  return state.map(category => {
-    if(category.categoryName !== action.categoryName) {
+  return state.map((category) => {
+    if (category.categoryName !== action.categoryName) {
       return category
     }
 
@@ -84,7 +84,7 @@ const rootReducer = combineReducers(Object.assign({
   vcfOptions: createSingleObjectReducer('UPDATE_VCF_OPTIONS'),
   bamOptions: createSingleObjectReducer('UPDATE_BAM_OPTIONS'),
   user: createSingleObjectReducer('UPDATE_USER'),
-  initialSettingsUrl: createSingleValueReducer('UPDATE_INITIAL_SETTINGS_URL', ''),
+  initialSettingsUrl: createSingleValueReducer('UPDATE_INITIAL_SETTINGS_URL', 'https://raw.githubusercontent.com/macarthur-lab/rnaseq-methods/master/rnaseq_viewer/settings.yaml', true),
   initialSettings: createSingleValueReducer('UPDATE_INITIAL_SETTINGS', {}),
 }, modalReducers))
 

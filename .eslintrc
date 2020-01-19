@@ -1,7 +1,6 @@
 {
   "extends": [
-    "airbnb",
-    "plugin:react-perf/recommended"
+    "airbnb"
   ],
 
   "parser": "babel-eslint",

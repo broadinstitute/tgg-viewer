@@ -67,7 +67,7 @@ export const zeroActionsReducer = (state = {}) => {
  * @param updateActionType (string) action.type that will later be used to replace the state with a
  * new state.
  */
-export const createSingleValueReducer = (updateActionType, initialState = {}, debug = false) => {
+export const createSingleValueReducer = (updateActionType, initialState, debug = false) => {
   const reducer = (state = initialState, action) => {
     if (!action) {
       return state
@@ -218,12 +218,12 @@ export const createArrayReducer = (actionTypeSuffix, initialState = [], debug = 
 
         let newState
         if (action.type === `SET_${actionTypeSuffix}`) {
-          newState = [ ...action.values ]            // make a copy of action.values
+          newState = [...action.values] // make a copy of action.values
         } else if (action.type === `ADD_${actionTypeSuffix}`) {
-          newState = [ ...state, ...action.values ]
+          newState = [...state, ...action.values]
         } else {
           const valuesToRemove = action.values
-          newState = state.filter(v => !valuesToRemove.includes(v))
+          newState = state.filter((v) => !valuesToRemove.includes(v))
         }
 
         if (debug) {

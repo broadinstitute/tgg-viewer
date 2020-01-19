@@ -6,9 +6,10 @@ import rootReducer from './redux/rootReducer'
 import { configureStore } from './redux/configureStore'
 
 function App() {
-  return <Provider store={configureStore(rootReducer)}>
-    <BaseLayout />
-  </Provider>
+  return (
+    <Provider store={configureStore(rootReducer)}>
+      <BaseLayout />
+    </Provider>)
 }
 
 export default App
