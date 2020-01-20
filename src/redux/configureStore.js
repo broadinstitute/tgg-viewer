@@ -185,7 +185,7 @@ export const configureStore = (
 
   const REVERSE_KEY_NAME_LOOKUP = Object.entries(PERSIST_KEYS_IN_URL).reduce((acc, [key, value]) => { return { ...acc, [value]: key } }, {})
   const hashString = window.location.hash.replace(/^#/, '')
-  const stateFromUrlHash = hashString.split('&').reduce((acc, keyValue) => {
+  const stateFromUrlHash = hashString && hashString.split('&').reduce((acc, keyValue) => {
     const keyValueList = keyValue.split('=')
     const key = (keyValueList[0] in REVERSE_KEY_NAME_LOOKUP) ? REVERSE_KEY_NAME_LOOKUP[keyValueList[0]] : keyValueList[0]
     if (key === 'locus') {
@@ -202,8 +202,6 @@ export const configureStore = (
 
   //values from url override values from local storage
   if (stateFromUrlHash) {
-    initialState = { ...initialState, ...stateFromUrlHash }
-  } else {
     initialState = { ...initialState, ...stateFromUrlHash }
   }
 
