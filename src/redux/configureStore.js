@@ -126,7 +126,7 @@ const INITIAL_STATE = {
 
 INITIAL_STATE.initialSettings = JSON.parse(JSON.stringify(INITIAL_STATE)) // create a deep-copy of INITIAL_STATE
 
-const PERSIST_KEYS_IN_URL = {
+const KEYS_TO_PERSIST_IN_URL = {
   locus: 'locus',
   selectedSampleNamesByCategoryName: 'selectedSamples',
   sjOptions: 'sjOptions',
@@ -135,22 +135,22 @@ const PERSIST_KEYS_IN_URL = {
   initialSettingsUrl: 'initialSettingUrl',
 }
 
-const PERSIST_KEYS_IN_LOCAL_STORAGE = [
+const KEYS_TO_PERSIST_IN_LOCAL_STORAGE = [
   'samplesInCategories', 'leftSideBarLocusList', 'rightSideBarLocusList',
 ]
 
 const persistStoreMiddleware = (store) => (next) => (action) => {
   const result = next(action)
   const nextState = store.getState()
-  PERSIST_KEYS_IN_LOCAL_STORAGE.forEach((key) => { saveState(key, nextState[key]) })
+  KEYS_TO_PERSIST_IN_LOCAL_STORAGE.forEach((key) => { saveState(key, nextState[key]) })
 
   const hashString = Object.keys(nextState)
-    .filter((key) => (key in PERSIST_KEYS_IN_URL))
+    .filter((key) => (key in KEYS_TO_PERSIST_IN_URL))
     .reduce((hashKeyValueList, key) => {
       const value = key === 'locus' ? nextState[key].replace(',', '') : jsurl.stringify(nextState[key])
       return [
         ...hashKeyValueList,
-        `${PERSIST_KEYS_IN_URL[key]}=${value}`,
+        `${KEYS_TO_PERSIST_IN_URL[key]}=${value}`,
       ]
     }, []).join('&')
 
@@ -158,10 +158,6 @@ const persistStoreMiddleware = (store) => (next) => (action) => {
 
   return result
 }
-
-const enhancer = compose(
-  applyMiddleware(thunkMiddleware, persistStoreMiddleware),
-)
 
 
 /**
@@ -176,14 +172,14 @@ export const configureStore = (
 ) => {
 
   //restore any values from local storage
-  PERSIST_KEYS_IN_LOCAL_STORAGE.forEach((key) => {
+  KEYS_TO_PERSIST_IN_LOCAL_STORAGE.forEach((key) => {
     const v = loadState(key)
     if (v !== undefined) {
       initialState[key] = v
     }
   })
 
-  const REVERSE_KEY_NAME_LOOKUP = Object.entries(PERSIST_KEYS_IN_URL).reduce((acc, [key, value]) => { return { ...acc, [value]: key } }, {})
+  const REVERSE_KEY_NAME_LOOKUP = Object.entries(KEYS_TO_PERSIST_IN_URL).reduce((acc, [key, value]) => { return { ...acc, [value]: key } }, {})
   const hashString = window.location.hash.replace(/^#/, '')
   const stateFromUrlHash = hashString && hashString.split('&').reduce((acc, keyValue) => {
     const keyValueList = keyValue.split('=')
@@ -208,5 +204,7 @@ export const configureStore = (
   console.log('Initializing store to:')
   console.log(initialState)
 
-  return createStore(rootReducer, initialState, enhancer)
+  return createStore(rootReducer, initialState, compose(
+    applyMiddleware(thunkMiddleware, persistStoreMiddleware),
+  ))
 }
