@@ -2,7 +2,7 @@
 
 const RNA_VIEWER_CLIENT_ID = '61200892608-qphtf65o323setqdcfj4hnf601mmetvs.apps.googleusercontent.com'
 
-export const initGoogleClient = () => new Promise(resolve => {
+export const initGoogleClient = () => new Promise((resolve) => {
   if (typeof gapi === 'undefined') {
     return
   }
@@ -11,9 +11,9 @@ export const initGoogleClient = () => new Promise(resolve => {
   gapi.load('client:auth2', () => {
     gapi.client.load('storage', 'v1', () => {
       gapi.client.init({
-        'clientId': RNA_VIEWER_CLIENT_ID,
-        'scope': 'https://www.googleapis.com/auth/devstorage.read_only',
-        'discoveryDocs': ['https://www.googleapis.com/discovery/v1/apis/storage/v1/rest']
+        clientId: RNA_VIEWER_CLIENT_ID,
+        scope: 'https://www.googleapis.com/auth/devstorage.read_only',
+        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/storage/v1/rest'],
       })
 
       resolve()
@@ -24,7 +24,7 @@ export const initGoogleClient = () => new Promise(resolve => {
 export const googleSignIn = async () => {
 
   const authInstance = await gapi.auth2.getAuthInstance()
-  if(!authInstance.isSignedIn.get()) {
+  if (!authInstance.isSignedIn.get()) {
     await authInstance.signIn()
   }
 }
@@ -49,25 +49,25 @@ export const getGoogleAccessToken = async () => {
 
 export const googleSignOut = async () => {
   const authInstance = await gapi.auth2.getAuthInstance()
-  if(authInstance.isSignedIn.get()) {
+  if (authInstance.isSignedIn.get()) {
     await authInstance.signOut()
   }
 }
 
 export const listGoogleStorageFiles = async (gsPath) => {
-  if (!gsPath.startsWith("gs://")) {
-    console.error(`${gsPath} doesn't start with "gs://"` )
-    return
+  if (!gsPath.startsWith('gs://')) {
+    console.error(`${gsPath} doesn't start with "gs://"`)
+    return []
   }
 
-  const gsPathParts = gsPath.split("/")
+  const gsPathParts = gsPath.split('/')
   if (gsPathParts.length < 3) {
-    console.error(`${gsPath} must be of the form "gs://bucket-name/..."` )
-    return
+    console.error(`${gsPath} must be of the form "gs://bucket-name/..."`)
+    return []
   }
 
   const bucketName = gsPathParts[2]
   const bucketSubdir = gsPathParts.slice(3).join('/')
 
-  return await gapi.client.storage.objects.list({ bucket: bucketName, prefix: bucketSubdir, maxResults:1000})
+  return gapi.client.storage.objects.list({ bucket: bucketName, prefix: bucketSubdir, maxResults: 1000 })
 }

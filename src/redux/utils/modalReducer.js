@@ -5,8 +5,9 @@ import { createObjectsByIdReducer } from './reducerFactories'
 const UPDATE_MODAL_STATE = 'UPDATE_MODAL_STATE'
 
 // action creators
-export const openModal = modalName => dispatch =>
+export const openModal = (modalName) => (dispatch) => (
   dispatch({ type: UPDATE_MODAL_STATE, updatesById: { [modalName]: { open: true } } })
+)
 
 export const closeModal = (modalName, confirmed) => (dispatch, getState) => {
   if (getState().modals[modalName].confirmOnClose && !confirmed) {

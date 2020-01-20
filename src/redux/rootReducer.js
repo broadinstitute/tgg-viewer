@@ -1,3 +1,5 @@
+/* eslint-disable prefer-object-spread */
+
 import { combineReducers } from 'redux'
 
 import {
@@ -48,29 +50,32 @@ const selectedSampleNamesByCategoryNameReducer = (state, action) => {
   }
 
   const previousList = state[action.categoryName] || []
+
   switch (action.type) {
-    case `SET_SELECTED_SAMPLE_NAMES`:
-    case `ADD_SELECTED_SAMPLE_NAMES`:
-    case `REMOVE_SELECTED_SAMPLE_NAMES`:
+    case 'SET_SELECTED_SAMPLE_NAMES':
+    case 'ADD_SELECTED_SAMPLE_NAMES':
+    case 'REMOVE_SELECTED_SAMPLE_NAMES': {
       let updatedList
-      if (action.type === `SET_SELECTED_SAMPLE_NAMES`) {
-        updatedList = [ ...action.selectedSampleNames ]            // make a copy of action.values
-      } else if (action.type === `ADD_SELECTED_SAMPLE_NAMES`) {
-        updatedList = [ ...previousList, ...action.selectedSampleNames ]
+      if (action.type === 'SET_SELECTED_SAMPLE_NAMES') {
+        updatedList = [...action.selectedSampleNames] // make a copy of action.values
+      } else if (action.type === 'ADD_SELECTED_SAMPLE_NAMES') {
+        updatedList = [...previousList, ...action.selectedSampleNames]
       } else {
         const valuesToRemove = action.selectedSampleNames
-        updatedList = previousList.filter(v => !valuesToRemove.includes(v))
+        updatedList = previousList.filter((v) => !valuesToRemove.includes(v))
       }
 
       return {
         ...state,
         [action.categoryName]: updatedList,
       }
+    }
+    default:
+      console.trace(`Unknown action type: ${action.type}`)
   }
 
   return state
 }
-
 
 // root reducer
 const rootReducer = combineReducers(Object.assign({

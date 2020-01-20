@@ -1,25 +1,32 @@
+/* eslint-disable react/jsx-one-expression-per-line */
+
 import React from 'react'
 import PropTypes from 'prop-types'
-import { getUser } from '../redux/selectors'
 import { connect } from 'react-redux'
+import { getUser } from '../redux/selectors'
 
 
-class UserInfo extends React.Component
+class UserInfo extends React.PureComponent
 {
-  static propTypes = {
-    user: PropTypes.object.isRequired,
-  }
-
   render() {
-    if (!this.props.user.googleUserEmail) {
+
+    const {
+      user,
+    } = this.props
+
+    if (!user.googleUserEmail) {
       return <div>Signing in to Google Buckets...</div>
     }
 
-    return <div>Signed in to Google Buckets as <b>{this.props.user.googleUserEmail}</b></div>
+    return <div>Signed in to Google Buckets as <b>{user.googleUserEmail}</b></div>
   }
 }
 
-const mapStateToProps = state => ({
+UserInfo.propTypes = {
+  user: PropTypes.object.isRequired,
+}
+
+const mapStateToProps = (state) => ({
   user: getUser(state),
 
 })

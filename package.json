@@ -143,26 +143,6 @@
     ]
   },
   "babel": {
-    "plugins": [
-      [
-        "babel-plugin-module-resolver",
-        {
-          "root": [
-            "./src"
-          ],
-          "extensions": [
-            ".js",
-            ".jsx",
-            ".css"
-          ],
-          "alias": {
-            "components": "./src/components/",
-            "redux": "./src/redux/",
-            "utils": "./src/utils/"
-          }
-        }
-      ]
-    ],
     "presets": [
       "react-app"
     ]

@@ -22,18 +22,6 @@ const StyledDiv = styled.div``
 
 class IGV extends React.Component {
 
-  static propTypes = {
-    genome: PropTypes.string.isRequired,
-    locus: PropTypes.string.isRequired,
-    tracks: PropTypes.array.isRequired,
-    locusChangedHandler: PropTypes.func,
-    trackRemovedHandler: PropTypes.func,
-    userChangedHandler: PropTypes.func,
-    sjOptions: PropTypes.object,
-    vcfOptions: PropTypes.object,
-    bamOptions: PropTypes.object,
-  }
-
   constructor(props) {
     super(props)
 
@@ -54,30 +42,39 @@ class IGV extends React.Component {
       return
     }
 
-    let igvBrowserOptions = {
+    const {
+      genome,
+      locus,
+      tracks,
+      locusChangedHandler,
+      trackRemovedHandler,
+      userChangedHandler,
+    } = this.props
+
+    const igvBrowserOptions = {
       ...IGV_SETTINGS,
-      locus: this.props.locus,
-      genome: this.props.genome,
-      tracks: this.props.tracks,
+      locus,
+      genome,
+      tracks,
     }
 
     // TODO check if any tracks need google sign-in
     await initGoogleClient()
     await googleSignIn()
-    let googleUserEmail = await getGoogleUserEmail()
-    this.props.userChangedHandler(googleUserEmail)
+    const googleUserEmail = await getGoogleUserEmail()
+    userChangedHandler(googleUserEmail)
 
     igv.createBrowser(this.container, igvBrowserOptions).then((browser) => {
       this.browser = browser
 
-      if (this.props.locusChangedHandler) {
-        this.browser.on('locuschange', throttle(300, this.props.locusChangedHandler)) //{chr, start, end, label}
+      if (locusChangedHandler) {
+        this.browser.on('locuschange', throttle(300, locusChangedHandler)) //{chr, start, end, label}
       }
 
-      if (this.props.trackRemovedHandler) {
-        this.browser.on('trackremoved', track => {
+      if (trackRemovedHandler) {
+        this.browser.on('trackremoved', (track) => {
           if (!this.ignoreNextTrackRemovedEvent) {
-            this.props.trackRemovedHandler(track)
+            trackRemovedHandler(track)
           }
 
           this.ignoreNextTrackRemovedEvent = false
@@ -86,29 +83,39 @@ class IGV extends React.Component {
     })
   }
 
-  shouldComponentUpdate = nextProps => {
+  shouldComponentUpdate(nextProps) {
     if (!this.container) {
       return false
     }
 
-    if (nextProps.locus && nextProps.locus !== this.props.locus) {
+    const {
+      locus,
+      tracks,
+      sjOptions,
+      vcfOptions,
+      bamOptions,
+    } = this.props
+
+
+    if (nextProps.locus && nextProps.locus !== locus) {
       this.browser.search(nextProps.locus)
     }
 
-    let nextTrackSettingsByTrackName = nextProps.tracks.reduce((acc, item) => {
-      return {[item.name]: item, ...acc}
+    const nextTrackSettingsByTrackName = nextProps.tracks.reduce((acc, item) => {
+      return { [item.name]: item, ...acc }
     }, {})
 
-    console.log('IGV.nextProps:', nextProps )
+    console.log('IGV.nextProps:', nextProps)
+
     // update or remove existing tracks
-    for (let track of this.props.tracks) {
+    tracks.forEach((track) => {
       // TODO check if any tracks need google sign-in
 
       const nextTrackSettings = nextTrackSettingsByTrackName[track.name]
       if (nextTrackSettings) {
-        if ( (nextProps.sjOptions !== this.props.sjOptions && ['merged', 'wig', 'spliceJunctions'].includes(track.type) ) ||
-             (nextProps.vcfOptions !== this.props.vcfOptions && 'variant' === track.type) ||
-             (nextProps.bamOptions !== this.props.bamOptions && 'alignment' === track.type)
+        if ((nextProps.sjOptions !== sjOptions && ['merged', 'wig', 'spliceJunctions'].includes(track.type))
+          || (nextProps.vcfOptions !== vcfOptions && track.type === 'variant')
+          || (nextProps.bamOptions !== bamOptions && track.type === 'alignment')
         ) {
           this.ignoreNextTrackRemovedEvent = true
           this.browser.removeTrackByName(track.name)
@@ -123,27 +130,27 @@ class IGV extends React.Component {
         try {
           this.ignoreNextTrackRemovedEvent = true
           this.browser.removeTrackByName(track.name)
-        } catch(e) {
+        } catch (e) {
           console.warn('Unable to remove track', track.name, e)
         }
       }
-    }
+    })
 
     // load any newly-selected track(s)
-    for (let track of Object.values(nextTrackSettingsByTrackName)) {
+    Object.values(nextTrackSettingsByTrackName).forEach((track) => {
       try {
         this.browser.loadTrack(track)
-      } catch(e) {
+      } catch (e) {
         console.warn('Unable to add track', track.name, e)
       }
-    }
+    })
 
     return false
   }
 }
 
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   genome: getGenome(state),
   locus: getLocus(state),
   tracks: getTracks(state),
@@ -153,7 +160,7 @@ const mapStateToProps = state => ({
 })
 
 
-const mapDispatchToProps = dispatch => ({
+const mapDispatchToProps = (dispatch) => ({
   locusChangedHandler: (event) => {
     const newLocus = event.label.replace(/,/g, '')
 
@@ -166,7 +173,7 @@ const mapDispatchToProps = dispatch => ({
   userChangedHandler: (googleUserEmail) => {
     dispatch({
       type: 'UPDATE_USER',
-      updates: {googleUserEmail}
+      updates: { googleUserEmail },
     })
   },
 
@@ -178,7 +185,18 @@ const mapDispatchToProps = dispatch => ({
   },
 })
 
+IGV.propTypes = {
+  genome: PropTypes.string.isRequired,
+  locus: PropTypes.string.isRequired,
+  tracks: PropTypes.array.isRequired,
+  locusChangedHandler: PropTypes.func,
+  trackRemovedHandler: PropTypes.func,
+  userChangedHandler: PropTypes.func,
+  sjOptions: PropTypes.object,
+  vcfOptions: PropTypes.object,
+  bamOptions: PropTypes.object,
+}
+
 export { IGV as IGVComponent }
 
 export default connect(mapStateToProps, mapDispatchToProps)(IGV)
-

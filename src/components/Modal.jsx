@@ -1,3 +1,5 @@
+/* eslint-disable react/destructuring-assignment */
+
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -6,14 +8,14 @@ import { Button, Modal, Icon } from 'semantic-ui-react'
 
 import { getModalOpen, openModal, closeModal } from '../redux/utils/modalReducer'
 
-export const ButtonLink = styled(({ color, padding, ...props }) => <Button {...props} />).attrs({ basic: true })`
+export const ButtonLink = styled(Button).attrs({ basic: true })`
   &.ui.button.basic {
     white-space: nowrap;
     border: none;
-    padding: ${props => props.padding || 0};
-    color: ${props => props.color || '#4183C4'} !important;
+    padding: ${(props) => props.padding || 0};
+    color: ${(props) => props.color || '#4183C4'} !important;
     text-decoration: none;
-    font-weight: ${props => props.fontWeight || 'inherit'};
+    font-weight: ${(props) => props.fontWeight || 'inherit'};
     box-shadow: none !important;
     user-select: auto;
     
@@ -44,26 +46,8 @@ const StyledButton = styled(Button)`
 `
 
 
-
-class CustomModal extends React.Component
+class CustomModal extends React.PureComponent
 {
-  static propTypes = {
-    trigger: PropTypes.node,
-    title: PropTypes.string,
-    modalName: PropTypes.string.isRequired,
-    handleSave: PropTypes.func,
-    handleClose: PropTypes.func,
-    size: PropTypes.oneOf(['small', 'large', 'fullscreen']),
-    isOpen: PropTypes.bool,
-    open: PropTypes.func,
-    close: PropTypes.func,
-    children: PropTypes.node,
-  }
-
-  static defaultProps = {
-    size: 'small',
-  }
-
   handleClose = () => {
     let doClose = true
     if (this.props.handleClose) {
@@ -85,7 +69,7 @@ class CustomModal extends React.Component
   }
 
   render() {
-    let trigger = this.props.trigger ? React.cloneElement(this.props.trigger, { onClick: this.props.open }) : null
+    const trigger = this.props.trigger ? React.cloneElement(this.props.trigger, { onClick: this.props.open }) : null
     return (
       <Modal open={this.props.isOpen} trigger={trigger} onClose={this.handleClose} size={this.props.size}>
         <Modal.Header>
@@ -103,6 +87,23 @@ class CustomModal extends React.Component
     )
   }
 }
+
+CustomModal.defaultProps = {
+  size: 'small',
+}
+
+CustomModal.propTypes = {
+  trigger: PropTypes.node,
+  title: PropTypes.string,
+  handleSave: PropTypes.func,
+  handleClose: PropTypes.func,
+  size: PropTypes.oneOf(['small', 'large', 'fullscreen']),
+  isOpen: PropTypes.bool,
+  open: PropTypes.func,
+  close: PropTypes.func,
+  children: PropTypes.node,
+}
+
 
 const mapStateToProps = (state, ownProps) => ({
   isOpen: getModalOpen(state, ownProps.modalName),

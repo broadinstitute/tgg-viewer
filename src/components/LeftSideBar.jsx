@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-one-expression-per-line */
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -59,23 +60,39 @@ const NoWrapDiv = styled.div`
   white-space: nowrap;
 `
 
-const SampleColorLabelsWithPopup = ({sample}) => <Popup
+const SampleColorLabelsWithPopup = ({ sample }) => {
+  const handleCopyToClipboard = () => {
+    let s = ''
+    if (sample.coverage) {
+      s += `${sample.coverage}\n`
+    }
+    if (sample.junctions) {
+      s += `${sample.junctions}\n`
+    }
+    if (sample.vcf) {
+      s += `${sample.vcf}\n`
+    }
+    if (sample.bam) {
+      s += `${sample.bam}\n`
+    }
+    navigator.clipboard.writeText(s)
+  }
+
+  return (<Popup
     content={
       <table>
         <tbody>
-          {sample.junctions && <tr><td style={{ paddingRight: '10px' }}><b>Junctions:</b></td><td><NoWrapDiv>{sample.junctions}</NoWrapDiv></td></tr>}
-          {sample.coverage && <tr><td><b>Coverage:</b></td><td><NoWrapDiv>{sample.coverage}</NoWrapDiv></td></tr>}
-          {sample.bam && <tr><td><b>Bam:</b></td><td><NoWrapDiv>{sample.bam}</NoWrapDiv></td></tr>}
-          {sample.vcf && <tr><td><b>Vcf:</b></td><td><NoWrapDiv>{sample.vcf}</NoWrapDiv></td></tr>}
-          <tr><td colSpan={2}><div style={{fontSize: 'small', color: 'grey', marginTop: '10px' }}>(click to copy paths)</div></td></tr>
+          { sample.junctions && <tr><td style={{ paddingRight: '10px' }}><b>Junctions:</b></td><td><NoWrapDiv>{sample.junctions}</NoWrapDiv></td></tr>}
+          { sample.coverage && <tr><td><b>Coverage:</b></td><td><NoWrapDiv>{sample.coverage}</NoWrapDiv></td></tr>}
+          { sample.bam && <tr><td><b>Bam:</b></td><td><NoWrapDiv>{sample.bam}</NoWrapDiv></td></tr>}
+          { sample.vcf && <tr><td><b>Vcf:</b></td><td><NoWrapDiv>{sample.vcf}</NoWrapDiv></td></tr>}
+          <tr><td colSpan={2}><div style={{ fontSize: 'small', color: 'grey', marginTop: '10px' }}>(click to copy paths)</div></td></tr>
         </tbody>
       </table>
     }
     position="right center"
     trigger={
-      <SampleColorLabelsContainer onClick={() =>
-        navigator.clipboard.writeText(`${(sample.bam+"\n") || ""}${(sample.junctions+"\n") || ""}${(sample.coverage+"\n") || ""}${(sample.vcf+"\n") || ""}`)
-      }>
+      <SampleColorLabelsContainer onClick={handleCopyToClipboard}>
         {sample.junctions && <JunctionsIcon />}
         {sample.coverage && <CoverageIcon />}
         {sample.bam && <BamIcon />}
@@ -83,29 +100,41 @@ const SampleColorLabelsWithPopup = ({sample}) => <Popup
       </SampleColorLabelsContainer>
     }
     style={{ marginLeft: '2px' }}
-  />
+  />)
+}
+SampleColorLabelsWithPopup.propTypes = {
+  sample: PropTypes.object,
+}
 
-
-const CategoryPanel = ({category, updateSelectedSampleNames}) =>
+const CategoryPanel = ({ category, updateSelectedSampleNames }) => (
   <div>
     <CategoryH3>{category.categoryName.toUpperCase()}</CategoryH3>
     {
       category.samples.length >= 12 && <CategoryDetails>{`(N=${category.samples.length}) `}</CategoryDetails>
     }
     {
-      category.samples.length > 0 &&
+      category.samples.length > 0 && (
       <div>
-        <LinkButton onClick={(e) => {
-          e.preventDefault()
-          updateSelectedSampleNames('SET', category.categoryName, [])
-        }}>Uncheck All</LinkButton>
-      </div>
+        <LinkButton onClick={
+          (e) => {
+            e.preventDefault()
+            updateSelectedSampleNames('SET', category.categoryName, [])
+          }
+        }
+        >
+          Uncheck All
+        </LinkButton>
+      </div>)
     }
-  </div>
+  </div>)
 
+CategoryPanel.propTypes = {
+  category: PropTypes.object,
+  updateSelectedSampleNames: PropTypes.func,
+}
 
-const SamplesPanel = ({samplesInCategories, selectedSampleNamesByCategoryName, updateSelectedSampleNames}) =>
-  samplesInCategories.map((category, i) =>
+const SamplesPanel = ({ samplesInCategories, selectedSampleNamesByCategoryName, updateSelectedSampleNames }) => (
+  samplesInCategories.map((category, i) => (
     <div key={category.categoryName || i}>
       <CategoryPanel category={category} updateSelectedSampleNames={updateSelectedSampleNames} />
       {
@@ -115,48 +144,55 @@ const SamplesPanel = ({samplesInCategories, selectedSampleNamesByCategoryName, u
         })
       }
       <AddOrEditSamplePaths category={category} />
-    </div>,
-  )
+    </div>),
+  ))
 
-const SamplePanel = ({sample, categoryName, selectedSampleNames, updateSelectedSampleNames}) =>
+SamplesPanel.propTypes = {
+  samplesInCategories: PropTypes.array,
+  selectedSampleNamesByCategoryName: PropTypes.object,
+  updateSelectedSampleNames: PropTypes.func,
+}
+
+
+const SamplePanel = ({ sample, categoryName, selectedSampleNames, updateSelectedSampleNames }) => (
   <NoWrapDiv>
     <Checkbox
       label={sample.name}
       checked={selectedSampleNames.includes(sample.name)}
       data-sample={sample.name}
-      onChange={(e, data) => updateSelectedSampleNames( data.checked ? 'ADD' : 'REMOVE', categoryName, [ data['data-sample'] ]) }
+      onChange={(e, data) => updateSelectedSampleNames(data.checked ? 'ADD' : 'REMOVE', categoryName, [data['data-sample']])}
     />
     <SampleDetails sample={sample} />
     <SampleColorLabelsWithPopup sample={sample} />
-  </NoWrapDiv>
+  </NoWrapDiv>)
 
-const SampleDetails = ({sample}) => {
-  return (sample.description ?
-    <StyledPopup inverted
-      content={sample.description}
-      position="right center"
-      trigger={
-        <Icon style={{marginLeft: '10px'}} name="question circle outline" />
-      } /> : null)
+SamplePanel.propTypes = {
+  sample: PropTypes.object,
+  categoryName: PropTypes.string,
+  selectedSampleNames: PropTypes.array,
+  updateSelectedSampleNames: PropTypes.func,
 }
 
-class LeftSideBar extends React.Component
-{
-  static propTypes = {
-    locusList: PropTypes.array,
-    samplesInCategories: PropTypes.array,
-    selectedSampleNamesByCategoryName: PropTypes.object,
-    sjOptions: PropTypes.object,
-    vcfOptions: PropTypes.object,
-    bamOptions: PropTypes.object,
-    setLocus: PropTypes.func,
-    setLocusList: PropTypes.func,
-    updateSelectedSampleNames: PropTypes.func,
-    updateSjOptions: PropTypes.func,
-    updateVcfOptions: PropTypes.func,
-    updateBamOptions: PropTypes.func,
-  }
+const SampleDetails = ({ sample }) => {
+  return (
+    sample.description
+      ? <StyledPopup inverted
+        content={sample.description}
+        position="right center"
+        trigger={
+          <Icon style={{ marginLeft: '10px' }} name="question circle outline" />
+        }
+      />
+      : null)
+}
 
+SampleDetails.propTypes = {
+  sample: PropTypes.object,
+}
+
+
+class LeftSideBar extends React.PureComponent
+{
   render() {
     //const params = new URLSearchParams(window.location.search)
     const {
@@ -201,6 +237,21 @@ class LeftSideBar extends React.Component
         />
       </div>)
   }
+}
+
+LeftSideBar.propTypes = {
+  locusList: PropTypes.array,
+  samplesInCategories: PropTypes.array,
+  selectedSampleNamesByCategoryName: PropTypes.object,
+  sjOptions: PropTypes.object,
+  vcfOptions: PropTypes.object,
+  bamOptions: PropTypes.object,
+  setLocus: PropTypes.func,
+  setLocusList: PropTypes.func,
+  updateSelectedSampleNames: PropTypes.func,
+  updateSjOptions: PropTypes.func,
+  updateVcfOptions: PropTypes.func,
+  updateBamOptions: PropTypes.func,
 }
 
 const mapStateToProps = (state) => ({

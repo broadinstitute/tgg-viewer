@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import {Popup} from "semantic-ui-react";
+import { Popup } from 'semantic-ui-react'
 
 export const CategoryH3 = styled.h3` 
   display: inline-block;
@@ -13,4 +13,3 @@ export const OptionDiv = styled.div`
 export const StyledPopup = styled(Popup)`
   opacity: 0.95;
 `
-

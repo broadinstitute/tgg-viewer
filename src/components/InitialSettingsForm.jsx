@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
-import { getInitialSettingsUrl } from '../redux/selectors'
 import { connect } from 'react-redux'
+import styled from 'styled-components'
 import { Button, Input } from 'semantic-ui-react'
+import { getInitialSettingsUrl } from '../redux/selectors'
 
 const StyledDiv = styled.div`
   color: #999;
@@ -25,27 +25,29 @@ const StyledButton = styled(Button)`
   margin-left: 20px !important;
 `
 
-class InitialSettingsForm extends React.Component
+class InitialSettingsForm extends React.PureComponent
 {
-  static propTypes = {
-    initialSettingsUrl: PropTypes.string.isRequired,
-  }
-
   render() {
-    return <StyledDiv align="center">
+    const {
+      initialSettingsUrl,
+    } = this.props
+    return (
+      <StyledDiv align="center">
         <StyledInput
           label="Initial settings:"
-          defaultValue={this.props.initialSettingsUrl}
+          defaultValue={initialSettingsUrl}
           placeholder="URL of .yaml or .json settings file (eg. http://.../settings.json)"
         />
-        <StyledButton content='Save URL' />
-    </StyledDiv>
-
-
+        <StyledButton content="Save URL" />
+      </StyledDiv>)
   }
 }
 
-const mapStateToProps = state => ({
+InitialSettingsForm.propTypes = {
+  initialSettingsUrl: PropTypes.string.isRequired,
+}
+
+const mapStateToProps = (state) => ({
   initialSettingsUrl: getInitialSettingsUrl(state),
 })
 

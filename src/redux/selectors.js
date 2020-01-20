@@ -1,19 +1,21 @@
+/* eslint-disable no-nested-ternary */
+
 import { createSelector } from 'reselect'
 import { getGoogleAccessToken } from '../utils/googleAuth'
 import { MOTIFS, DEFAULT_COLOR_BY_NUM_READS_THRESHOLD } from '../constants'
 
-export const getLocus = state => state.locus
-export const getRightSideBarLocusList = state => state.rightSideBarLocusList
-export const getLeftSideBarLocusList = state => state.leftSideBarLocusList
-export const getGenome = state => state.genome
-export const getSamplesInCategories = state => state.samplesInCategories
-export const getSelectedSampleNamesByCategoryName = state => state.selectedSampleNamesByCategoryName
-export const getSjOptions = state => state.sjOptions
-export const getVcfOptions = state => state.vcfOptions
-export const getBamOptions = state => state.bamOptions
-export const getUser = state => state.user
-export const getInitialSettingsUrl = state => state.initialSettingsUrl
-export const getInitialSettings = state => state.initialSettings
+export const getLocus = (state) => state.locus
+export const getRightSideBarLocusList = (state) => state.rightSideBarLocusList
+export const getLeftSideBarLocusList = (state) => state.leftSideBarLocusList
+export const getGenome = (state) => state.genome
+export const getSamplesInCategories = (state) => state.samplesInCategories
+export const getSelectedSampleNamesByCategoryName = (state) => state.selectedSampleNamesByCategoryName
+export const getSjOptions = (state) => state.sjOptions
+export const getVcfOptions = (state) => state.vcfOptions
+export const getBamOptions = (state) => state.bamOptions
+export const getUser = (state) => state.user
+export const getInitialSettingsUrl = (state) => state.initialSettingsUrl
+export const getInitialSettings = (state) => state.initialSettings
 
 
 /**
@@ -49,7 +51,6 @@ export const getSamplesByCategoryName = createSelector(
   })
 
 
-
 export const getSelectedSamplesByCategoryName = createSelector(
   getSelectedSampleNamesByCategoryName,
   getSamplesByCategoryName,
@@ -58,7 +59,7 @@ export const getSelectedSamplesByCategoryName = createSelector(
       if (!samplesByCategoryName[categoryName]) {
         return acc
       }
-      return { ...acc, [categoryName]: samplesByCategoryName[categoryName].filter(sample => selectedSampleNames.includes(sample.name)) }
+      return { ...acc, [categoryName]: samplesByCategoryName[categoryName].filter((sample) => selectedSampleNames.includes(sample.name)) }
     }, {})
   })
 
@@ -81,7 +82,7 @@ export const getTracks = createSelector(
           url: sample.junctions,
           indexURL: `${sample.junctions}.tbi`,
           oauthToken: getGoogleAccessToken,
-          order: i*10,
+          order: i * 10,
           name: sample.name,
           height: sjOptions.trackHeight,
           minUniquelyMappedReads: sjOptions.minUniquelyMappedReads,
@@ -100,12 +101,12 @@ export const getTracks = createSelector(
           labelAnnotatedJunction: sjOptions.labelAnnotatedJunction && sjOptions.labelAnnotatedJunctionValue,
           hideAnnotatedJunctions: sjOptions.hideAnnotated,
           hideUnannotatedJunctions: sjOptions.hideUnannotated,
-          hideMotifs: MOTIFS.filter( motif => sjOptions[`hideMotif${motif}`] ), //options: 'GT/AG', 'CT/AC', 'GC/AG', 'CT/GC', 'AT/AC', 'GT/AT', 'non-canonical'
+          hideMotifs: MOTIFS.filter((motif) => sjOptions[`hideMotif${motif}`]), //options: 'GT/AG', 'CT/AC', 'GC/AG', 'CT/GC', 'AT/AC', 'GT/AT', 'non-canonical'
         }
       }
 
       let coverageTrack
-      if(sample.coverage && sjOptions.showCoverage) {
+      if (sample.coverage && sjOptions.showCoverage) {
         coverageTrack = {
           type: 'wig',
           format: 'bigwig',
@@ -113,36 +114,36 @@ export const getTracks = createSelector(
           oauthToken: getGoogleAccessToken,
           name: sample.name,
           height: sjOptions.trackHeight,
-          order: i*10 + 1,
+          order: i * 10 + 1,
         }
       }
 
       if (coverageTrack && junctionsTrack) {
-        console.log(`Adding ${sample.junctions} & ${sample.coverage} track #`, i*10 + 2)
+        console.log(`Adding ${sample.junctions} & ${sample.coverage} track #`, i * 10 + 2)
         igvTracks.push({
           type: 'merged',
           name: sample.name,
           height: sjOptions.trackHeight,
           tracks: [coverageTrack, junctionsTrack],
-          order: i*10 + 2,
+          order: i * 10 + 2,
         })
       } else if (junctionsTrack) {
-        console.log(`Adding ${sample.junctions} track #`, i*10 )
+        console.log(`Adding ${sample.junctions} track #`, i * 10)
         igvTracks.push({
           type: 'merged',
           name: sample.name,
           height: sjOptions.trackHeight,
           tracks: [junctionsTrack],
-          order: i*10 + 3,
+          order: i * 10 + 3,
         })
       } else if (coverageTrack) {
-        console.log(`Adding ${sample.coverage} track #`, i*10 + 1)
+        console.log(`Adding ${sample.coverage} track #`, i * 10 + 1)
         igvTracks.push(coverageTrack)
       }
 
       if (vcfOptions.showVcfs && sample.vcf) {
         //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
-        console.log(`Adding ${sample.vcf} track #`, i*10 + 4)
+        console.log(`Adding ${sample.vcf} track #`, i * 10 + 4)
 
         igvTracks.push({
           type: 'variant',
@@ -153,13 +154,13 @@ export const getTracks = createSelector(
           name: `${sample.name} vcf`,
           displayMode: vcfOptions.displayMode,
           oauthToken: getGoogleAccessToken,
-          order: i*10 + 4,
+          order: i * 10 + 4,
         })
       }
 
       if (bamOptions.showBams && sample.bam) {
         //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
-        console.log(`Adding ${sample.bam} track #`, i*10 + 5)
+        console.log(`Adding ${sample.bam} track #`, i * 10 + 5)
 
         igvTracks.push({
           type: 'alignment',
@@ -171,7 +172,7 @@ export const getTracks = createSelector(
           viewAsPairs: bamOptions.viewAsPairs,
           showSoftClips: bamOptions.showSoftClips,
           oauthToken: getGoogleAccessToken,
-          order: i*10 + 5,
+          order: i * 10 + 5,
         })
       }
     }))
@@ -179,19 +180,19 @@ export const getTracks = createSelector(
 
     igvTracks.push({
       name: 'Gencode v32 Genes',
-      format: "refgene",
-      url: "gs://macarthurlab-rnaseq/reference_tracks/gencode_v32_knownGene.sorted.txt.gz",
-      indexUrl: "gs://macarthurlab-rnaseq/reference_tracks/gencode_v32_knownGene.sorted.txt.gz.tbi",
+      format: 'refgene',
+      url: 'gs://macarthurlab-rnaseq/reference_tracks/gencode_v32_knownGene.sorted.txt.gz',
+      indexUrl: 'gs://macarthurlab-rnaseq/reference_tracks/gencode_v32_knownGene.sorted.txt.gz.tbi',
       indexed: true,
       searchable: true,
       height: 350,
       visibilityWindow: -1,
-      displayMode: "EXPANDED",
+      displayMode: 'EXPANDED',
       order: 1000001,
-      color: "rgb(76,171,225)",
+      color: 'rgb(76,171,225)',
       oauthToken: getGoogleAccessToken,
     })
 
     return igvTracks
-  }
+  },
 )

@@ -353,17 +353,14 @@ export const loadingReducer = (requestActionType, receiveActionType, initialStat
         if (debug) {
           console.log(`fetchObjectsReducer: applying action: ${action.type}. State changing to loading`)
         }
-        return Object.assign({}, state, {
-          isLoading: true,
-        })
+        return { ...state, isLoading: true }
+
       case receiveActionType:
         if (debug) {
           console.log(`fetchObjectsReducer: applying action: ${action.type}. State changing to received: ${action.byGuid}`)
         }
-        return Object.assign({}, state, {
-          isLoading: false,
-          errorMessage: action.error,
-        })
+        return { ...state, isLoading: false, errorMessage: action.error }
+
       default:
         return state
     }
