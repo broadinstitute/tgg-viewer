@@ -132,7 +132,8 @@ const KEYS_TO_PERSIST_IN_URL = {
   sjOptions: 'sjOptions',
   bamOptions: 'bamOptions',
   vcfOptions: 'vcfOptions',
-  initialSettingsUrl: 'initialSettingUrl',
+  initialSettingsUrl: 'settingsUrl',
+  initialSettingsUrlHasBeenApplied: 'settingsUrlApplied',
 }
 
 const KEYS_TO_PERSIST_IN_LOCAL_STORAGE = [

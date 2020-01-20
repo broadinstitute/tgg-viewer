@@ -14,8 +14,9 @@ export const getSjOptions = (state) => state.sjOptions
 export const getVcfOptions = (state) => state.vcfOptions
 export const getBamOptions = (state) => state.bamOptions
 export const getUser = (state) => state.user
-export const getInitialSettingsUrl = (state) => state.initialSettingsUrl
 export const getInitialSettings = (state) => state.initialSettings
+export const getInitialSettingsUrl = (state) => state.initialSettingsUrl
+export const getInitialSettingsUrlHasBeenApplied = (state) => state.initialSettingsUrlHasBeenApplied
 
 
 /**

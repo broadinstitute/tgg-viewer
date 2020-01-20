@@ -6,9 +6,9 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Button, Input } from 'semantic-ui-react'
+import delay from 'timeout-as-promise'
 import yaml from 'js-yaml'
-import { getInitialSettingsUrl } from '../redux/selectors'
-import { HttpRequestHelper } from '../redux/utils/httpRequestHelper'
+import { getInitialSettingsUrl, getInitialSettingsUrlHasBeenApplied } from '../redux/selectors'
 import RequestStatus from './RequestStatus'
 import { DEFAULT_STATE } from '../redux/initialState'
 
@@ -40,6 +40,7 @@ class InitialSettingsForm extends React.PureComponent
     this.textInputValue = props.initialSettingsUrl || ''
     this.state = {
       requestStatus: RequestStatus.NONE,
+      successMessage: '',
       errorMessage: '',
     }
   }
@@ -47,97 +48,103 @@ class InitialSettingsForm extends React.PureComponent
   async componentDidMount() {
     const {
       initialSettingsUrl,
-      globalState,
+      initialSettingsUrlHasBeenApplied,
     } = this.props
 
-    if (initialSettingsUrl && (!globalState.initialSettings || globalState.initialSettings.initialSettingsUrl !== initialSettingsUrl)) {
+    if (initialSettingsUrl && !initialSettingsUrlHasBeenApplied) {
       // download url
       console.log('Loading settings from url', initialSettingsUrl)
-      //await this.loadSettingsFromUrl()
+      await this.applyInitialSettingsUrl(initialSettingsUrl)
     }
   }
 
-  loadSettingsFromUrl = async () => {
+  loadInitialSettingsUrl = async (url) => {
     const {
-      updateInitialSettingsUrl,
       globalState,
+      updateInitialSettingsUrl,
+      setInitialSettingsUrlHasBeenApplied,
       resetGlobalState,
     } = this.props
-
-    const url = this.textInputValue
 
     if (!url) {
       //reset url to empty
       resetGlobalState(DEFAULT_STATE)
       updateInitialSettingsUrl('')
+      setInitialSettingsUrlHasBeenApplied()
       return
     }
 
     //validate url
     if (url.search(':') === -1 || url.search('/') === -1) {
-      this.setState({ requestStatus: RequestStatus.ERROR, errorMessage: `Invalid url: "${url}"` })
-      return
+      throw new Error(`Invalid url: "${url}"`)
     }
 
     const isYamlURL = url.search('.yaml') !== -1 || url.search('.yml') !== -1
     const isJsonURL = url.search('.json') !== -1
     if (!isYamlURL && !isJsonURL) {
-      this.setState({ requestStatus: RequestStatus.ERROR, errorMessage: 'Expected file extensions (".yaml", ".yml", or ".json") not found in the URL' })
-      return
+      throw new Error('Expected file extensions (".yaml", ".yml", or ".json") not found in the URL')
     }
 
-    const http = new HttpRequestHelper(
-      url,
-      (fileContents) => {
-        let settings
 
-        if (isYamlURL) {
-          try {
-            settings = yaml.safeLoad(fileContents)
-          } catch (e) {
-            this.setState({ requestStatus: RequestStatus.ERROR, errorMessage: `Unable to parse YAML file: ${e}` })
-            return
-          }
-        }
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`Couldn't load URL. Error: ${response.statusText.toLowerCase()} (${response.status})`)
+    }
 
-        if (isJsonURL) {
-          try {
-            settings = JSON.parse(fileContents)
-          } catch (e) {
-            this.setState({ requestStatus: RequestStatus.ERROR, errorMessage: `Unable to parse JSON file: ${e}` })
-            return
-          }
-        }
+    const fileContents = await response.text()
 
-        // TODO validate settings
+    let settings
+    if (isYamlURL) {
+      try {
+        settings = yaml.safeLoad(fileContents)
+      } catch (e) {
+        throw new Error(`Unable to parse YAML file: ${e}`)
+      }
+    }
 
-        // filter settings to keys in globalState
-        const filteredSettings = Object.keys(globalState).reduce((acc, key) => {
-          if (key in settings) {
-            return { ...acc, [key]: settings[key] }
-          }
-          return acc
-        }, {})
+    if (isJsonURL) {
+      try {
+        settings = JSON.parse(fileContents)
+      } catch (e) {
+        throw new Error(`Unable to parse JSON file: ${e}`)
+      }
+    }
 
-        filteredSettings.initialSettings = JSON.parse(JSON.stringify(filteredSettings)) // deep-copy just in case
+    // TODO validate settings more
 
-        resetGlobalState({ ...globalState, ...filteredSettings })
-        updateInitialSettingsUrl(url)
+    // filter settings to keys in globalState
+    const filteredSettings = Object.keys(globalState).reduce((acc, key) => {
+      if (key in settings) {
+        return { ...acc, [key]: settings[key] }
+      }
+      return acc
+    }, {})
 
-        this.setState({ requestStatus: RequestStatus.SUCCEEDED })
-      },
-      (e) => {
-        this.setState({ requestStatus: RequestStatus.ERROR, errorMessage: e.toString() })
-      },
-      () => {
-        this.setState({ requestStatus: RequestStatus.NONE, errorMessage: '' })
-      },
-    )
+    filteredSettings.initialSettings = JSON.parse(JSON.stringify(filteredSettings)) // deep-copy just in case
+
+    // apply settings
+    resetGlobalState({ ...globalState, ...filteredSettings })
+    updateInitialSettingsUrl(url)
+    setInitialSettingsUrlHasBeenApplied()
+  }
+
+  applyInitialSettingsUrl = async (url) => {
 
     this.setState({ requestStatus: RequestStatus.IN_PROGRESS })
 
-    http.get()
-    //return http.get()
+    try {
+      await this.loadInitialSettingsUrl(url)
+
+      this.setState({ requestStatus: RequestStatus.SUCCEEDED, successMessage: url ? 'Successfully loaded URL and applied settings' : 'Reset all settings to defaults' })
+    } catch (e) {
+      this.setState({ requestStatus: RequestStatus.ERROR, errorMessage: e.toString() })
+    }
+
+    // wait and then clear the message
+    await delay(10000)
+    if (this.state.requestStatus !== RequestStatus.IN_PROGRESS) {
+      this.setState({ requestStatus: RequestStatus.NONE, errorMessage: '' })
+    }
   }
 
   render() {
@@ -157,12 +164,12 @@ class InitialSettingsForm extends React.PureComponent
         />
         <StyledButton
           content="Apply"
-          onClick={this.loadSettingsFromUrl}
+          onClick={() => this.applyInitialSettingsUrl(this.textInputValue)}
         />
         <RequestStatus
           status={this.state.requestStatus}
           errorMessage={this.state.errorMessage}
-          successMessage="Successfully loaded and applied settings from URL"
+          successMessage={this.state.successMessage}
         />
       </StyledDiv>)
   }
@@ -170,14 +177,17 @@ class InitialSettingsForm extends React.PureComponent
 
 InitialSettingsForm.propTypes = {
   initialSettingsUrl: PropTypes.string.isRequired,
+  initialSettingsUrlHasBeenApplied: PropTypes.bool.isRequired,
   globalState: PropTypes.object,
   updateInitialSettingsUrl: PropTypes.func,
+  setInitialSettingsUrlHasBeenApplied: PropTypes.func,
   resetGlobalState: PropTypes.func,
 }
 
 const mapStateToProps = (state) => ({
   globalState: state,
   initialSettingsUrl: getInitialSettingsUrl(state),
+  initialSettingsUrlHasBeenApplied: getInitialSettingsUrlHasBeenApplied(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -185,6 +195,12 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch({
       type: 'UPDATE_INITIAL_SETTINGS_URL',
       newValue: newUrl,
+    })
+  },
+  setInitialSettingsUrlHasBeenApplied: () => {
+    dispatch({
+      type: 'UPDATE_INITIAL_SETTINGS_URL_HAS_BEEN_APPLIED',
+      newValue: true,
     })
   },
   resetGlobalState: (state) => {
