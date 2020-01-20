@@ -47,19 +47,17 @@ class InitialSettingsForm extends React.PureComponent
   async componentDidMount() {
     const {
       initialSettingsUrl,
-      updateInitialSettingsUrl,
       globalState,
-      resetGlobalState,
     } = this.props
 
-    if (initialSettingsUrl) {
+    if (initialSettingsUrl && (!globalState.initialSettings || globalState.initialSettings.initialSettingsUrl !== initialSettingsUrl)) {
       // download url
-      console.log('Updating settings from URL: ', initialSettingsUrl)
-      console.log('globalState: ', globalState, resetGlobalState, updateInitialSettingsUrl)
+      console.log('Loading settings from url', initialSettingsUrl)
+      //await this.loadSettingsFromUrl()
     }
   }
 
-  handleLoadSettingsButton = () => {
+  loadSettingsFromUrl = async () => {
     const {
       updateInitialSettingsUrl,
       globalState,
@@ -137,7 +135,9 @@ class InitialSettingsForm extends React.PureComponent
     )
 
     this.setState({ requestStatus: RequestStatus.IN_PROGRESS })
+
     http.get()
+    //return http.get()
   }
 
   render() {
@@ -156,8 +156,8 @@ class InitialSettingsForm extends React.PureComponent
           }}
         />
         <StyledButton
-          content="Load Settings"
-          onClick={this.handleLoadSettingsButton}
+          content="Apply"
+          onClick={this.loadSettingsFromUrl}
         />
         <RequestStatus
           status={this.state.requestStatus}

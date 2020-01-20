@@ -91,14 +91,13 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions }) => {
     }
   }
 
-  console.log('minUniquelyMappedReads', sjOptions.minUniquelyMappedReads)
   return (
     <div>
       <CategoryH3>JUNCTION TRACK <br />OPTIONS</CategoryH3><br />
       <OptionDiv>Track height: <OptionInput key={`track-height-${sjOptions.trackHeight}`} type="text" defaultValue={sjOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</OptionDiv>
       <OptionDiv>Color by:</OptionDiv>
       <OptionDiv>
-        <select defaultValue={sjOptions.colorBy} onChange={(e) => updateSjOptions({ colorBy: e.target.value })}>
+        <select value={sjOptions.colorBy} onChange={(e) => updateSjOptions({ colorBy: e.target.value })}>
           <option value="strand">strand</option>
           <option value="motif">donor/acceptor motif</option>
           <option value="numUniqueReads"># uniquely-mapped reads</option>
@@ -109,7 +108,7 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions }) => {
       </OptionDiv>
       <OptionDiv>Junction thickness:</OptionDiv>
       <OptionDiv>
-        <select defaultValue={sjOptions.thicknessBasedOn} onChange={(e) => updateSjOptions({ thicknessBasedOn: e.target.value })}>
+        <select value={sjOptions.thicknessBasedOn} onChange={(e) => updateSjOptions({ thicknessBasedOn: e.target.value })}>
           <option value="numUniqueReads"># uniquely-mapped reads</option>
           <option value="numReads"># total reads</option>
           <option value="isAnnotatedJunction">is known junction</option>
@@ -117,7 +116,7 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions }) => {
       </OptionDiv>
       <OptionDiv>Junction bounce height:</OptionDiv>
       <OptionDiv>
-        <select defaultValue={sjOptions.bounceHeightBasedOn} onChange={(e) => updateSjOptions({ bounceHeightBasedOn: e.target.value })}>
+        <select value={sjOptions.bounceHeightBasedOn} onChange={(e) => updateSjOptions({ bounceHeightBasedOn: e.target.value })}>
           <option value="random">random</option>
           <option value="distance">distance</option>
           <option value="thickness">thickness</option>
@@ -197,7 +196,7 @@ const BamOptionsPanel = ({ bamOptions, updateBamOptions }) => {
       <OptionDiv><Checkbox label="Show soft-clips" checked={bamOptions.showSoftClips} onChange={(e, data) => updateBamOptions({ showSoftClips: data.checked })} /></OptionDiv>
       <OptionDiv>Color by:</OptionDiv>
       <OptionDiv>
-        <select defaultValue={bamOptions.colorBy} onChange={(e) => updateBamOptions({ colorBy: e.target.value })}>
+        <select value={bamOptions.colorBy} onChange={(e) => updateBamOptions({ colorBy: e.target.value })}>
           <option value="strand">Strand</option>
           <option value="firstOfPairStrand">First-of-pair strand</option>
           <option value="pairOrientation">Pair orientation</option>
@@ -221,7 +220,7 @@ const VcfOptionsPanel = ({ vcfOptions, updateVcfOptions }) => {
       <CategoryH3>VCF TRACK <br />OPTIONS</CategoryH3><br />
       <OptionDiv>
         Display mode: &nbsp;
-        <select defaultValue={vcfOptions.displayMode} onChange={(e) => updateVcfOptions({ displayMode: e.target.value })}>
+        <select value={vcfOptions.displayMode} onChange={(e) => updateVcfOptions({ displayMode: e.target.value })}>
           <option value="COLLAPSED">Collapse</option>
           <option value="SQUISHED">Squish</option>
           <option value="EXPANDED">Expand</option>
@@ -251,7 +250,6 @@ class RightSideBar extends React.PureComponent
       setLocusList,
     } = this.props
 
-    console.log('rendering SJOptions panel: ', sjOptions)
     return (
       <div>
         <EditLocusList

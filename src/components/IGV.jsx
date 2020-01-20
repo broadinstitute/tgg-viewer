@@ -105,7 +105,7 @@ class IGV extends React.Component {
       return { [item.name]: item, ...acc }
     }, {})
 
-    console.log('IGV.nextProps:', nextProps)
+    //console.log('IGV.nextProps:', nextProps)
 
     // update or remove existing tracks
     tracks.forEach((track) => {

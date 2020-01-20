@@ -89,6 +89,10 @@ const INITIAL_SAMPLES_IN_CATEGORIES = [
 export const DEFAULT_STATE = {
   genome: 'hg38',
   locus: 'chr15:92,835,700-93,031,800',
+  leftSideBarLocusList: [],
+  rightSideBarLocusList: [],
+  samplesInCategories: INITIAL_SAMPLES_IN_CATEGORIES,
+  selectedSampleNamesByCategoryName: {},
   sjOptions: {
     trackHeight: 170,
     showCoverage: true,
@@ -117,10 +121,7 @@ export const DEFAULT_STATE = {
     showSoftClips: true,
     alignmentShading: 'strand',
   },
-  samplesInCategories: INITIAL_SAMPLES_IN_CATEGORIES,
-  selectedSampleNamesByCategoryName: {},
-  leftSideBarLocusList: [],
-  rightSideBarLocusList: [],
+  initialSettingsUrl: '',
 }
 
 DEFAULT_STATE.initialSettings = JSON.parse(JSON.stringify(DEFAULT_STATE)) // create a deep-copy of DEFAULT_STATE
@@ -139,7 +140,7 @@ const KEYS_TO_PERSIST_IN_LOCAL_STORAGE = [
 ]
 
 
-export const computeInitialState = (initialSettings = {}) => {
+export const computeInitialState = () => {
 
   // restore values from local storage
   const stateFromLocalStorage = KEYS_TO_PERSIST_IN_LOCAL_STORAGE.reduce((acc, key) => {
@@ -174,9 +175,8 @@ export const computeInitialState = (initialSettings = {}) => {
     }, {})
     : {}
 
-  // default values are over-ridden by values from the optional settings file (if a url was provided),
-  // which are over-ridden by values from local storage, which are over-ridden by values from the url
-  const initialState = { ...DEFAULT_STATE, ...initialSettings, ...stateFromLocalStorage, ...stateFromUrlHash }
+  // default values are over-ridden by values from local storage, which are over-ridden by values from the url
+  const initialState = { ...DEFAULT_STATE, ...stateFromLocalStorage, ...stateFromUrlHash }
 
   return initialState
 }
