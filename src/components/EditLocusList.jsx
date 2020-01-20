@@ -64,7 +64,7 @@ class EditLocusListButtonAndModal extends React.PureComponent {
           </Form.Field>
         </Form>
         <br />
-        <b><i>NOTE:</i></b> This locus list will be saved across page refreshes in this browser, but is not recorded in the page url, so sharing a page link is not sufficient for sharing the locus list.
+        <b><i>NOTE:</i></b> This locus list will be saved across page refreshes in this browser, but will not be recorded in the page url like other settings. Sharing or bookmarking this page won&apos;t include the contents of this list.
       </Modal>)
   }
 }

@@ -346,7 +346,7 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
         </Form>
 
         <br />
-        <b><i>NOTE:</i></b> These paths will be saved across page refreshes in this browser, but will not be recorded in the page url like other settings. Sharing or bookmarking this page url won&apos;t include these paths.
+        <b><i>NOTE:</i></b> These paths will be saved across page refreshes in this browser, but will not be recorded in the page url like other settings. Sharing or bookmarking this page won&apos;t include these paths.
         {
           warningMessage && (
           <Message color="yellow">
