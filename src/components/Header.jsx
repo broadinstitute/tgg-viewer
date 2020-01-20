@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Grid } from 'semantic-ui-react'
+import AboutLink from './About'
 import UserInfo from './UserInfo'
 
 const HeaderRow = styled(Grid.Row)`
@@ -22,9 +23,8 @@ export default () => (
     <HeaderRow>
       <Column1>
         <b>RNA-seq Viewer:</b>
-        &nbsp; &nbsp; &nbsp;
+        <AboutLink />
         {/* <a href="#">Intro Video</a> &nbsp; &nbsp; */}
-        <a href={window.location}>More Details</a>
       </Column1>
       <Column2>
         <UserInfo />

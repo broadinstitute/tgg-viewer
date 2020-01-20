@@ -157,7 +157,7 @@ class InitialSettingsForm extends React.PureComponent
         <StyledInput
           label="Initial settings:"
           defaultValue={initialSettingsUrl}
-          placeholder="URL of .yaml or .json settings file (eg. http://.../settings.json)"
+          placeholder="URL of .yaml or .json settings file (eg. http://.../settings.json), or blank to reset all settings to defaults."
           onChange={(e) => {
             this.textInputValue = e.target.value
           }}

@@ -81,7 +81,7 @@ class CustomModal extends React.PureComponent
         </Modal.Content>
         <ContainerDiv>
           <StyledButton tabIndex={0} onClick={this.handleClose} type="button">Cancel</StyledButton>
-          <StyledButton tabIndex={0} onClick={this.handleSave} type="submit" color="blue">Save</StyledButton>
+          <StyledButton tabIndex={0} onClick={this.handleSave} type="submit" color="blue">{ this.props.handleSave ? 'Save' : 'Ok' }</StyledButton>
         </ContainerDiv>
       </Modal>
     )
