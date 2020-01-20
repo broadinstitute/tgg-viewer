@@ -59,6 +59,7 @@ const ColorByLegend = ({ sjOptions, handleTextInput }) => {
         &nbsp;≤ &nbsp;
         <OptionInput
           type="text"
+          key={`num-reads-${sjOptions.colorByNumReadsThreshold}`}
           defaultValue={sjOptions.colorByNumReadsThreshold !== undefined ? sjOptions.colorByNumReadsThreshold : DEFAULT_COLOR_BY_NUM_READS_THRESHOLD}
           onKeyUp={(e) => handleTextInput(e, 'colorByNumReadsThreshold')}
           style={{ width: '35px' }}
@@ -90,10 +91,11 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions }) => {
     }
   }
 
+  console.log('minUniquelyMappedReads', sjOptions.minUniquelyMappedReads)
   return (
     <div>
       <CategoryH3>JUNCTION TRACK <br />OPTIONS</CategoryH3><br />
-      <OptionDiv>Track height: <OptionInput type="text" defaultValue={sjOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</OptionDiv>
+      <OptionDiv>Track height: <OptionInput key={`track-height-${sjOptions.trackHeight}`} type="text" defaultValue={sjOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</OptionDiv>
       <OptionDiv>Color by:</OptionDiv>
       <OptionDiv>
         <select defaultValue={sjOptions.colorBy} onChange={(e) => updateSjOptions({ colorBy: e.target.value })}>
@@ -122,13 +124,13 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions }) => {
         </select>
       </OptionDiv>
       <OptionDiv>Junction label:</OptionDiv>
-      <OptionDiv><Checkbox label="# uniquely-mapped" defaultChecked={sjOptions.labelUniqueReadCount} onChange={(e, data) => updateSjOptions({ labelUniqueReadCount: data.checked })} /></OptionDiv>
-      <OptionDiv><Checkbox label="# multi-mapped" defaultChecked={sjOptions.labelMultiMappedReadCount} onChange={(e, data) => updateSjOptions({ labelMultiMappedReadCount: data.checked })} /></OptionDiv>
-      <OptionDiv><Checkbox label="# total reads" defaultChecked={sjOptions.labelTotalReadCount} onChange={(e, data) => updateSjOptions({ labelTotalReadCount: data.checked })} /></OptionDiv>
-      <OptionDiv><Checkbox label="donor/acceptor motif" defaultChecked={sjOptions.labelMotif} onChange={(e, data) => updateSjOptions({ labelMotif: data.checked })} /></OptionDiv>
+      <OptionDiv><Checkbox label="# uniquely-mapped" checked={sjOptions.labelUniqueReadCount} onChange={(e, data) => updateSjOptions({ labelUniqueReadCount: data.checked })} /></OptionDiv>
+      <OptionDiv><Checkbox label="# multi-mapped" checked={sjOptions.labelMultiMappedReadCount} onChange={(e, data) => updateSjOptions({ labelMultiMappedReadCount: data.checked })} /></OptionDiv>
+      <OptionDiv><Checkbox label="# total reads" checked={sjOptions.labelTotalReadCount} onChange={(e, data) => updateSjOptions({ labelTotalReadCount: data.checked })} /></OptionDiv>
+      <OptionDiv><Checkbox label="donor/acceptor motif" checked={sjOptions.labelMotif} onChange={(e, data) => updateSjOptions({ labelMotif: data.checked })} /></OptionDiv>
       <OptionDiv>
-        <Checkbox label="known junction:" defaultChecked={sjOptions.labelAnnotatedJunction} onChange={(e, data) => updateSjOptions({ labelAnnotatedJunction: data.checked })} />
-        <OptionInput type="text" defaultValue={sjOptions.labelAnnotatedJunctionValue} onKeyUp={(e) => handleTextInput(e, 'labelAnnotatedJunctionValue')} style={{ width: '35px' }} />
+        <Checkbox label="known junction:" checked={sjOptions.labelAnnotatedJunction} onChange={(e, data) => updateSjOptions({ labelAnnotatedJunction: data.checked })} />
+        <OptionInput key={`junction-label-${sjOptions.labelAnnotatedJunctionValue}`} type="text" defaultValue={sjOptions.labelAnnotatedJunctionValue} onKeyUp={(e) => handleTextInput(e, 'labelAnnotatedJunctionValue')} style={{ width: '35px' }} />
       </OptionDiv>
 
       <CategoryH3>JUNCTION TRACK FILTERS</CategoryH3><br />
@@ -138,15 +140,15 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions }) => {
         <StyledRadio label="plus" name="strandButton" checked={sjOptions.showOnlyPlusStrand} onChange={(e, data) => data.checked && updateSjOptions({ showOnlyPlusStrand: true, showOnlyMinusStrand: false })} />
         <StyledRadio label="minus" name="strandButton" checked={sjOptions.showOnlyMinusStrand} onChange={(e, data) => data.checked && updateSjOptions({ showOnlyPlusStrand: false, showOnlyMinusStrand: true })} />
       </OptionDiv>
-      <OptionDiv><Checkbox label="Show known junctions" defaultChecked={!sjOptions.hideAnnotated} onChange={(e, data) => updateSjOptions({ hideAnnotated: !data.checked })} /></OptionDiv>
-      <OptionDiv><Checkbox label="Show novel junctions" defaultChecked={!sjOptions.hideUnannotated} onChange={(e, data) => updateSjOptions({ hideUnannotated: !data.checked })} /></OptionDiv>
+      <OptionDiv><Checkbox label="Show known junctions" checked={!sjOptions.hideAnnotated} onChange={(e, data) => updateSjOptions({ hideAnnotated: !data.checked })} /></OptionDiv>
+      <OptionDiv><Checkbox label="Show novel junctions" checked={!sjOptions.hideUnannotated} onChange={(e, data) => updateSjOptions({ hideUnannotated: !data.checked })} /></OptionDiv>
       <div>
         <OptionDiv>Uniquely-mapped reads:</OptionDiv>
-        at least <OptionInput type="text" defaultValue={sjOptions.minUniquelyMappedReads} onKeyUp={(e) => handleTextInput(e, 'minUniquelyMappedReads', parseInt(e.target.value, 10))} />
+        at least <OptionInput key={`uniquely-mapped-reads-${sjOptions.minUniquelyMappedReads}`} type="text" defaultValue={sjOptions.minUniquelyMappedReads} onKeyUp={(e) => handleTextInput(e, 'minUniquelyMappedReads', parseInt(e.target.value, 10))} />
       </div>
       <div>
         <OptionDiv>Total reads:</OptionDiv>
-        at least <OptionInput type="text" defaultValue={sjOptions.minTotalReads} onKeyUp={(e) => handleTextInput(e, 'minTotalReads', parseInt(e.target.value, 10))} />
+        at least <OptionInput key={`total-reads-${sjOptions.minTotalReads}`} type="text" defaultValue={sjOptions.minTotalReads} onKeyUp={(e) => handleTextInput(e, 'minTotalReads', parseInt(e.target.value, 10))} />
       </div>
       <div>
         <OptionDiv>Fraction multi-mapped:
@@ -159,16 +161,16 @@ const SjOptionsPanel = ({ sjOptions, updateSjOptions }) => {
             }
           />
         </OptionDiv>
-        at most <OptionInput type="text" defaultValue={sjOptions.maxFractionMultiMappedReads} onKeyUp={(e) => handleTextInput(e, 'maxFractionMultiMappedReads', parseInt(e.target.value, 10))} />
+        at most <OptionInput key={`fraction-multi-mapped-${sjOptions.maxFractionMultiMappedReads}`} type="text" defaultValue={sjOptions.maxFractionMultiMappedReads} onKeyUp={(e) => handleTextInput(e, 'maxFractionMultiMappedReads', parseInt(e.target.value, 10))} />
       </div>
       <div>
         <OptionDiv>Splice overhang base-pairs:</OptionDiv>
-        at least <OptionInput type="text" defaultValue={sjOptions.minSplicedAlignmentOverhang} onKeyUp={(e) => handleTextInput(e, 'minSplicedAlignmentOverhang', parseInt(e.target.value, 10))} />
+        at least <OptionInput key={`spliced-alignment-overhang-${sjOptions.minSplicedAlignmentOverhang}`} type="text" defaultValue={sjOptions.minSplicedAlignmentOverhang} onKeyUp={(e) => handleTextInput(e, 'minSplicedAlignmentOverhang', parseInt(e.target.value, 10))} />
       </div>
       <div>
         <OptionDiv>Donor/Acceptor Motifs:</OptionDiv>
         {
-          MOTIFS.map((motif) => <OptionDiv key={motif}><Checkbox label={`Show ${motif}`} defaultChecked={!sjOptions[`hideMotif${motif}`]} onChange={(e, data) => updateSjOptions({ [`hideMotif${motif}`]: !data.checked })} /></OptionDiv>)
+          MOTIFS.map((motif) => <OptionDiv key={motif}><Checkbox label={`Show ${motif}`} checked={!sjOptions[`hideMotif${motif}`]} onChange={(e, data) => updateSjOptions({ [`hideMotif${motif}`]: !data.checked })} /></OptionDiv>)
         }
       </div>
     </div>)
@@ -190,9 +192,9 @@ const BamOptionsPanel = ({ bamOptions, updateBamOptions }) => {
   return (
     <div>
       <CategoryH3>BAM TRACK <br />OPTIONS</CategoryH3><br />
-      <OptionDiv>Track height: <OptionInput type="text" defaultValue={bamOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</OptionDiv>
-      <OptionDiv><Checkbox label="View as pairs" defaultChecked={bamOptions.viewAsPairs} onChange={(e, data) => updateBamOptions({ viewAsPairs: data.checked })} /></OptionDiv>
-      <OptionDiv><Checkbox label="Show soft-clips" defaultChecked={bamOptions.showSoftClips} onChange={(e, data) => updateBamOptions({ showSoftClips: data.checked })} /></OptionDiv>
+      <OptionDiv>Track height: <OptionInput key={`track-height-${bamOptions.trackHeight}`} type="text" defaultValue={bamOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</OptionDiv>
+      <OptionDiv><Checkbox label="View as pairs" checked={bamOptions.viewAsPairs} onChange={(e, data) => updateBamOptions({ viewAsPairs: data.checked })} /></OptionDiv>
+      <OptionDiv><Checkbox label="Show soft-clips" checked={bamOptions.showSoftClips} onChange={(e, data) => updateBamOptions({ showSoftClips: data.checked })} /></OptionDiv>
       <OptionDiv>Color by:</OptionDiv>
       <OptionDiv>
         <select defaultValue={bamOptions.colorBy} onChange={(e) => updateBamOptions({ colorBy: e.target.value })}>
@@ -249,6 +251,7 @@ class RightSideBar extends React.PureComponent
       setLocusList,
     } = this.props
 
+    console.log('rendering SJOptions panel: ', sjOptions)
     return (
       <div>
         <EditLocusList

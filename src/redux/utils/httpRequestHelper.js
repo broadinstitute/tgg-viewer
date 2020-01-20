@@ -1,7 +1,6 @@
 import delay from 'timeout-as-promise'
 
-export const getUrlQueryString = urlParams =>
-  Object.entries(urlParams).map(([key, value]) => [key, value].map(encodeURIComponent).join('=')).join('&')
+export const getUrlQueryString = (urlParams) => Object.entries(urlParams).map(([key, value]) => [key, value].map(encodeURIComponent).join('=')).join('&')
 
 /**
  * Encapsulates the cycle of:
@@ -40,7 +39,6 @@ export class HttpRequestHelper {
 
     const p = fetch(`${this.url}?${urlQueryString}`, {
       method: 'GET',
-      credentials: 'include',
     })
 
     return this.handlePromise(p, urlParams)
@@ -58,33 +56,35 @@ export class HttpRequestHelper {
         throw new Error(`${response.statusText.toLowerCase()} (${response.status})`)
       }
 
-      return response.body
+      return response
     })
-    .then((responseBody) => {
-      if (this.debug) {
-        console.log(`${this.url} httpHelder - response: `, responseJson)
-      }
-      if (this.onSuccess) {
-        this.onSuccess(responseBody, onSuccessArg)
-      }
+      .then((response) => {
+        return response.text()
+      })
+      .then((responseBody) => {
+        if (this.debug) {
+          console.log(`${this.url} httpHelder - response: `, responseBody)
+        }
+        if (this.onSuccess) {
+          this.onSuccess(responseBody, onSuccessArg)
+        }
 
-      if (this.onClear) {
-        this.httpPostId++
-        return delay(this.delayBeforeClearing, this.httpPostId)
-      }
-      return -1
-    })
-    .catch((exception) => {
-      console.log(exception)
-      if (this.onError) {
-        this.onError(exception)
-      }
-      return -1 // don't ever hide the error message
-    })
-    .then((httpPostId) => {
-      if (this.onClear && httpPostId === this.httpPostId) {
-        this.onClear(httpPostId)
-      }
-    })
+        if (this.onClear) {
+          this.httpPostId++
+          return delay(this.delayBeforeClearing, this.httpPostId)
+        }
+        return -1
+      })
+      .catch((exception) => {
+        if (this.onError) {
+          this.onError(exception)
+        }
+        return -1 // don't ever hide the error message
+      })
+      .then((httpPostId) => {
+        if (this.onClear && httpPostId === this.httpPostId) {
+          this.onClear(httpPostId)
+        }
+      })
   }
 }

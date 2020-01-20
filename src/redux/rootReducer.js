@@ -77,8 +77,8 @@ const selectedSampleNamesByCategoryNameReducer = (state, action) => {
   return state
 }
 
-// root reducer
-const rootReducer = combineReducers(Object.assign({
+// combined reducers
+const otherReducers = combineReducers(Object.assign({
   genome: zeroActionsReducer,
   locus: createSingleValueReducer('UPDATE_LOCUS', ''),
   rightSideBarLocusList: createArrayReducer('RIGHT_SIDE_BAR_LOCUS_LIST'),
@@ -89,8 +89,16 @@ const rootReducer = combineReducers(Object.assign({
   vcfOptions: createSingleObjectReducer('UPDATE_VCF_OPTIONS'),
   bamOptions: createSingleObjectReducer('UPDATE_BAM_OPTIONS'),
   user: createSingleObjectReducer('UPDATE_USER'),
-  initialSettingsUrl: createSingleValueReducer('UPDATE_INITIAL_SETTINGS_URL', 'https://raw.githubusercontent.com/macarthur-lab/rnaseq-methods/master/rnaseq_viewer/settings.yaml', true),
+  initialSettingsUrl: createSingleValueReducer('UPDATE_INITIAL_SETTINGS_URL', ''),
   initialSettings: createSingleValueReducer('UPDATE_INITIAL_SETTINGS', {}),
 }, modalReducers))
 
+const rootReducer = (state, action) => {
+  if (action.type === 'RESET_GLOBAL_STATE') {
+    console.log('RESET_GLOBAL_STATE to', action.newState)
+    return action.newState
+  }
+
+  return otherReducers(state, action)
+}
 export default rootReducer

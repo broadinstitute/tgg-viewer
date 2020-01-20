@@ -47,6 +47,8 @@ class EditLocusListButtonAndModal extends React.PureComponent {
         handleSave={() => {
           const newLocusList = this.textAreaValue.split(/[,\s]+/).filter(Boolean)
           setLocusList(newLocusList)
+
+          return true
         }}
       >
         <Form>
@@ -73,16 +75,14 @@ EditLocusListButtonAndModal.propTypes = {
   setLocusList: PropTypes.func,
 }
 
-export const EditLocusList = ({ name, locusList, setLocus, setLocusList }) => {
+export const EditLocusList = ({ name, locusList, setLocus, setLocusList }) => (
+  <div>
+    {
+      locusList.map((locus, i) => <div key={locus}>{i + 1}. &nbsp; <LinkButton onClick={() => { setLocus(locus) }}>{locus}</LinkButton></div>)
+    }
+    <EditLocusListButtonAndModal name={name} locusList={locusList} setLocusList={setLocusList} />
+  </div>)
 
-  return (
-    <div>
-      {
-        locusList.map((locus, i) => <div key={locus}>{i + 1}. &nbsp; <LinkButton onClick={() => { setLocus(locus) }}>{locus}</LinkButton></div>)
-      }
-      <EditLocusListButtonAndModal name={name} locusList={locusList} setLocusList={setLocusList} />
-    </div>)
-}
 
 EditLocusList.propTypes = {
   name: PropTypes.string,

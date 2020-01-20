@@ -327,7 +327,9 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
             />
             {
               showResetButton && (
-              <LinkButton style={{ float: 'right' }} onClick={this.resetButtonClickHandler}>Reset To {initialSamplesInCategory ? initialSamplesInCategory.length : 0} Original Samples</LinkButton>)
+              <LinkButton style={{ float: 'right' }} onClick={this.resetButtonClickHandler}>
+                Reset {(initialSamplesInCategory && initialSamplesInCategory.length > 0) ? `To ${initialSamplesInCategory.length} Original Samples` : null}
+              </LinkButton>)
             }
           </div>
         </div>

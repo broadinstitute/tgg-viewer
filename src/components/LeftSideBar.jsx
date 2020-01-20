@@ -215,19 +215,19 @@ class LeftSideBar extends React.PureComponent
         <EditLocusList name="Left Side Bar" locusList={locusList} setLocus={setLocus} setLocusList={setLocusList} />
         <CategoryH3>TRACK TYPES TO SHOW PER SAMPLE</CategoryH3>
         <OptionDiv>
-          <Checkbox label="RNA splice junctions" defaultChecked={sjOptions.showJunctions} onChange={(e, data) => updateSjOptions({ showJunctions: data.checked })} />
+          <Checkbox label="RNA splice junctions" checked={sjOptions.showJunctions} onChange={(e, data) => updateSjOptions({ showJunctions: data.checked })} />
           <SampleColorLabelsContainer><Popup content="This color stripe marks samples that have splice junction data. Select this checkbox to show a splice junction track for each sample selected below." position="right center" trigger={<JunctionsIcon />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <OptionDiv>
-          <Checkbox label="RNA coverage" defaultChecked={sjOptions.showCoverage} onChange={(e, data) => updateSjOptions({ showCoverage: data.checked })} />
+          <Checkbox label="RNA coverage" checked={sjOptions.showCoverage} onChange={(e, data) => updateSjOptions({ showCoverage: data.checked })} />
           <SampleColorLabelsContainer><Popup content="This color stripe marks samples that have coverage data. Select this checkbox to show a coverage track for each sample selected below." position="right center" trigger={<CoverageIcon />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <OptionDiv>
-          <Checkbox label="BAM track" defaultChecked={bamOptions.showBams} onChange={(e, data) => updateBamOptions({ showBams: data.checked })} />
+          <Checkbox label="BAM track" checked={bamOptions.showBams} onChange={(e, data) => updateBamOptions({ showBams: data.checked })} />
           <SampleColorLabelsContainer><Popup content="This color stripe marks samples that have alignment data. Select this checkbox to show a bam track for each sample selected below." position="right center" trigger={<BamIcon />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <OptionDiv>
-          <Checkbox label="VCF track" defaultChecked={vcfOptions.showVcfs} onChange={(e, data) => updateVcfOptions({ showVcfs: data.checked })} />
+          <Checkbox label="VCF track" checked={vcfOptions.showVcfs} onChange={(e, data) => updateVcfOptions({ showVcfs: data.checked })} />
           <SampleColorLabelsContainer><Popup content="This color stripe marks samples that have splice junction data. Select this checkbox to show a vcf track for each sample selected below." position="right center" trigger={<VcfIcon />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <SamplesPanel
