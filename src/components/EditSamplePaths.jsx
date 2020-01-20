@@ -149,6 +149,7 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
       this.setState({ errorMessage: errorMessage })
       return false
     }
+    this.setState({ errorMessage: '' })
 
     if (data.checked) {
       this.setState({ format: data.label, textAreaValue: this.convertSamplesToTextAreaValue(samples, data.label) })
@@ -180,8 +181,8 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
       format,
     } = this.state
 
-    const initialSamples = this.getInitialSamplesInCategory()
-    const textAreaValue = this.convertSamplesToTextAreaValue(initialSamples, format)
+    const initialSamplesInCategory = this.getInitialSamplesInCategory()
+    const textAreaValue = this.convertSamplesToTextAreaValue(initialSamplesInCategory, format)
     this.setState({ textAreaValue: textAreaValue })
   }
 
@@ -343,7 +344,7 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
         </Form>
 
         <br />
-        <b><i>NOTE:</i></b> These paths will be saved across page refreshes in this browser, but will not be recorded in the page url like other settings. Sharing or saving the page link doesn&apos;t include these paths.
+        <b><i>NOTE:</i></b> These paths will be saved across page refreshes in this browser, but will not be recorded in the page url like other settings. Sharing or bookmarking this page url won&apos;t include these paths.
         {
           warningMessage && (
           <Message color="yellow">
@@ -371,7 +372,7 @@ EditSamplePathsButtonAndModal.propTypes = {
 }
 
 
-const AddOrEditSamplePaths = ({ category, updateSamples }) => {
+const AddOrEditSamplePaths = ({ category, initialSamplesInCategories, updateSamples }) => {
   return (
     <div>
       <EditSamplePathsButtonAndModal
@@ -380,6 +381,7 @@ const AddOrEditSamplePaths = ({ category, updateSamples }) => {
         categoryName={category.categoryName}
         samples={[]}
         setSamples={(samples) => updateSamples('ADD', category.categoryName, samples)}
+        initialSamplesInCategories={initialSamplesInCategories}
         trigger={<LinkButton>Add {category.samples.length === 0 ? category.categoryName : null} Paths</LinkButton>}
       />
       {category.samples.length > 0 && <EditSamplePathsButtonAndModal
@@ -388,6 +390,7 @@ const AddOrEditSamplePaths = ({ category, updateSamples }) => {
         categoryName={category.categoryName}
         samples={category.samples}
         setSamples={(samples) => updateSamples('SET', category.categoryName, samples)}
+        initialSamplesInCategories={initialSamplesInCategories}
         trigger={<LinkButton>Edit Paths</LinkButton>}
         showResetButton
       />}
@@ -396,6 +399,7 @@ const AddOrEditSamplePaths = ({ category, updateSamples }) => {
 
 AddOrEditSamplePaths.propTypes = {
   category: PropTypes.object,
+  initialSamplesInCategories: PropTypes.array,
   updateSamples: PropTypes.func,
 }
 
