@@ -1,6 +1,8 @@
 /* eslint-disable prefer-object-spread */
+import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
+import thunkMiddleware from 'redux-thunk'
+import { updateLocalStorageAndUrl, computeInitialState } from './initialState'
 
-import { combineReducers } from 'redux'
 
 import {
   zeroActionsReducer,
@@ -89,9 +91,11 @@ const otherReducers = combineReducers(Object.assign({
   vcfOptions: createSingleObjectReducer('UPDATE_VCF_OPTIONS'),
   bamOptions: createSingleObjectReducer('UPDATE_BAM_OPTIONS'),
   user: createSingleObjectReducer('UPDATE_USER'),
-  initialSettingsUrl: createSingleValueReducer('UPDATE_INITIAL_SETTINGS_URL', ''),
   initialSettings: createSingleValueReducer('UPDATE_INITIAL_SETTINGS', {}),
+  initialSettingsUrl: createSingleValueReducer('UPDATE_INITIAL_SETTINGS_URL', ''),
+  initialSettingsUrlHasBeenApplied: createSingleValueReducer('UPDATE_INITIAL_SETTINGS_URL_HAS_BEEN_APPLIED', false),
 }, modalReducers))
+
 
 const rootReducer = (state, action) => {
   if (action.type === 'RESET_GLOBAL_STATE') {
@@ -99,6 +103,25 @@ const rootReducer = (state, action) => {
     return action.newState
   }
 
-  return otherReducers(state, action)
+  const nextState = otherReducers(state, action)
+
+  updateLocalStorageAndUrl(nextState)
+  return nextState
 }
-export default rootReducer
+
+
+/**
+ * Initialize and return the Redux store
+ * @param rootReducer
+ * @param initialState
+ * @returns {*}
+ */
+export const createReduxStore = () => {
+
+  const initialState = computeInitialState()
+
+  console.log('Initializing store to:')
+  console.log(initialState)
+
+  return createStore(rootReducer, initialState, compose(applyMiddleware(thunkMiddleware)))
+}
