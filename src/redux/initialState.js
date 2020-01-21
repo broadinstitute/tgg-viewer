@@ -100,7 +100,7 @@ export const DEFAULT_STATE = {
     hideAnnotated: false,
     hideUnannotated: false,
     colorBy: 'strand',
-    minUniquelyMappedReads: 1,
+    minUniquelyMappedReads: 0,
     minTotalReads: 1,
     maxFractionMultiMappedReads: 1,
     minSplicedAlignmentOverhang: 0,
