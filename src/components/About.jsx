@@ -18,16 +18,15 @@ const AboutLink = () => (
     modalName="AboutModal"
     trigger={<LinkButton>About</LinkButton>}
   >
-    This is a free, open-source web app for visualizing splice junctions, expression, and other
-    sequencing data in a genome-wide interactive interface built around <a href="https://github.com/igvteam/igv.js" target="_blank">IGV.js</a><br />
+    This is a free, open-source web app for visualizing splice junctions, expression, and other sequencing data genome-wide using <a href="https://github.com/igvteam/igv.js" target="_blank">IGV.js</a><br />
     <br />
     Main features: <br />
     <ul>
-      <li>Supported formats include: .bigWig, .junctions.bed.gz, .vcf, .bam, .cram.</li>
+      <li>Supports these file formats: .bigWig, .junctions.bed.gz, .vcf, .bam, .cram.</li>
       <li>Includes reference tracks from GTEx v8 muscle, blood, and fibroblast samples.</li>
-      <li>Visualize your own data files or reference tracks as long as they are in Google buckets to which you read-access.</li>
-      <li>IGV.js reads just the on-screen sections of the files directly from the Google buckets.</li>
-      <li>Upload locus or gene lists to quickly navigate to these loci.</li>
+      <li>Lets you display data files or reference tracks from any Google bucket to which you have read-access.</li>
+      <li>Retrieves just the on-screen sections of the files directly from Google buckets.</li>
+      <li>Allows gene or locus lists to be added to side bars for quick navigation across a list of regions.</li>
     </ul>
 
     <a href="https://github.com/macarthur-lab/rnaseq-viewer/issues" target="_blank">Issues</a>
