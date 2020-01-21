@@ -69,23 +69,23 @@ const REFERENCE_DATA_INFO_LIST = [
     coverage: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_fibs.504_samples.bigWig`,
   },
   {
-    name: 'splice AI SNVs',
+    name: 'splice AI scores - SNVs',
     coverage: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.all.bigWig`,
   },
   {
-    name: 'splice AI SNVs - alt allele A',
+    name: 'splice AI scores - SNVs - alt allele A',
     coverage: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.alt-allele-A.bigWig`,
   },
   {
-    name: 'splice AI SNVs - alt allele C',
+    name: 'splice AI scores - SNVs - alt allele C',
     coverage: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.alt-allele-C.bigWig`,
   },
   {
-    name: 'splice AI SNVs - alt allele G',
+    name: 'splice AI scores - SNVs - alt allele G',
     coverage: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.alt-allele-G.bigWig`,
   },
   {
-    name: 'splice AI SNVs - alt allele T',
+    name: 'splice AI scores - SNVs - alt allele T',
     coverage: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.alt-allele-T.bigWig`,
   },
   /*
