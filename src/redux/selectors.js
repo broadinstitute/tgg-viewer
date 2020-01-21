@@ -120,6 +120,23 @@ export const getTracks = createSelector(
           height: sjOptions.trackHeight,
           order: i * 10 + 1,
         }
+
+        if (sample.coverage.includes('spliceai')) {
+          coverageTrack.color = (value) => {
+            let c
+            if (value < 0.5) {
+              c = 'rgb(180,180,180)'
+            }
+            else if (value < 0.8) {
+              c = 'rgb(180,180,0)'
+            }
+            else {
+              c = 'rgb(200,0,0)'
+            }
+
+            return c
+          }
+        }
       }
 
       if (coverageTrack && junctionsTrack) {

@@ -68,6 +68,26 @@ const REFERENCE_DATA_INFO_LIST = [
     junctions: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_fibs.504_samples.normalized.junctions.bed.gz`,
     coverage: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_fibs.504_samples.bigWig`,
   },
+  {
+    name: 'splice AI SNVs',
+    coverage: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.all.bigWig`,
+  },
+  {
+    name: 'splice AI SNVs - alt allele A',
+    coverage: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.alt-allele-A.bigWig`,
+  },
+  {
+    name: 'splice AI SNVs - alt allele C',
+    coverage: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.alt-allele-C.bigWig`,
+  },
+  {
+    name: 'splice AI SNVs - alt allele G',
+    coverage: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.alt-allele-G.bigWig`,
+  },
+  {
+    name: 'splice AI SNVs - alt allele T',
+    coverage: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.alt-allele-T.bigWig`,
+  },
   /*
   {
     name: 'Gencode v32 Genes',
