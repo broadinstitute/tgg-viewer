@@ -26,8 +26,8 @@ const AboutLink = () => (
       <li>View your own samples or reference tracks as long as the files are in a Google bucket you have read-access to.</li>
       <li>IGV.js reads just the on-screen sections of the files directly from the Google buckets.</li>
       <li>View tracks in any format supported by IGV.js including: .bigWig, .vcf, .bam, .cram, .gtf, .bed, and .junctions.bed.gz.</li>
-      <li>Includes reference tracks from GTEx v8 muscle, blood, and fibroblast samples which show splice junctions and expression levels for comparison with your samples.</li>
-      <li>Upload locus or gene lists to quickly jump between these loci.</li>
+      <li>Includes reference tracks from GTEx v8 muscle, blood, and fibroblast samples which show splice junctions and expression levels for comparison.</li>
+      <li>Upload locus or gene lists to quickly navigate to these loci.</li>
     </ul>
 
     <a href="https://github.com/macarthur-lab/rnaseq-viewer/issues" target="_blank">Issues</a>
