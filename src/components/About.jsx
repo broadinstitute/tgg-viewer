@@ -1,9 +1,9 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable react/no-unescaped-entities */
+/* eslint-disable  react/jsx-closing-tag-location */
 
 import React from 'react'
 import styled from 'styled-components'
-//import { Form, TextArea } from 'semantic-ui-react'
 import Modal from './Modal'
 
 const LinkButton = styled.a`
@@ -18,16 +18,16 @@ const AboutLink = () => (
     modalName="AboutModal"
     trigger={<LinkButton>About</LinkButton>}
   >
-    This RNA-seq viewer is a free, open-source web tool for visualizing splice junctions, expression, and other
-    sequencing data in an interactive genome-wide interface similar to <a href="https://software.broadinstitute.org/software/igv/" target="_blank">IGV</a>. It's main features are: <br />
+    This is a free, open-source web app for looking at splice junctions, expression, and other
+    sequencing data in a genome-wide interactive interface. It's built around <a href="https://github.com/igvteam/igv.js" target="_blank">IGV.js</a><br />
+    <br />
+    Main features: <br />
     <ul>
-      <li>
-        Easy to add and view your own samples and reference tracks (including .bed, .junctions.bed.gz, .bigWig, .vcf, and .bam/.cram).
-        This can be done by putting your files in a Google bucket, logging in to your Google account when first prompted by RNA-seq viewer, and
-        then using the 'Add Paths' or 'Initial settings' to specify your file locations (gs:// paths)
-      </li>
-      <li>Provides reference data tracks relevant to RNA-seq analysis</li>
-      <li>Custom locus or gene lists let you quickly look through multiple loci</li>
+      <li>View your own samples or reference tracks as long as the files are in a Google bucket you have read-access to.</li>
+      <li>IGV.js reads just the on-screen sections of the files directly from the Google buckets.</li>
+      <li>View tracks in any format supported by IGV.js including: .bigWig, .vcf, .bam, .cram, .gtf, .bed, and .junctions.bed.gz.</li>
+      <li>Includes reference tracks from GTEx v8 muscle, blood, and fibroblast samples which show splice junctions and expression levels for comparison with your samples.</li>
+      <li>Upload locus or gene lists to quickly jump between these loci.</li>
     </ul>
 
     <a href="https://github.com/macarthur-lab/rnaseq-viewer/issues" target="_blank">Issues</a>
