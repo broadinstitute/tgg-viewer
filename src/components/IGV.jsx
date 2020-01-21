@@ -64,6 +64,7 @@ class IGV extends React.Component {
     const googleUserEmail = await getGoogleUserEmail()
     userChangedHandler(googleUserEmail)
 
+    console.log('Calling igv.createBrowser(..)', igvBrowserOptions)
     igv.createBrowser(this.container, igvBrowserOptions).then((browser) => {
       this.browser = browser
 
@@ -89,7 +90,6 @@ class IGV extends React.Component {
     }
 
     const {
-      locus,
       tracks,
       sjOptions,
       vcfOptions,
@@ -97,8 +97,10 @@ class IGV extends React.Component {
     } = this.props
 
 
-    if (nextProps.locus && nextProps.locus !== locus) {
-      this.browser.search(nextProps.locus)
+    const currentIGVLocus = this.browser.$searchInput.val()
+    const nextIGVLocus = nextProps.locus
+    if (nextProps.locus && (!currentIGVLocus || nextIGVLocus.replace(/,/g, '') !== currentIGVLocus.replace(/,/g, ''))) {
+      this.browser.search(nextIGVLocus)
     }
 
     const nextTrackSettingsByTrackName = nextProps.tracks.reduce((acc, item) => {
@@ -117,6 +119,7 @@ class IGV extends React.Component {
           || (nextProps.vcfOptions !== vcfOptions && track.type === 'variant')
           || (nextProps.bamOptions !== bamOptions && track.type === 'alignment')
         ) {
+          console.log('reloading track', track.name)
           this.ignoreNextTrackRemovedEvent = true
           this.browser.removeTrackByName(track.name)
           this.browser.loadTrack(nextTrackSettings)
@@ -129,6 +132,7 @@ class IGV extends React.Component {
         // remove track that was de-selected
         try {
           this.ignoreNextTrackRemovedEvent = true
+          console.log('removing track', track.name)
           this.browser.removeTrackByName(track.name)
         } catch (e) {
           console.warn('Unable to remove track', track.name, e)
@@ -139,6 +143,7 @@ class IGV extends React.Component {
     // load any newly-selected track(s)
     Object.values(nextTrackSettingsByTrackName).forEach((track) => {
       try {
+        console.log('loading track', track.name)
         this.browser.loadTrack(track)
       } catch (e) {
         console.warn('Unable to add track', track.name, e)
@@ -178,7 +183,7 @@ const mapDispatchToProps = (dispatch) => ({
   },
 
   trackRemovedHandler: (track) => {
-    console.log('Removing track', track.config.categoryName, track.config.name)
+    console.log('removing track', track.config.categoryName, track.config.name)
 
     dispatch({
       type: 'REMOVE_SELECTED_SAMPLE_NAMES',
