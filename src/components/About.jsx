@@ -23,7 +23,7 @@ const AboutLink = () => (
     <br />
     Main features: <br />
     <ul>
-      <li>Supported formats include: .bigWig, .vcf, .bam, .cram, .gtf, .bed.gz, and .junctions.bed.gz.</li>
+      <li>Supported formats include: .bigWig, .junctions.bed.gz, .vcf, .bam, .cram.</li>
       <li>Includes reference tracks from GTEx v8 muscle, blood, and fibroblast samples.</li>
       <li>Visualize your own data files or reference tracks as long as they are in Google buckets to which you read-access.</li>
       <li>IGV.js reads just the on-screen sections of the files directly from the Google buckets.</li>
