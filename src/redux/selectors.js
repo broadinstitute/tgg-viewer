@@ -1,4 +1,5 @@
 /* eslint-disable no-nested-ternary */
+/* eslint-disable object-shorthand */
 
 import { createSelector } from 'reselect'
 import { getGoogleAccessToken } from '../utils/googleAuth'
@@ -73,7 +74,7 @@ export const getTracks = createSelector(
   (selectedSamplesByCategoryName, sjOptions, vcfOptions, bamOptions) => {
     const igvTracks = []
 
-    Object.values(selectedSamplesByCategoryName).forEach((selectedSamples) => selectedSamples.forEach((sample, i) => {
+    Object.entries(selectedSamplesByCategoryName).forEach(([categoryName, selectedSamples]) => selectedSamples.forEach((sample, i) => {
       //docs @ https://github.com/igvteam/igv.js/wiki/Wig-Track
       let junctionsTrack
       if (sample.junctions && sjOptions.showJunctions) {
@@ -85,6 +86,7 @@ export const getTracks = createSelector(
           oauthToken: getGoogleAccessToken,
           order: i * 10,
           name: sample.name,
+          categoryName: categoryName,
           height: sjOptions.trackHeight,
           minUniquelyMappedReads: sjOptions.minUniquelyMappedReads,
           minTotalReads: sjOptions.minTotalReads,
@@ -114,6 +116,7 @@ export const getTracks = createSelector(
           url: sample.coverage,
           oauthToken: getGoogleAccessToken,
           name: sample.name,
+          categoryName: categoryName,
           height: sjOptions.trackHeight,
           order: i * 10 + 1,
         }
@@ -124,6 +127,7 @@ export const getTracks = createSelector(
         igvTracks.push({
           type: 'merged',
           name: sample.name,
+          categoryName: categoryName,
           height: sjOptions.trackHeight,
           tracks: [coverageTrack, junctionsTrack],
           order: i * 10 + 2,
@@ -133,6 +137,7 @@ export const getTracks = createSelector(
         igvTracks.push({
           type: 'merged',
           name: sample.name,
+          categoryName: categoryName,
           height: sjOptions.trackHeight,
           tracks: [junctionsTrack],
           order: i * 10 + 3,
@@ -153,6 +158,7 @@ export const getTracks = createSelector(
           indexUrl: `${sample.vcf}.tbi`,
           indexed: true,
           name: `${sample.name} vcf`,
+          categoryName: categoryName,
           displayMode: vcfOptions.displayMode,
           oauthToken: getGoogleAccessToken,
           order: i * 10 + 4,
@@ -168,6 +174,7 @@ export const getTracks = createSelector(
           url: sample.bam,
           indexed: true,
           name: `${sample.name} bam`,
+          categoryName: categoryName,
           height: bamOptions.trackHeight,
           colorBy: bamOptions.colorBy,
           viewAsPairs: bamOptions.viewAsPairs,

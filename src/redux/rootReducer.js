@@ -52,7 +52,6 @@ const selectedSampleNamesByCategoryNameReducer = (state, action) => {
   }
 
   const previousList = state[action.categoryName] || []
-
   switch (action.type) {
     case 'SET_SELECTED_SAMPLE_NAMES':
     case 'ADD_SELECTED_SAMPLE_NAMES':

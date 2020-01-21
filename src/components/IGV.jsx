@@ -178,9 +178,12 @@ const mapDispatchToProps = (dispatch) => ({
   },
 
   trackRemovedHandler: (track) => {
+    console.log('Removing track', track.config.categoryName, track.config.name)
+
     dispatch({
       type: 'REMOVE_SELECTED_SAMPLE_NAMES',
-      values: [track.name],
+      categoryName: [track.config.categoryName],
+      selectedSampleNames: [track.config.name],
     })
   },
 })
