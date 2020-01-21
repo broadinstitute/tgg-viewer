@@ -68,7 +68,7 @@ class InitialSettingsForm extends React.PureComponent
 
     if (!url) {
       //reset url to empty
-      resetGlobalState(DEFAULT_STATE)
+      resetGlobalState({ ...DEFAULT_STATE, ...{ user: globalState.user } })
       updateInitialSettingsUrl('')
       setInitialSettingsUrlHasBeenApplied()
       return
