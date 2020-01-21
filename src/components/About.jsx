@@ -18,15 +18,15 @@ const AboutLink = () => (
     modalName="AboutModal"
     trigger={<LinkButton>About</LinkButton>}
   >
-    This is a free, open-source web app for looking at splice junctions, expression, and other
-    sequencing data in a genome-wide interactive interface. It's built around <a href="https://github.com/igvteam/igv.js" target="_blank">IGV.js</a><br />
+    This is a free, open-source web app for visualizing splice junctions, expression, and other
+    sequencing data in a genome-wide interactive interface built around <a href="https://github.com/igvteam/igv.js" target="_blank">IGV.js</a><br />
     <br />
     Main features: <br />
     <ul>
-      <li>View your own samples or reference tracks as long as the files are in a Google bucket you have read-access to.</li>
+      <li>Supported formats include: .bigWig, .vcf, .bam, .cram, .gtf, .bed.gz, and .junctions.bed.gz.</li>
+      <li>Includes reference tracks from GTEx v8 muscle, blood, and fibroblast samples.</li>
+      <li>Visualize your own data files or reference tracks as long as they are in Google buckets to which you read-access.</li>
       <li>IGV.js reads just the on-screen sections of the files directly from the Google buckets.</li>
-      <li>View tracks in any format supported by IGV.js including: .bigWig, .vcf, .bam, .cram, .gtf, .bed, and .junctions.bed.gz.</li>
-      <li>Includes reference tracks from GTEx v8 muscle, blood, and fibroblast samples which show splice junctions and expression levels for comparison.</li>
       <li>Upload locus or gene lists to quickly navigate to these loci.</li>
     </ul>
 
