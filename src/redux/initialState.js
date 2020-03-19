@@ -149,6 +149,13 @@ export const DEFAULT_STATE = {
     showSoftClips: true,
     alignmentShading: 'strand',
   },
+  gcnvOptions: {
+    trackHeight: 200,
+    trackMin: 0,
+    trackMax: 5,
+    autoscale: false,
+    onlyHandleClicksForHighlightedSamples: true,
+  },
   initialSettingsUrl: '',
 }
 
@@ -158,8 +165,9 @@ const KEYS_TO_PERSIST_IN_URL = {
   locus: 'locus',
   selectedSampleNamesByCategoryName: 'selectedSamples',
   sjOptions: 'sjOptions',
-  bamOptions: 'bamOptions',
   vcfOptions: 'vcfOptions',
+  bamOptions: 'bamOptions',
+  gcnvOptions: 'gcnvOptions',
   initialSettingsUrl: 'settingsUrl',
   initialSettingsUrlHasBeenApplied: 'settingsUrlApplied',
 }

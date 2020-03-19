@@ -89,6 +89,7 @@ const otherReducers = combineReducers(Object.assign({
   sjOptions: createSingleObjectReducer('UPDATE_SJ_OPTIONS'),
   vcfOptions: createSingleObjectReducer('UPDATE_VCF_OPTIONS'),
   bamOptions: createSingleObjectReducer('UPDATE_BAM_OPTIONS'),
+  gcnvOptions: createSingleObjectReducer('UPDATE_BAM_OPTIONS'),
   user: createSingleObjectReducer('UPDATE_USER'),
   initialSettings: createSingleValueReducer('UPDATE_INITIAL_SETTINGS', {}),
   initialSettingsUrl: createSingleValueReducer('UPDATE_INITIAL_SETTINGS_URL', ''),

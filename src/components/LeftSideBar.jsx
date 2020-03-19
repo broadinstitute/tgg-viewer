@@ -17,7 +17,9 @@ const CategoryDetails = styled.div`
   white-space: nowrap;
 `
 
-const StyledIcon = styled.div.attrs({ name: 'stop' })`
+const DataTypeIcon = styled.div.attrs({ name: 'stop' })`
+  color: ${(props) => props.color};
+  border: 3px solid ${(props) => props.color};
   display: inline-block;
   width: 6px;
   border-radius: 1px;
@@ -25,25 +27,12 @@ const StyledIcon = styled.div.attrs({ name: 'stop' })`
   cursor: pointer;
 `
 
-const JunctionsIcon = styled(StyledIcon)`
-   color: #B0B0EC;
-   border: 3px solid #B0B0EC;
-`
-
-const CoverageIcon = styled(StyledIcon)`
-   color: #B5D29A;
-   border: 3px solid #B5D29A;
-`
-
-const BamIcon = styled(StyledIcon)`
-   color: #5CB6EA;
-   border: 3px solid #5CB6EA;
-`
-
-const VcfIcon = styled(StyledIcon)`
-   color: #E6A01B;
-   border: 3px solid #E6A01B;
-`
+const dataTypeIconColors = {
+  junctions: '#B0B0EC',
+  coverage: '#B5D29A',
+  bam: '#B5D29A',
+  vcf: '#E6A01B',
+}
 
 const LinkButton = styled.a`
   cursor: pointer;
@@ -62,19 +51,7 @@ const NoWrapDiv = styled.div`
 
 const SampleColorLabelsWithPopup = ({ sample }) => {
   const handleCopyToClipboard = () => {
-    let s = ''
-    if (sample.coverage) {
-      s += `${sample.coverage}\n`
-    }
-    if (sample.junctions) {
-      s += `${sample.junctions}\n`
-    }
-    if (sample.vcf) {
-      s += `${sample.vcf}\n`
-    }
-    if (sample.bam) {
-      s += `${sample.bam}\n`
-    }
+    const s = (sample.data || []).map((d) => d.url).join('\n')
     navigator.clipboard.writeText(s)
   }
 
@@ -82,10 +59,9 @@ const SampleColorLabelsWithPopup = ({ sample }) => {
     content={
       <table>
         <tbody>
-          { sample.junctions && <tr><td style={{ paddingRight: '10px' }}><b>Junctions:</b></td><td><NoWrapDiv>{sample.junctions}</NoWrapDiv></td></tr>}
-          { sample.coverage && <tr><td><b>Coverage:</b></td><td><NoWrapDiv>{sample.coverage}</NoWrapDiv></td></tr>}
-          { sample.bam && <tr><td><b>Bam:</b></td><td><NoWrapDiv>{sample.bam}</NoWrapDiv></td></tr>}
-          { sample.vcf && <tr><td><b>Vcf:</b></td><td><NoWrapDiv>{sample.vcf}</NoWrapDiv></td></tr>}
+          {
+            (sample.data || []).map((d) => <tr><td style={{ paddingRight: '10px' }}><b>{d.type.toUpperCase()}:</b></td><td><NoWrapDiv>{d.url}</NoWrapDiv></td></tr>)
+          }
           <tr><td colSpan={2}><div style={{ fontSize: 'small', color: 'grey', marginTop: '10px' }}>(click to copy paths)</div></td></tr>
         </tbody>
       </table>
@@ -93,10 +69,9 @@ const SampleColorLabelsWithPopup = ({ sample }) => {
     position="right center"
     trigger={
       <SampleColorLabelsContainer onClick={handleCopyToClipboard}>
-        {sample.junctions && <JunctionsIcon />}
-        {sample.coverage && <CoverageIcon />}
-        {sample.bam && <BamIcon />}
-        {sample.vcf && <VcfIcon />}
+        {
+          (sample.data || []).map((d) => <DataTypeIcon color={dataTypeIconColors[d.type]} />)
+        }
       </SampleColorLabelsContainer>
     }
     style={{ marginLeft: '2px' }}
@@ -216,19 +191,19 @@ class LeftSideBar extends React.PureComponent
         <CategoryH3>TRACK TYPES TO SHOW PER SAMPLE</CategoryH3>
         <OptionDiv>
           <Checkbox label="RNA splice junctions" checked={sjOptions.showJunctions} onChange={(e, data) => updateSjOptions({ showJunctions: data.checked })} />
-          <SampleColorLabelsContainer><Popup content="This color stripe marks samples that have splice junction data. Select this checkbox to show a splice junction track for each sample selected below." position="right center" trigger={<JunctionsIcon />} /></SampleColorLabelsContainer>
+          <SampleColorLabelsContainer><Popup content="This color stripe marks samples that have splice junction data. Select this checkbox to show a splice junction track for each sample selected below." position="right center" trigger={<DataTypeIcon color={dataTypeIconColors.junctions} />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <OptionDiv>
           <Checkbox label="RNA coverage" checked={sjOptions.showCoverage} onChange={(e, data) => updateSjOptions({ showCoverage: data.checked })} />
-          <SampleColorLabelsContainer><Popup content="This color stripe marks samples that have coverage data. Select this checkbox to show a coverage track for each sample selected below." position="right center" trigger={<CoverageIcon />} /></SampleColorLabelsContainer>
+          <SampleColorLabelsContainer><Popup content="This color stripe marks samples that have coverage data. Select this checkbox to show a coverage track for each sample selected below." position="right center" trigger={<DataTypeIcon color={dataTypeIconColors.coverage} />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <OptionDiv>
           <Checkbox label="BAM track" checked={bamOptions.showBams} onChange={(e, data) => updateBamOptions({ showBams: data.checked })} />
-          <SampleColorLabelsContainer><Popup content="This color stripe marks samples that have alignment data. Select this checkbox to show a bam track for each sample selected below." position="right center" trigger={<BamIcon />} /></SampleColorLabelsContainer>
+          <SampleColorLabelsContainer><Popup content="This color stripe marks samples that have alignment data. Select this checkbox to show a bam track for each sample selected below." position="right center" trigger={<DataTypeIcon color={dataTypeIconColors.bam} />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <OptionDiv>
           <Checkbox label="VCF track" checked={vcfOptions.showVcfs} onChange={(e, data) => updateVcfOptions({ showVcfs: data.checked })} />
-          <SampleColorLabelsContainer><Popup content="This color stripe marks samples that have splice junction data. Select this checkbox to show a vcf track for each sample selected below." position="right center" trigger={<VcfIcon />} /></SampleColorLabelsContainer>
+          <SampleColorLabelsContainer><Popup content="This color stripe marks samples that have splice junction data. Select this checkbox to show a vcf track for each sample selected below." position="right center" trigger={<DataTypeIcon color={dataTypeIconColors.vcf} />} /></SampleColorLabelsContainer>
         </OptionDiv>
         <SamplesPanel
           samplesInCategories={samplesInCategories}
