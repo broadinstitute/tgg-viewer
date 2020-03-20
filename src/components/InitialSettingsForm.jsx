@@ -147,6 +147,19 @@ class InitialSettingsForm extends React.PureComponent
     }
   }
 
+  exportCurrentSettings = () => {
+    //convert global state to a JSON string
+    const excludedKeys = ['initialSettings', 'initialSettingsUrlHasBeenApplied', 'user', 'modals']
+    const globalStateForExport = Object.keys(this.props.globalState).reduce((acc, key) => {
+      if (!excludedKeys.includes(key)) {
+        acc[key] = this.props.globalState[key]
+      }
+      return acc
+    }, {})
+
+    return encodeURIComponent(JSON.stringify(globalStateForExport, null, 5))
+  }
+
   render() {
     const {
       initialSettingsUrl,
@@ -171,6 +184,10 @@ class InitialSettingsForm extends React.PureComponent
           errorMessage={this.state.errorMessage}
           successMessage={this.state.successMessage}
         />
+        <div align="center">
+          <br />
+          <a download="settings.json" href={`data:text/json;charset=utf-8,${this.exportCurrentSettings()}`}>Export Current Settings</a>
+        </div>
       </StyledDiv>)
   }
 }
