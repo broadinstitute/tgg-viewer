@@ -30,7 +30,7 @@
     "fs-extra": "7.0.1",
     "html-webpack-plugin": "4.0.0-beta.5",
     "identity-obj-proxy": "3.0.0",
-    "igv": "^2.4.0",
+    "igv": "^2.5.4",
     "is-wsl": "^1.1.0",
     "jest": "24.9.0",
     "jest-environment-jsdom-fourteen": "0.1.0",
@@ -38,6 +38,7 @@
     "jest-watch-typeahead": "0.4.0",
     "js-yaml": "^3.13.1",
     "jsurl": "^0.1.5",
+    "lz-string": "^1.4.4",
     "mini-css-extract-plugin": "0.8.0",
     "optimize-css-assets-webpack-plugin": "5.0.3",
     "pnp-webpack-plugin": "1.5.0",
@@ -156,7 +157,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/macarthur-lab/rnaseq-viewer.git"
+    "url": "git+https://github.com/broadinstitute/tgg-viewer.git"
   },
   "license": "MIT"
 }

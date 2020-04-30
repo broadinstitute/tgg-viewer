@@ -1,3 +1,8 @@
+import LZString from 'lz-string'
+
+/* in-memory cache to avoid unnecessary compression/decompression */
+const CACHE = {}
+
 /**
  * Uses the localStorage API to save a state object in the browser under the given label.
  * @param label {string}
@@ -5,10 +10,15 @@
  */
 export const saveState = (label, state) => {
   try {
-    const serializedState = JSON.stringify(state)
+    const jsonString = JSON.stringify(state)
+    if (CACHE[label] === jsonString) {
+      return
+    }
+
+    const serializedState = LZString.compress(jsonString)
     localStorage.setItem(label, serializedState)
   } catch (err) {
-    // Ignore write errors.
+    console.warn('Unable to save state: ', label, state, err)
   }
 }
 
@@ -21,10 +31,14 @@ export const saveState = (label, state) => {
 export const loadState = (label) => {
   try {
     const serializedState = localStorage.getItem(label)
-    if (serializedState === null) {
+    const jsonString = LZString.decompress(serializedState)
+    CACHE[label] = jsonString
+
+    if (jsonString === null) {
       return undefined
     }
-    return JSON.parse(serializedState)
+
+    return JSON.parse(jsonString)
   } catch (err) {
     return undefined
   }
