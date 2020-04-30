@@ -60,7 +60,11 @@ const RowColorLabelsWithPopup = ({ row }) => {
       <table>
         <tbody>
           {
-            (row.data || []).map((d) => <tr key={d.url}><td style={{ paddingRight: '10px' }}><b>{d.type.toUpperCase()}:</b></td><td><NoWrapDiv>{d.url}</NoWrapDiv></td></tr>)
+            (row.data || []).map((d) =>
+              <tr key={d.url}><td style={{ paddingRight: '10px' }}>
+                <b>{d.type && d.type.toUpperCase()}:</b></td><td><NoWrapDiv>{d.url}</NoWrapDiv></td>
+              </tr>
+            )
           }
           <tr><td colSpan={2}><div style={{ fontSize: 'small', color: 'grey', marginTop: '10px' }}>(click to copy paths)</div></td></tr>
         </tbody>

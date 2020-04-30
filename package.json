@@ -157,7 +157,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/macarthur-lab/rnaseq-viewer.git"
+    "url": "git+https://github.com/broadinstitute/tgg-viewer.git"
   },
   "license": "MIT"
 }
