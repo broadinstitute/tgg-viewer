@@ -1,4 +1,6 @@
 /* eslint-disable react/jsx-one-expression-per-line */
+/* eslint-disable implicit-arrow-linebreak */
+
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -30,7 +32,7 @@ const DataTypeIcon = styled.div.attrs({ name: 'stop' })`
 const dataTypeIconColors = {
   junctions: '#B0B0EC',
   coverage: '#B5D29A',
-  bam: '#B5D29A',
+  alignment: '#5DB6E9',
   vcf: '#E6A01B',
 }
 
@@ -61,9 +63,9 @@ const RowColorLabelsWithPopup = ({ row }) => {
         <tbody>
           {
             (row.data || []).map((d) =>
-              <tr key={d.url}><td style={{ paddingRight: '10px' }}>
-                <b>{d.type && d.type.toUpperCase()}:</b></td><td><NoWrapDiv>{d.url}</NoWrapDiv></td>
-              </tr>
+              <tr key={d.url}>
+                <td style={{ paddingRight: '10px' }}><b>{d.type && d.type.toUpperCase()}:</b></td><td><NoWrapDiv>{d.url}</NoWrapDiv></td>
+              </tr>,
             )
           }
           <tr><td colSpan={2}><div style={{ fontSize: 'small', color: 'grey', marginTop: '10px' }}>(click to copy paths)</div></td></tr>
@@ -203,7 +205,7 @@ class LeftSideBar extends React.PureComponent
         </OptionDiv>
         <OptionDiv>
           <Checkbox label="BAM track" checked={bamOptions.showBams} onChange={(e, data) => updateBamOptions({ showBams: data.checked })} />
-          <RowColorLabelsContainer><Popup content="This color stripe marks rows that have alignment data. Select this checkbox to show a bam track for each row selected below." position="right center" trigger={<DataTypeIcon color={dataTypeIconColors.bam} />} /></RowColorLabelsContainer>
+          <RowColorLabelsContainer><Popup content="This color stripe marks rows that have alignment data. Select this checkbox to show a bam track for each row selected below." position="right center" trigger={<DataTypeIcon color={dataTypeIconColors.alignment} />} /></RowColorLabelsContainer>
         </OptionDiv>
         <OptionDiv>
           <Checkbox label="VCF track" checked={vcfOptions.showVcfs} onChange={(e, data) => updateVcfOptions({ showVcfs: data.checked })} />
