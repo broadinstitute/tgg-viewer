@@ -9,8 +9,8 @@ export const getLocus = (state) => state.locus
 export const getRightSideBarLocusList = (state) => state.rightSideBarLocusList
 export const getLeftSideBarLocusList = (state) => state.leftSideBarLocusList
 export const getGenome = (state) => state.genome
-export const getSamplesInCategories = (state) => state.samplesInCategories
-export const getSelectedSampleNamesByCategoryName = (state) => state.selectedSampleNamesByCategoryName
+export const getRowsInCategories = (state) => state.rowsInCategories
+export const getSelectedRowNamesByCategoryName = (state) => state.selectedRowNamesByCategoryName
 export const getSjOptions = (state) => state.sjOptions
 export const getVcfOptions = (state) => state.vcfOptions
 export const getBamOptions = (state) => state.bamOptions
@@ -21,77 +21,53 @@ export const getInitialSettingsUrl = (state) => state.initialSettingsUrl
 export const getInitialSettingsUrlHasBeenApplied = (state) => state.initialSettingsUrlHasBeenApplied
 
 
-/**
- * Expects sample info like:
- *
- * [
- *    {
- *      label: 'category1',
- *      samples : [
- *          { sample1 .. },
- *          { sample2 .. },
- *          ...
- *      ]
- *    },
- *    {
- *      label: 'category2',
- *      samples : [
- *        { sample3 .. },
- *        { sample4 .. },
- *        ...
- *      ]
- *    },
- * ]
- */
-
-
-export const getSamplesByCategoryName = createSelector(
-  getSamplesInCategories,
-  (samplesInCategories) => {
-    return samplesInCategories.reduce((acc, category) => {
-      return { ...acc, [category.categoryName]: category.samples }
+export const getRowsByCategoryName = createSelector(
+  getRowsInCategories,
+  (rowsInCategories) => {
+    return rowsInCategories.reduce((acc, category) => {
+      return { ...acc, [category.categoryName]: category.rows }
     }, {})
   })
 
 
-export const getSelectedSamplesByCategoryName = createSelector(
-  getSelectedSampleNamesByCategoryName,
-  getSamplesByCategoryName,
-  (selectedSampleNamesByCategoryName, samplesByCategoryName) => {
-    return Object.entries(selectedSampleNamesByCategoryName).reduce((acc, [categoryName, selectedSampleNames]) => {
-      if (!samplesByCategoryName[categoryName]) {
+export const getSelectedRowsByCategoryName = createSelector(
+  getSelectedRowNamesByCategoryName,
+  getRowsByCategoryName,
+  (selectedRowNamesByCategoryName, rowsByCategoryName) => {
+    return Object.entries(selectedRowNamesByCategoryName).reduce((acc, [categoryName, selectedRowNames]) => {
+      if (!rowsByCategoryName[categoryName]) {
         return acc
       }
-      return { ...acc, [categoryName]: samplesByCategoryName[categoryName].filter((sample) => selectedSampleNames.includes(sample.name)) }
+      return { ...acc, [categoryName]: rowsByCategoryName[categoryName].filter((row) => selectedRowNames.includes(row.name)) }
     }, {})
   })
 
 
 export const getTracks = createSelector(
-  getSelectedSamplesByCategoryName,
+  getSelectedRowsByCategoryName,
   getSjOptions,
   getVcfOptions,
   getBamOptions,
   getGcnvOptions,
-  (selectedSamplesByCategoryName, sjOptions, vcfOptions, bamOptions, gcnvOptions) => {
+  (selectedRowsByCategoryName, sjOptions, vcfOptions, bamOptions, gcnvOptions) => {
     const igvTracks = []
 
-    Object.entries(selectedSamplesByCategoryName).forEach(([categoryName, selectedSamples]) => selectedSamples.forEach((sample, i) => {
+    Object.entries(selectedRowsByCategoryName).forEach(([categoryName, selectedRows]) => selectedRows.forEach((row, i) => {
       let junctionsTrack
       let coverageTrack
-      (sample.data || []).forEach((data, j) => {
+      (row.data || []).forEach((data, j) => {
         //docs @ https://github.com/igvteam/igv.js/wiki/Wig-Track
 
-        if (data.type === 'gcnv' && vcfOptions.showGcnv) {
+        if (data.type === 'gcnv_bed') { // && vcfOptions.showGcnv
           //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
           console.log(`Adding ${data.url} track #`, i * 100 + j)
 
           igvTracks.push({
             type: 'gcnv',
             format: 'gcnv',
-            name: `${sample.name} ${data.label}`,
-            url: data.url,
-            indexUrl: `${data.url}.tbi`,
+            name: `${row.name} ${data.label || ''}`,
+            url: data.url.replace('gs://fc-secure-e2c5f2a5-2e76-4c01-a264-419262b2c7c8/dcr_tabs', 'http://localhost:63342/igv.js-bw2/dev/data/gcnv'),
+            indexUrl: `${data.url.replace('gs://fc-secure-e2c5f2a5-2e76-4c01-a264-419262b2c7c8/dcr_tabs ', 'http://localhost:63342/igv.js-bw2/dev/data/gcnv')}.tbi`,
             height: gcnvOptions.trackHeight,
             min: gcnvOptions.trackMin,
             max: gcnvOptions.trackMax,
@@ -112,7 +88,7 @@ export const getTracks = createSelector(
             indexURL: `${data.url}.tbi`,
             oauthToken: getGoogleAccessToken,
             order: i * 10,
-            name: sample.name,
+            name: row.name,
             categoryName: categoryName,
             height: sjOptions.trackHeight,
             minUniquelyMappedReads: sjOptions.minUniquelyMappedReads,
@@ -140,7 +116,7 @@ export const getTracks = createSelector(
             format: 'bigwig',
             url: data.url,
             oauthToken: getGoogleAccessToken,
-            name: sample.name,
+            name: row.name,
             categoryName: categoryName,
             height: sjOptions.trackHeight,
             order: i * 10 + j,
@@ -173,7 +149,7 @@ export const getTracks = createSelector(
             url: data.url,
             indexUrl: `${data.url}.tbi`,
             indexed: true,
-            name: `${sample.name} ${data.label || data.type}`,
+            name: `${row.name} ${data.label || data.type}`,
             categoryName: categoryName,
             displayMode: vcfOptions.displayMode,
             oauthToken: getGoogleAccessToken,
@@ -188,7 +164,7 @@ export const getTracks = createSelector(
             type: 'alignment',
             url: data.url,
             indexed: true,
-            name: `${sample.name} ${data.label}`,
+            name: `${row.name} ${data.label || ''}`,
             categoryName: categoryName,
             height: bamOptions.trackHeight,
             colorBy: bamOptions.colorBy,
@@ -219,6 +195,7 @@ export const getTracks = createSelector(
       }
     }))
 
+    /*
     igvTracks.push({
       name: 'Gencode v32 Genes',
       format: 'refgene',
@@ -233,6 +210,7 @@ export const getTracks = createSelector(
       color: 'rgb(76,171,225)',
       oauthToken: getGoogleAccessToken,
     })
+    */
 
     return igvTracks
   },

@@ -22,7 +22,7 @@ export default () => (
   <Grid>
     <HeaderRow>
       <Column1>
-        <b>RNA-seq Viewer:</b>
+        <b>TGG Viewer:</b>
         <AboutLink />
         {/* <a href="#">Intro Video</a> &nbsp; &nbsp; */}
       </Column1>

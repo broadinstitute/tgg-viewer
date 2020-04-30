@@ -101,16 +101,16 @@ const REFERENCE_DATA_INFO_LIST = [
   */
 ]
 
-const SAMPLE_INFO_LIST = []
+const ROW_INFO_LIST = []
 
-const INITIAL_SAMPLES_IN_CATEGORIES = [
+const INITIAL_ROWS_IN_CATEGORIES = [
   {
     categoryName: 'Reference Data',
-    samples: REFERENCE_DATA_INFO_LIST,
+    rows: REFERENCE_DATA_INFO_LIST,
   },
   {
     categoryName: 'Samples',
-    samples: SAMPLE_INFO_LIST,
+    rows: ROW_INFO_LIST,
   },
 ]
 
@@ -119,8 +119,8 @@ export const DEFAULT_STATE = {
   locus: 'chr15:92,835,700-93,031,800',
   leftSideBarLocusList: [],
   rightSideBarLocusList: [],
-  samplesInCategories: INITIAL_SAMPLES_IN_CATEGORIES,
-  selectedSampleNamesByCategoryName: {},
+  rowsInCategories: INITIAL_ROWS_IN_CATEGORIES,
+  selectedRowNamesByCategoryName: {},
   sjOptions: {
     trackHeight: 170,
     showCoverage: true,
@@ -163,7 +163,7 @@ DEFAULT_STATE.initialSettings = JSON.parse(JSON.stringify(DEFAULT_STATE)) // cre
 
 const KEYS_TO_PERSIST_IN_URL = {
   locus: 'locus',
-  selectedSampleNamesByCategoryName: 'selectedSamples',
+  selectedRowNamesByCategoryName: 'selectedSamples',
   sjOptions: 'sjOptions',
   vcfOptions: 'vcfOptions',
   bamOptions: 'bamOptions',
@@ -173,7 +173,7 @@ const KEYS_TO_PERSIST_IN_URL = {
 }
 
 const KEYS_TO_PERSIST_IN_LOCAL_STORAGE = [
-  'samplesInCategories', 'leftSideBarLocusList', 'rightSideBarLocusList',
+  'rowsInCategories', 'leftSideBarLocusList', 'rightSideBarLocusList',
 ]
 
 
@@ -220,7 +220,7 @@ export const computeInitialState = () => {
 
 
 export const updateLocalStorageAndUrl = (state) => {
-
+  console.warn('Updating local storage & url from: ', state)
   //update local storage
   KEYS_TO_PERSIST_IN_LOCAL_STORAGE.forEach((key) => {
     saveState(key, state[key])

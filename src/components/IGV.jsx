@@ -85,7 +85,7 @@ class IGV extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    if (!this.container) {
+    if (!this.container || !this.browser) {
       return false
     }
 
@@ -95,7 +95,6 @@ class IGV extends React.Component {
       vcfOptions,
       bamOptions,
     } = this.props
-
 
     const currentIGVLocus = this.browser.$searchInput.val()
     const nextIGVLocus = nextProps.locus
@@ -186,9 +185,9 @@ const mapDispatchToProps = (dispatch) => ({
     console.log('removing track', track.config.categoryName, track.config.name)
 
     dispatch({
-      type: 'REMOVE_SELECTED_SAMPLE_NAMES',
+      type: 'REMOVE_SELECTED_ROW_NAMES',
       categoryName: [track.config.categoryName],
-      selectedSampleNames: [track.config.name],
+      selectedRowNames: [track.config.name],
     })
   },
 })
