@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable object-shorthand */
+/* eslint-disable array-callback-return */
 
 import { createSelector } from 'reselect'
 import { getGoogleAccessToken } from '../utils/googleAuth'
@@ -9,6 +10,7 @@ export const getLocus = (state) => state.locus
 export const getRightSideBarLocusList = (state) => state.rightSideBarLocusList
 export const getLeftSideBarLocusList = (state) => state.leftSideBarLocusList
 export const getGenome = (state) => state.genome
+export const getDataTypesToShow = (state) => state.dataTypesToShow
 export const getRowsInCategories = (state) => state.rowsInCategories
 export const getSelectedRowNamesByCategoryName = (state) => state.selectedRowNamesByCategoryName
 export const getSjOptions = (state) => state.sjOptions
@@ -20,6 +22,31 @@ export const getInitialSettings = (state) => state.initialSettings
 export const getInitialSettingsUrl = (state) => state.initialSettingsUrl
 export const getInitialSettingsUrlHasBeenApplied = (state) => state.initialSettingsUrlHasBeenApplied
 
+export const getAllDataTypes = createSelector(
+  getRowsInCategories,
+  (rowsInCategories) => {
+    return [...rowsInCategories.reduce((acc, category) => {
+      category.rows.forEach((row) => {
+        if (row.data) {
+          row.data.forEach((data) => {
+            if (data.type) {
+              acc.add(data.type)
+            }
+          })
+        }
+      })
+      return acc
+    }, new Set())]
+  })
+
+
+export const getEnabledDataTypes = createSelector(
+  getAllDataTypes,
+  getDataTypesToShow,
+  (allDataTypes, dataTypesToShow) => {
+    console.warn(allDataTypes, dataTypesToShow, 'enabled datatypes', allDataTypes.filter((dataType) => dataTypesToShow.includes(dataType)))
+    return allDataTypes.length < 2 ? allDataTypes : allDataTypes.filter((dataType) => dataTypesToShow.includes(dataType))
+  })
 
 export const getRowsByCategoryName = createSelector(
   getRowsInCategories,
@@ -45,11 +72,12 @@ export const getSelectedRowsByCategoryName = createSelector(
 
 export const getTracks = createSelector(
   getSelectedRowsByCategoryName,
+  getDataTypesToShow,
   getSjOptions,
   getVcfOptions,
   getBamOptions,
   getGcnvOptions,
-  (selectedRowsByCategoryName, sjOptions, vcfOptions, bamOptions, gcnvOptions) => {
+  (selectedRowsByCategoryName, dataTypesToShow, sjOptions, vcfOptions, bamOptions, gcnvOptions) => {
     const igvTracks = []
 
     Object.entries(selectedRowsByCategoryName).forEach(([categoryName, selectedRows]) => selectedRows.forEach((row, i) => {
@@ -66,8 +94,8 @@ export const getTracks = createSelector(
             type: 'gcnv',
             format: 'gcnv',
             name: `${row.name} ${data.label || ''}`,
-            url: data.url.replace('gs://fc-secure-e2c5f2a5-2e76-4c01-a264-419262b2c7c8/dcr_tabs', 'http://localhost:63342/igv.js-bw2/dev/data/gcnv'),
-            indexUrl: `${data.url.replace('gs://fc-secure-e2c5f2a5-2e76-4c01-a264-419262b2c7c8/dcr_tabs ', 'http://localhost:63342/igv.js-bw2/dev/data/gcnv')}.tbi`,
+            url: data.url,
+            indexURL: `${data.url}.tbi`,
             height: gcnvOptions.trackHeight,
             min: gcnvOptions.trackMin,
             max: gcnvOptions.trackMax,
@@ -80,7 +108,7 @@ export const getTracks = createSelector(
             order: i * 100 + j,
           })
         }
-        else if ((data.type === 'junctions' || data.url.includes('junctions.bed')) && sjOptions.showJunctions) {
+        else if ((data.type === 'junctions' || data.url.includes('junctions.bed')) && dataTypesToShow.includes('junctions')) {
           junctionsTrack = {
             type: 'spliceJunctions',
             format: 'bed',
@@ -110,7 +138,7 @@ export const getTracks = createSelector(
             hideMotifs: MOTIFS.filter((motif) => sjOptions[`hideMotif${motif}`]), //options: 'GT/AG', 'CT/AC', 'GC/AG', 'CT/GC', 'AT/AC', 'GT/AT', 'non-canonical'
           }
         }
-        else if ((data.type === 'coverage' || data.url.includes('.bigWig')) && sjOptions.showCoverage) {
+        else if ((data.type === 'coverage' || data.url.includes('.bigWig')) && dataTypesToShow.includes('coverage')) {
           coverageTrack = {
             type: 'wig',
             format: 'bigwig',
@@ -139,7 +167,7 @@ export const getTracks = createSelector(
             }
           }
         }
-        else if ((data.type === 'vcf' || data.url.includes('.vcf')) && vcfOptions.showVcfs) {
+        else if ((data.type === 'vcf' || data.url.includes('.vcf')) && dataTypesToShow.includes('vcf')) {
           //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
           console.log(`Adding ${data.url} track #`, i * 100 + j)
 
@@ -147,7 +175,7 @@ export const getTracks = createSelector(
             type: 'variant',
             format: 'vcf',
             url: data.url,
-            indexUrl: `${data.url}.tbi`,
+            indexURL: `${data.url}.tbi`,
             indexed: true,
             name: `${row.name} ${data.label || data.type}`,
             categoryName: categoryName,
@@ -156,7 +184,7 @@ export const getTracks = createSelector(
             order: i * 100 + j,
           })
         }
-        else if ((data.type === 'alignment' || data.url.includes('.bam') || data.url.includes('.cram')) && bamOptions.showBams) {
+        else if ((data.type === 'alignment' || data.url.includes('.bam') || data.url.includes('.cram')) && dataTypesToShow.includes('alignment')) {
           //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
           console.log(`Adding ${data.url} track #`, i * 100 + j)
 
@@ -200,7 +228,7 @@ export const getTracks = createSelector(
       name: 'Gencode v32 Genes',
       format: 'refgene',
       url: 'gs://macarthurlab-rnaseq/reference_tracks/gencode_v32_knownGene.sorted.txt.gz',
-      indexUrl: 'gs://macarthurlab-rnaseq/reference_tracks/gencode_v32_knownGene.sorted.txt.gz.tbi',
+      indexURL: 'gs://macarthurlab-rnaseq/reference_tracks/gencode_v32_knownGene.sorted.txt.gz.tbi',
       indexed: true,
       searchable: true,
       height: 350,

@@ -6,7 +6,13 @@ import styled from 'styled-components'
 import { Checkbox, Icon, Radio } from 'semantic-ui-react'
 import { EditLocusList } from './EditLocusList'
 import { CategoryH3, OptionDiv, StyledPopup } from './SideBarUtils'
-import { getRightSideBarLocusList, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
+import {
+  getRightSideBarLocusList,
+  getEnabledDataTypes,
+  getSjOptions,
+  getVcfOptions,
+  getBamOptions,
+} from '../redux/selectors'
 import { MOTIFS, DEFAULT_COLOR_BY_NUM_READS_THRESHOLD } from '../constants'
 
 
@@ -240,6 +246,7 @@ class RightSideBar extends React.PureComponent
   render() {
     const {
       locusList,
+      enabledDataTypes,
       sjOptions,
       vcfOptions,
       bamOptions,
@@ -259,15 +266,15 @@ class RightSideBar extends React.PureComponent
           setLocusList={setLocusList}
         />
 
-        {bamOptions.showBams && <BamOptionsPanel
+        {enabledDataTypes.includes('alignment') && <BamOptionsPanel
           bamOptions={bamOptions}
           updateBamOptions={updateBamOptions}
         />}
-        {vcfOptions.showVcfs && <VcfOptionsPanel
+        {enabledDataTypes.includes('vcf') && <VcfOptionsPanel
           vcfOptions={vcfOptions}
           updateVcfOptions={updateVcfOptions}
         />}
-        {(sjOptions.showCoverage || sjOptions.showJunctions) && <SjOptionsPanel
+        {(enabledDataTypes.includes('coverage') || enabledDataTypes.includes('junctions')) && <SjOptionsPanel
           sjOptions={sjOptions}
           updateSjOptions={updateSjOptions}
         />}
@@ -277,6 +284,7 @@ class RightSideBar extends React.PureComponent
 
 RightSideBar.propTypes = {
   locusList: PropTypes.array,
+  enabledDataTypes: PropTypes.array,
   sjOptions: PropTypes.object,
   vcfOptions: PropTypes.object,
   bamOptions: PropTypes.object,
@@ -289,6 +297,7 @@ RightSideBar.propTypes = {
 
 const mapStateToProps = (state) => ({
   locusList: getRightSideBarLocusList(state),
+  enabledDataTypes: getEnabledDataTypes(state),
   sjOptions: getSjOptions(state),
   vcfOptions: getVcfOptions(state),
   bamOptions: getBamOptions(state),

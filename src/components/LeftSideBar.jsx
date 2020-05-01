@@ -9,8 +9,13 @@ import { Checkbox, Icon, Popup } from 'semantic-ui-react'
 import { EditLocusList } from './EditLocusList'
 import { CategoryH3, OptionDiv, StyledPopup } from './SideBarUtils'
 import AddOrEditRows from './EditRows'
-import { getLeftSideBarLocusList, getRowsInCategories, getSelectedRowNamesByCategoryName, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
-
+import {
+  getLeftSideBarLocusList,
+  getRowsInCategories,
+  getAllDataTypes,
+  getEnabledDataTypes,
+  getSelectedRowNamesByCategoryName,
+} from '../redux/selectors'
 
 const CategoryDetails = styled.div`
   display: inline-block;
@@ -34,6 +39,7 @@ const dataTypeIconColors = {
   coverage: '#B5D29A',
   alignment: '#5DB6E9',
   vcf: '#E6A01B',
+  default: '#000000',
 }
 
 const LinkButton = styled.a`
@@ -63,7 +69,7 @@ const RowColorLabelsWithPopup = ({ row }) => {
         <tbody>
           {
             (row.data || []).map((d) =>
-              <tr key={d.url}>
+              <tr key={`${d.url} ${d.type}`}>
                 <td style={{ paddingRight: '10px' }}><b>{d.type && d.type.toUpperCase()}:</b></td><td><NoWrapDiv>{d.url}</NoWrapDiv></td>
               </tr>,
             )
@@ -76,7 +82,7 @@ const RowColorLabelsWithPopup = ({ row }) => {
     trigger={
       <RowColorLabelsContainer onClick={handleCopyToClipboard}>
         {
-          (row.data || []).map((d) => <DataTypeIcon key={d.url} color={dataTypeIconColors[d.type]} />)
+          (row.data || []).map((d) => <DataTypeIcon key={`${d.url} ${d.type}`} color={dataTypeIconColors[d.type] || dataTypeIconColors.default} />)
         }
       </RowColorLabelsContainer>
     }
@@ -86,6 +92,45 @@ const RowColorLabelsWithPopup = ({ row }) => {
 RowColorLabelsWithPopup.propTypes = {
   row: PropTypes.object,
 }
+
+const ShowTrackTypesPanel = ({ allDataTypes, enabledDataTypes, updateDataTypesToShow }) => {
+  if (allDataTypes.length < 2) {
+    return null
+  }
+
+  const checkBoxes = [...allDataTypes].map((dataType) => {
+    let label = dataType
+    if (dataType === 'junctions') {
+      label = 'Splice Junctions'
+    }
+    else if (dataType === 'vcf') {
+      label = 'VCF'
+    } else if (dataType === 'gcnv_bed') {
+      label = 'gCNV coverage'
+    } else {
+      label = label.charAt(0).toUpperCase() + label.slice(1) //to Title case
+    }
+
+    return (
+      <OptionDiv key={dataType}>
+        <Checkbox label={`${label.toLocaleString()}`} checked={enabledDataTypes.includes(dataType)} onChange={(e, data) => updateDataTypesToShow(data.checked ? 'ADD' : 'REMOVE', [dataType])} />
+        <RowColorLabelsContainer><Popup content={`This color stripe marks rows that have ${label} data. Select this checkbox to show ${label} tracks for each row selected below.`} position="right center" trigger={<DataTypeIcon color={dataTypeIconColors[dataType] || dataTypeIconColors.default} />} /></RowColorLabelsContainer>
+      </OptionDiv>)
+  })
+
+  return (
+    <div>
+      <CategoryH3>SHOW TRACK TYPES</CategoryH3>
+      {checkBoxes}
+    </div>)
+}
+
+ShowTrackTypesPanel.propTypes = {
+  allDataTypes: PropTypes.array,
+  enabledDataTypes: PropTypes.array,
+  updateDataTypesToShow: PropTypes.func,
+}
+
 
 const CategoryPanel = ({ category, updateSelectedRowNames }) => (
   <div>
@@ -179,38 +224,23 @@ class LeftSideBar extends React.PureComponent
     const {
       locusList,
       rowsInCategories,
+      allDataTypes,
+      enabledDataTypes,
       selectedRowNamesByCategoryName,
-      sjOptions,
-      vcfOptions,
-      bamOptions,
       setLocus,
       setLocusList,
+      updateDataTypesToShow,
       updateSelectedRowNames,
-      updateSjOptions,
-      updateVcfOptions,
-      updateBamOptions,
     } = this.props
 
     return (
       <div>
         <EditLocusList name="Left Side Bar" locusList={locusList} setLocus={setLocus} setLocusList={setLocusList} />
-        <CategoryH3>TRACK TYPES TO SHOW</CategoryH3>
-        <OptionDiv>
-          <Checkbox label="RNA splice junctions" checked={sjOptions.showJunctions} onChange={(e, data) => updateSjOptions({ showJunctions: data.checked })} />
-          <RowColorLabelsContainer><Popup content="This color stripe marks rows that have splice junction data. Select this checkbox to show a splice junction track for each row selected below." position="right center" trigger={<DataTypeIcon color={dataTypeIconColors.junctions} />} /></RowColorLabelsContainer>
-        </OptionDiv>
-        <OptionDiv>
-          <Checkbox label="RNA coverage" checked={sjOptions.showCoverage} onChange={(e, data) => updateSjOptions({ showCoverage: data.checked })} />
-          <RowColorLabelsContainer><Popup content="This color stripe marks rows that have coverage data. Select this checkbox to show a coverage track for each row selected below." position="right center" trigger={<DataTypeIcon color={dataTypeIconColors.coverage} />} /></RowColorLabelsContainer>
-        </OptionDiv>
-        <OptionDiv>
-          <Checkbox label="BAM track" checked={bamOptions.showBams} onChange={(e, data) => updateBamOptions({ showBams: data.checked })} />
-          <RowColorLabelsContainer><Popup content="This color stripe marks rows that have alignment data. Select this checkbox to show a bam track for each row selected below." position="right center" trigger={<DataTypeIcon color={dataTypeIconColors.alignment} />} /></RowColorLabelsContainer>
-        </OptionDiv>
-        <OptionDiv>
-          <Checkbox label="VCF track" checked={vcfOptions.showVcfs} onChange={(e, data) => updateVcfOptions({ showVcfs: data.checked })} />
-          <RowColorLabelsContainer><Popup content="This color stripe marks rows that have splice junction data. Select this checkbox to show a vcf track for each row selected below." position="right center" trigger={<DataTypeIcon color={dataTypeIconColors.vcf} />} /></RowColorLabelsContainer>
-        </OptionDiv>
+        <ShowTrackTypesPanel
+          allDataTypes={allDataTypes}
+          enabledDataTypes={enabledDataTypes}
+          updateDataTypesToShow={updateDataTypesToShow}
+        />
         <RowsPanel
           rowsInCategories={rowsInCategories}
           selectedRowNamesByCategoryName={selectedRowNamesByCategoryName}
@@ -223,25 +253,21 @@ class LeftSideBar extends React.PureComponent
 LeftSideBar.propTypes = {
   locusList: PropTypes.array,
   rowsInCategories: PropTypes.array,
+  allDataTypes: PropTypes.array,
+  enabledDataTypes: PropTypes.array,
   selectedRowNamesByCategoryName: PropTypes.object,
-  sjOptions: PropTypes.object,
-  vcfOptions: PropTypes.object,
-  bamOptions: PropTypes.object,
   setLocus: PropTypes.func,
   setLocusList: PropTypes.func,
+  updateDataTypesToShow: PropTypes.func,
   updateSelectedRowNames: PropTypes.func,
-  updateSjOptions: PropTypes.func,
-  updateVcfOptions: PropTypes.func,
-  updateBamOptions: PropTypes.func,
 }
 
 const mapStateToProps = (state) => ({
   locusList: getLeftSideBarLocusList(state),
   rowsInCategories: getRowsInCategories(state),
+  allDataTypes: getAllDataTypes(state),
+  enabledDataTypes: getEnabledDataTypes(state),
   selectedRowNamesByCategoryName: getSelectedRowNamesByCategoryName(state),
-  sjOptions: getSjOptions(state),
-  vcfOptions: getVcfOptions(state),
-  bamOptions: getBamOptions(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -255,6 +281,12 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch({
       type: 'SET_LEFT_SIDE_BAR_LOCUS_LIST',
       values: locusList,
+    })
+  },
+  updateDataTypesToShow: (actionType, dataTypes) => {
+    dispatch({
+      type: `${actionType}_DATA_TYPES_TO_SHOW`,
+      values: dataTypes,
     })
   },
   updateSelectedRowNames: (actionType, categoryName, selectedRowNames) => {

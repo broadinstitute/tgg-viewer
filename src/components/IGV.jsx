@@ -4,7 +4,15 @@ import styled from 'styled-components'
 import igv from 'igv/dist/igv.esm'
 import { connect } from 'react-redux'
 
-import { getGenome, getLocus, getTracks, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
+import {
+  getGenome,
+  getLocus,
+  getTracks,
+  getEnabledDataTypes,
+  getSjOptions,
+  getVcfOptions,
+  getBamOptions,
+} from '../redux/selectors'
 import { getGoogleUserEmail, googleSignIn, initGoogleClient } from '../utils/googleAuth'
 import { throttle } from '../utils/throttle'
 
@@ -91,6 +99,7 @@ class IGV extends React.Component {
 
     const {
       tracks,
+      enabledDataTypes,
       sjOptions,
       vcfOptions,
       bamOptions,
@@ -114,9 +123,12 @@ class IGV extends React.Component {
 
       const nextTrackSettings = nextTrackSettingsByTrackName[track.name]
       if (nextTrackSettings) {
-        if ((nextProps.sjOptions !== sjOptions && ['merged', 'wig', 'spliceJunctions'].includes(track.type))
-          || (nextProps.vcfOptions !== vcfOptions && track.type === 'variant')
-          || (nextProps.bamOptions !== bamOptions && track.type === 'alignment')
+        const isJunctionsAndOrCoverageTrack = ['merged', 'wig', 'spliceJunctions'].includes(track.type)
+        const visibilityOfJunctionsAndOrCoverageTracksChanged = nextProps.enabledDataTypes.includes('junctions') !== enabledDataTypes.includes('junctions') || nextProps.enabledDataTypes.includes('coverage') !== enabledDataTypes.includes('coverage')
+
+        if ((isJunctionsAndOrCoverageTrack && (visibilityOfJunctionsAndOrCoverageTracksChanged || nextProps.sjOptions !== sjOptions))
+          || (track.type === 'variant' && nextProps.vcfOptions !== vcfOptions)
+          || (track.type === 'alignment' && nextProps.bamOptions !== bamOptions)
         ) {
           console.log('reloading track', track.name)
           this.ignoreNextTrackRemovedEvent = true
@@ -158,6 +170,7 @@ const mapStateToProps = (state) => ({
   genome: getGenome(state),
   locus: getLocus(state),
   tracks: getTracks(state),
+  enabledDataTypes: getEnabledDataTypes(state),
   sjOptions: getSjOptions(state),
   vcfOptions: getVcfOptions(state),
   bamOptions: getBamOptions(state),
@@ -196,6 +209,7 @@ IGV.propTypes = {
   genome: PropTypes.string.isRequired,
   locus: PropTypes.string.isRequired,
   tracks: PropTypes.array.isRequired,
+  enabledDataTypes: PropTypes.array.isRequired,
   locusChangedHandler: PropTypes.func,
   trackRemovedHandler: PropTypes.func,
   userChangedHandler: PropTypes.func,

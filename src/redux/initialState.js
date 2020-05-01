@@ -1,4 +1,5 @@
 /* eslint-disable operator-linebreak */
+/* eslint-disable no-unused-vars */
 
 import jsurl from 'jsurl'
 
@@ -117,14 +118,13 @@ const INITIAL_ROWS_IN_CATEGORIES = [
 export const DEFAULT_STATE = {
   genome: 'hg38',
   locus: 'chr15:92,835,700-93,031,800',
+  //dataTypesToShow: ['junctions', 'coverage', 'vcf'],
   leftSideBarLocusList: [],
   rightSideBarLocusList: [],
   rowsInCategories: INITIAL_ROWS_IN_CATEGORIES,
   selectedRowNamesByCategoryName: {},
   sjOptions: {
     trackHeight: 170,
-    showCoverage: true,
-    showJunctions: true,
     hideAnnotated: false,
     hideUnannotated: false,
     colorBy: 'strand',
@@ -163,6 +163,7 @@ DEFAULT_STATE.initialSettings = JSON.parse(JSON.stringify(DEFAULT_STATE)) // cre
 
 const KEYS_TO_PERSIST_IN_URL = {
   locus: 'locus',
+  dataTypesToShow: 'show',
   selectedRowNamesByCategoryName: 'selectedSamples',
   sjOptions: 'sjOptions',
   vcfOptions: 'vcfOptions',
@@ -220,8 +221,8 @@ export const computeInitialState = () => {
 
 
 export const updateLocalStorageAndUrl = (state) => {
-  console.warn('Updating local storage & url from: ', state)
   //update local storage
+
   KEYS_TO_PERSIST_IN_LOCAL_STORAGE.forEach((key) => {
     saveState(key, state[key])
   })

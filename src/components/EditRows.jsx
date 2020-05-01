@@ -273,11 +273,11 @@ class EditRowsButtonAndModal extends React.PureComponent {
                 <br />
                 Example:<br />
                 <ExampleDiv>
-                 gs://your-bucket/dir/sample-name1.bigWig <br />
-                 gs://your-bucket/dir/sample2.bigWig <br />
-                 gs://your-bucket/dir/sample-name1.junctions.bed.gz <br />
-                 gs://your-bucket/dir/sample-name1.bam <br />
-                 gs://your-bucket/dir/sample2.junctions.bed.gz <br />
+                  gs://your-bucket/dir/sample-name1.bigWig <br />
+                  gs://your-bucket/dir/sample2.bigWig <br />
+                  gs://your-bucket/dir/sample-name1.junctions.bed.gz <br />
+                  gs://your-bucket/dir/sample-name1.bam <br />
+                  gs://your-bucket/dir/sample2.junctions.bed.gz <br />
                 </ExampleDiv>
                 Paths that have the same prefix (like <ExamplePath>gs://your-bucket/dir/sample-name1</ExamplePath> in the example) will be interpreted as different data types from the same sample.<br />
                 <br />

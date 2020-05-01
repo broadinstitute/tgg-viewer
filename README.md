@@ -17,15 +17,12 @@ The Translational Genomics Group (TGG) Viewer is a free, open-source web app for
     "genome": "hg38",    // "hg19" or "hg38"
     "locus": "chr15:92,835,700-93,031,800",   // initial IGV.js locus  
     "bamOptions": {            // IGV.js bam track options
-        "showBams": false,
         "trackHeight": 200,
         "viewAsPairs": false,
         "showSoftClips": true,
         "alignmentShading": "strand"
     },
     "sjOptions": {              // IGV.js splice junctions track options
-        "showCoverage": true,
-        "showJunctions": true,
         "trackHeight": 170,
         "colorBy": "strand",
 	"colorByNumReadsThreshold": 5,
@@ -47,7 +44,6 @@ The Translational Genomics Group (TGG) Viewer is a free, open-source web app for
         "minSplicedAlignmentOverhang": 0
     },
     "vcfOptions": {         // IGV.js vcf track options
-        "showVcfs": false,
         "displayMode": "EXPANDED"
     },
     "selectedRowNamesByCategoryName": {

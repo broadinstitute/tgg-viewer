@@ -14,9 +14,10 @@ export const saveState = (label, state) => {
     if (CACHE[label] === jsonString) {
       return
     }
-
+    console.warn(`LocalStorage: compressing ${label}`)
     const serializedState = LZString.compress(jsonString)
     localStorage.setItem(label, serializedState)
+    CACHE[label] = jsonString
   } catch (err) {
     console.warn('Unable to save state: ', label, state, err)
   }

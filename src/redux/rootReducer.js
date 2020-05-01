@@ -84,6 +84,7 @@ const otherReducers = combineReducers(Object.assign({
   locus: createSingleValueReducer('UPDATE_LOCUS', ''),
   rightSideBarLocusList: createArrayReducer('RIGHT_SIDE_BAR_LOCUS_LIST'),
   leftSideBarLocusList: createArrayReducer('LEFT_SIDE_BAR_LOCUS_LIST'),
+  dataTypesToShow: createArrayReducer('DATA_TYPES_TO_SHOW'),
   rowsInCategories: rowsInCategoriesReducer,
   selectedRowNamesByCategoryName: selectedRowNamesByCategoryNameReducer,
   sjOptions: createSingleObjectReducer('UPDATE_SJ_OPTIONS'),
@@ -99,7 +100,6 @@ const otherReducers = combineReducers(Object.assign({
 
 const rootReducer = (state, action) => {
   if (action.type === 'RESET_GLOBAL_STATE') {
-    console.log('RESET_GLOBAL_STATE to', action.newState)
     return action.newState
   }
 
@@ -120,8 +120,7 @@ export const createReduxStore = () => {
 
   const initialState = computeInitialState()
 
-  console.log('Initializing store to:')
-  console.log(initialState)
+  console.log('Initializing store to:', initialState)
 
   return createStore(rootReducer, initialState, compose(applyMiddleware(thunkMiddleware)))
 }

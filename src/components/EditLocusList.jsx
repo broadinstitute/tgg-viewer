@@ -60,8 +60,7 @@ class EditLocusListButtonAndModal extends React.PureComponent {
             placeholder="Enter genomic positions, intervals, and/or gene names separated by commas, spaces, or new lines. &#10;
               These can be in any format recognized by the IGV search bar. &#10;
               For example: DMD, ENST00000589830, chr1:55516888, 2:152341851-152591002"
-          >
-          </Form.Field>
+          />
         </Form>
         <br />
         <b><i>NOTE:</i></b> This locus list will be saved across page refreshes in this browser, &nbsp;
