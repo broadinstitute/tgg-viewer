@@ -121,6 +121,4 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   }
 }
 
-export { CustomModal as ModalComponent }
-
 export default connect(mapStateToProps, mapDispatchToProps)(CustomModal)

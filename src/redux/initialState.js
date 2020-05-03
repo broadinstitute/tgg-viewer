@@ -170,7 +170,7 @@ const KEYS_TO_PERSIST_IN_URL = {
   bamOptions: 'bamOptions',
   gcnvOptions: 'gcnvOptions',
   initialSettingsUrl: 'settingsUrl',
-  initialSettingsUrlHasBeenApplied: 'settingsUrlApplied',
+  //initialSettingsUrlHasBeenApplied: 'settingsUrlApplied',
 }
 
 const KEYS_TO_PERSIST_IN_LOCAL_STORAGE = [

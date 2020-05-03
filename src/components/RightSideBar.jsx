@@ -336,7 +336,4 @@ const mapDispatchToProps = (dispatch) => ({
   },
 })
 
-
-export { RightSideBar as RightSideBarComponent }
-
 export default connect(mapStateToProps, mapDispatchToProps)(RightSideBar)

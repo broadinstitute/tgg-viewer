@@ -9,6 +9,7 @@ import { Checkbox, Icon, Popup } from 'semantic-ui-react'
 import { EditLocusList } from './EditLocusList'
 import { CategoryH3, OptionDiv, StyledPopup } from './SideBarUtils'
 import AddOrEditRows from './EditRows'
+import SearchRows from './SearchRows'
 import {
   getLeftSideBarLocusList,
   getRowsInCategories,
@@ -89,6 +90,7 @@ const RowColorLabelsWithPopup = ({ row }) => {
     style={{ marginLeft: '2px' }}
   />)
 }
+
 RowColorLabelsWithPopup.propTypes = {
   row: PropTypes.object,
 }
@@ -102,11 +104,10 @@ const ShowTrackTypesPanel = ({ allDataTypes, enabledDataTypes, updateDataTypesTo
     let label = dataType
     if (dataType === 'junctions') {
       label = 'Splice Junctions'
-    }
-    else if (dataType === 'vcf') {
+    } else if (dataType === 'vcf') {
       label = 'VCF'
     } else if (dataType === 'gcnv_bed') {
-      label = 'gCNV coverage'
+      label = 'gCNV'
     } else {
       label = label.charAt(0).toUpperCase() + label.slice(1) //to Title case
     }
@@ -198,6 +199,31 @@ RowPanel.propTypes = {
   selectedRowNames: PropTypes.array,
   updateSelectedRowNames: PropTypes.func,
 }
+/*
+const DataSubrows = ({ data }) => {
+  if (!data) {
+    return null
+  }
+
+  const items = []
+  data.filter((d) => d.type === 'gcnv_bed' && d.samples).forEach((d) => {
+    d.samples.forEach((sample) => {
+      items.push(<Checkbox
+        key={sample}
+        label={sample}
+        checked={false}
+        onChange={(e, _) => console.log(e, _)}
+      />)
+    })
+  })
+
+  return items
+}
+
+DataSubrows.propTypes = {
+  data: PropTypes.array,
+}
+*/
 
 const RowDetails = ({ row }) => {
   return (
@@ -241,6 +267,7 @@ class LeftSideBar extends React.PureComponent
           enabledDataTypes={enabledDataTypes}
           updateDataTypesToShow={updateDataTypesToShow}
         />
+        <SearchRows />
         <RowsPanel
           rowsInCategories={rowsInCategories}
           selectedRowNamesByCategoryName={selectedRowNamesByCategoryName}
@@ -315,8 +342,5 @@ const mapDispatchToProps = (dispatch) => ({
     })
   },
 })
-
-
-export { LeftSideBar as LeftSideBarComponent }
 
 export default connect(mapStateToProps, mapDispatchToProps)(LeftSideBar)

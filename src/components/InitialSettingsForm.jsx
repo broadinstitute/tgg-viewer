@@ -162,9 +162,9 @@ class InitialSettingsForm extends React.PureComponent
 
   exportCurrentSettings = () => {
     //convert global state to a JSON string
-    const excludedKeys = ['initialSettings', 'initialSettingsUrlHasBeenApplied', 'user', 'modals']
+    const EXCLUDED_KEYS = ['initialSettings', 'initialSettingsUrlHasBeenApplied', 'user', 'modals']
     const globalStateForExport = Object.keys(this.props.globalState).reduce((acc, key) => {
-      if (!excludedKeys.includes(key)) {
+      if (!EXCLUDED_KEYS.includes(key)) {
         acc[key] = this.props.globalState[key]
       }
       return acc
@@ -245,7 +245,5 @@ const mapDispatchToProps = (dispatch) => ({
     })
   },
 })
-
-export { InitialSettingsForm as InitialSettingsFormComponent }
 
 export default connect(mapStateToProps, mapDispatchToProps)(InitialSettingsForm)

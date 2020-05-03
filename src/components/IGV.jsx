@@ -218,6 +218,4 @@ IGV.propTypes = {
   bamOptions: PropTypes.object,
 }
 
-export { IGV as IGVComponent }
-
 export default connect(mapStateToProps, mapDispatchToProps)(IGV)
