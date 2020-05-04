@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Checkbox, Icon, Radio } from 'semantic-ui-react'
 import { CategoryH3, ColorLegendIcon, OptionDiv, OptionInput, StyledPopup } from '../SideBarUtils'
-import { MOTIFS, DEFAULT_COLOR_BY_NUM_READS_THRESHOLD } from '../../constants'
+import { SJ_MOTIFS, SJ_DEFAULT_COLOR_BY_NUM_READS_THRESHOLD } from '../../constants'
 import { getSjOptions } from '../../redux/selectors'
 
 
@@ -48,7 +48,7 @@ const ColorByLegend = ({ sjOptions, handleTextInput }) => {
         <OptionInput
           type="text"
           key={`num-reads-${sjOptions.colorByNumReadsThreshold}`}
-          defaultValue={sjOptions.colorByNumReadsThreshold !== undefined ? sjOptions.colorByNumReadsThreshold : DEFAULT_COLOR_BY_NUM_READS_THRESHOLD}
+          defaultValue={sjOptions.colorByNumReadsThreshold !== undefined ? sjOptions.colorByNumReadsThreshold : SJ_DEFAULT_COLOR_BY_NUM_READS_THRESHOLD}
           onKeyUp={(e) => handleTextInput(e, 'colorByNumReadsThreshold')}
           style={{ width: '35px' }}
         />
@@ -157,7 +157,7 @@ const SpliceJunctionsOptionsPanel = ({ sjOptions, updateSjOptions }) => {
       <div>
         <OptionDiv>Donor/Acceptor Motifs:</OptionDiv>
         {
-          MOTIFS.map((motif) => <OptionDiv key={motif}><Checkbox label={`Show ${motif}`} checked={!sjOptions[`hideMotif${motif}`]} onChange={(e, data) => updateSjOptions({ [`hideMotif${motif}`]: !data.checked })} /></OptionDiv>)
+          SJ_MOTIFS.map((motif) => <OptionDiv key={motif}><Checkbox label={`Show ${motif}`} checked={!sjOptions[`hideMotif${motif}`]} onChange={(e, data) => updateSjOptions({ [`hideMotif${motif}`]: !data.checked })} /></OptionDiv>)
         }
       </div>
     </div>)

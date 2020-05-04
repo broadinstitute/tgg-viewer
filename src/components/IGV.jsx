@@ -15,6 +15,7 @@ import {
   getSjOptions,
   getVcfOptions,
   getBamOptions,
+  getGcnvOptions,
 } from '../redux/selectors'
 import { getGoogleUserEmail, googleSignIn, initGoogleClient } from '../utils/googleAuth'
 import { throttle } from '../utils/throttle'
@@ -107,6 +108,7 @@ class IGV extends React.Component {
       sjOptions,
       vcfOptions,
       bamOptions,
+      gcnvOptions,
     } = this.props
 
     const currentIGVLocus = this.browser.$searchInput.val()
@@ -125,17 +127,29 @@ class IGV extends React.Component {
     tracks.forEach((track) => {
       const nextTrackSettings = nextTrackSettingsByTrackName[track.name]
       if (nextTrackSettings) {
-        const junctionTrackAndDisplaySettingsChanged = ['merged', 'wig', 'spliceJunctions'].includes(track.type) && (
+        const junctionTrackDisplaySettingsChanged = ['merged', 'wig', 'spliceJunctions'].includes(track.type) && (
           nextProps.enabledDataTypes.includes('junctions') !== enabledDataTypes.includes('junctions')
           || nextProps.enabledDataTypes.includes('coverage') !== enabledDataTypes.includes('coverage')
           || nextProps.sjOptions !== sjOptions)
-        const vcfTrackAndDisplaySettingsChanged = track.type === 'variant' && nextProps.vcfOptions !== vcfOptions
-        const alignmentTrackAndDisplaySettingsChanged = track.type === 'alignment' && nextProps.bamOptions !== bamOptions
-        const gcnvTrackHighlightedSamplesChanged = track.type === 'gcnv' && !_.isEqual(
-          (nextProps.selectedSamplesByCategoryNameAndRowName[track.categoryName] || {})[track.rowName],
-          (selectedSamplesByCategoryNameAndRowName[track.categoryName] || {})[track.rowName])
+        const vcfTrackDisplaySettingsChanged = track.type === 'variant' && nextProps.vcfOptions !== vcfOptions
+        const alignmentTrackDisplaySettingsChanged = track.type === 'alignment' && nextProps.bamOptions !== bamOptions
+        const gcnvTrackDisplaySettingsChanged = track.type === 'gcnv' && nextProps.gcnvOptions !== gcnvOptions
+        const gcnvTrackHighlightedSamplesChanged = track.type === 'gcnv' && (
+          !_.isEqual(
+            ((nextProps.selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).selectedSamples || {})[track.rowName],
+            ((selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).selectedSamples || {})[track.rowName])
+          || !_.isEqual(
+            ((nextProps.selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).sampleSettings || {})[track.rowName],
+            ((selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).sampleSettings || {})[track.rowName])
+        )
 
-        if (junctionTrackAndDisplaySettingsChanged || vcfTrackAndDisplaySettingsChanged || alignmentTrackAndDisplaySettingsChanged || gcnvTrackHighlightedSamplesChanged) {
+        console.log('gcnvTrackHighlightedSamplesChanged:', gcnvTrackHighlightedSamplesChanged, (nextProps.selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).sampleSettings, (selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).sampleSettings)
+        if (junctionTrackDisplaySettingsChanged
+          || vcfTrackDisplaySettingsChanged
+          || alignmentTrackDisplaySettingsChanged
+          || gcnvTrackDisplaySettingsChanged
+          || gcnvTrackHighlightedSamplesChanged)
+        {
           console.log('Reloading track', track.name)
           this.ignoreNextTrackRemovedEvent = true
           this.browser.removeTrackByName(track.name)
@@ -183,6 +197,7 @@ IGV.propTypes = {
   sjOptions: PropTypes.object,
   vcfOptions: PropTypes.object,
   bamOptions: PropTypes.object,
+  gcnvOptions: PropTypes.object,
 }
 
 const mapStateToProps = (state) => ({
@@ -194,6 +209,7 @@ const mapStateToProps = (state) => ({
   sjOptions: getSjOptions(state),
   vcfOptions: getVcfOptions(state),
   bamOptions: getBamOptions(state),
+  gcnvOptions: getGcnvOptions(state),
 })
 
 

@@ -62,8 +62,12 @@ class SearchRows extends React.Component {
   handleSearchChange = (e, { value }) => {
     this.setState({ isLoading: true, value })
 
-    const isRowSelected = (categoryName, rowName) => (this.props.selectedRowNamesByCategoryName[categoryName] || []).includes(rowName)
-    const isSampleSelected = (categoryName, rowName, sample) => ((this.props.selectedSamplesByCategoryNameAndRowName[categoryName] || {})[rowName] || []).includes(sample)
+    const getSelectedRowNames = (categoryName) => (this.props.selectedRowNamesByCategoryName[categoryName] || [])
+    const isRowSelected = (categoryName, rowName) => getSelectedRowNames(categoryName).includes(rowName)
+
+    const getSelectedSamplesByRowName = (categoryName) => ((this.props.selectedSamplesByCategoryNameAndRowName[categoryName] || {}).selectedSamples || {})
+    const getSelectedSamplesForRow = (categoryName, rowName) => (getSelectedSamplesByRowName(categoryName)[rowName] || [])
+    const isSampleSelected = (categoryName, rowName, sample) => getSelectedSamplesForRow(categoryName, rowName).includes(sample)
 
     setTimeout(() => {
       if (this.state.value.length < 1) {
@@ -94,9 +98,9 @@ class SearchRows extends React.Component {
       if (inputStringRegExp.test('Hide') || inputStringRegExp.test('Hide sample')) {
         Object.keys(this.props.selectedSamplesByCategoryNameAndRowName).forEach((categoryName) => {
           if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS) return
-          Object.keys(this.props.selectedSamplesByCategoryNameAndRowName[categoryName]).forEach((rowName) => {
+          Object.keys(getSelectedSamplesByRowName(categoryName)).forEach((rowName) => {
             if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS || !isRowSelected(categoryName, rowName)) return
-            this.props.selectedSamplesByCategoryNameAndRowName[categoryName][rowName].forEach((sample) => {
+            getSelectedSamplesForRow(categoryName, rowName).forEach((sample) => {
               if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS) return
               resultsByCategoryName[categoryName] = resultsByCategoryName[categoryName] || []
               const newResult = { action: 'REMOVE', categoryName, rowName, sample }

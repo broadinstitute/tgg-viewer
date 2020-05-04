@@ -4,7 +4,7 @@
 
 import { createSelector } from 'reselect'
 import { getGoogleAccessToken } from '../utils/googleAuth'
-import { MOTIFS, DEFAULT_COLOR_BY_NUM_READS_THRESHOLD } from '../constants'
+import { SJ_MOTIFS, SJ_DEFAULT_COLOR_BY_NUM_READS_THRESHOLD, GCNV_DEFAULT_HIGHLIGHT_COLOR } from '../constants'
 
 export const getLocus = (state) => state.locus
 export const getRightSideBarLocusList = (state) => state.rightSideBarLocusList
@@ -109,10 +109,11 @@ export const getTracks = createSelector(
             min: gcnvOptions.trackMin,
             max: gcnvOptions.trackMax,
             autoscale: gcnvOptions.autoscale,
-            highlightSamples: ((selectedSamplesByCategoryNameAndRowName[categoryName] || {})[row.name] || []).reduce((acc, sampleName) => {
-              acc[sampleName] = 'blue'
-              return acc
-            }, {}),
+            highlightSamples: (((selectedSamplesByCategoryNameAndRowName[categoryName] || {}).selectedSamples || {})[row.name] || []).reduce(
+              (acc, sampleName) => {
+                acc[sampleName] = ((((selectedSamplesByCategoryNameAndRowName[categoryName] || {}).sampleSettings || {})[row.name] || {})[sampleName] || {}).color || GCNV_DEFAULT_HIGHLIGHT_COLOR
+                return acc
+              }, {}),
             onlyHandleClicksForHighlightedSamples: gcnvOptions.onlyHandleClicksForHighlightedSamples,
             oauthToken: getGoogleAccessToken,
             order: i * 100 + j,
@@ -137,7 +138,7 @@ export const getTracks = createSelector(
             thicknessBasedOn: sjOptions.thicknessBasedOn, //options: numUniqueReads (default), numReads, isAnnotatedJunction
             bounceHeightBasedOn: sjOptions.bounceHeightBasedOn, //options: random (default), distance, thickness
             colorBy: sjOptions.colorBy, //options: numUniqueReads (default), numReads, isAnnotatedJunction, strand, motif
-            colorByNumReadsThreshold: sjOptions.colorByNumReadsThreshold !== undefined ? sjOptions.colorByNumReadsThreshold : DEFAULT_COLOR_BY_NUM_READS_THRESHOLD,
+            colorByNumReadsThreshold: sjOptions.colorByNumReadsThreshold !== undefined ? sjOptions.colorByNumReadsThreshold : SJ_DEFAULT_COLOR_BY_NUM_READS_THRESHOLD,
             hideStrand: sjOptions.showOnlyPlusStrand ? '-' : (sjOptions.showOnlyMinusStrand ? '+' : undefined),
             labelUniqueReadCount: sjOptions.labelUniqueReadCount,
             labelMultiMappedReadCount: sjOptions.labelMultiMappedReadCount,
@@ -146,7 +147,7 @@ export const getTracks = createSelector(
             labelAnnotatedJunction: sjOptions.labelAnnotatedJunction && sjOptions.labelAnnotatedJunctionValue,
             hideAnnotatedJunctions: sjOptions.hideAnnotated,
             hideUnannotatedJunctions: sjOptions.hideUnannotated,
-            hideMotifs: MOTIFS.filter((motif) => sjOptions[`hideMotif${motif}`]), //options: 'GT/AG', 'CT/AC', 'GC/AG', 'CT/GC', 'AT/AC', 'GT/AT', 'non-canonical'
+            hideMotifs: SJ_MOTIFS.filter((motif) => sjOptions[`hideMotif${motif}`]), //options: 'GT/AG', 'CT/AC', 'GC/AG', 'CT/GC', 'AT/AC', 'GT/AT', 'non-canonical'
             rowName: row.name,
             categoryName: categoryName,
           }

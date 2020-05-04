@@ -80,17 +80,20 @@ const selectedRowNamesByCategoryNameReducer = (state, action) => {
 
 
 const selectedSamplesByCategoryNameAndRowNameReducer = (state, action) => {
-  if (!action || !action.categoryName || !action.selectedSamplesByRowName) {
+  if (!action || !action.categoryName || (!action.selectedSamplesByRowName && !action.sampleSettingsByRowName)) {
     return state || {}
   }
 
-  const previousSelectedSamplesByRowName = state[action.categoryName] || {}
+  const categoryObj = state[action.categoryName] || {}
+  const previousSelectedSamplesByRowName = categoryObj.selectedSamples || {}
+  const previousSampleSettingsByRowName = categoryObj.sampleSettings || {}
+  let updatedSelectedSamplesByRowName = previousSelectedSamplesByRowName
+  let updatedSampleSettingsByRowName = previousSampleSettingsByRowName
+
   switch (action.type) {
     case 'SET_SELECTED_SAMPLES':
     case 'ADD_SELECTED_SAMPLES':
     case 'REMOVE_SELECTED_SAMPLES': {
-
-      let updatedSelectedSamplesByRowName
       if (action.type === 'SET_SELECTED_SAMPLES') {
         updatedSelectedSamplesByRowName = { ...previousSelectedSamplesByRowName, ...action.selectedSamplesByRowName }
       } else if (action.type === 'ADD_SELECTED_SAMPLES') {
@@ -112,17 +115,30 @@ const selectedSamplesByCategoryNameAndRowNameReducer = (state, action) => {
           return acc
         }, {})
       }
-
-      return {
-        ...state,
-        [action.categoryName]: updatedSelectedSamplesByRowName,
-      }
+      break
     }
-    default:
+
+    case 'UPDATE_SAMPLE_SETTINGS': {
+      updatedSampleSettingsByRowName = { ...previousSampleSettingsByRowName } //make a copy
+      Object.keys(action.sampleSettingsByRowName).forEach((rowName) => {
+        updatedSampleSettingsByRowName[rowName] = action.sampleSettingsByRowName[rowName]
+      })
+      break
+    }
+
+    default: {
       console.trace(`Unknown action type: ${action.type}`)
+      return state
+    }
   }
 
-  return state
+  return {
+    ...state,
+    [action.categoryName]: {
+      selectedSamples: updatedSelectedSamplesByRowName,
+      sampleSettings: updatedSampleSettingsByRowName,
+    },
+  }
 }
 
 // combined reducers
@@ -138,7 +154,7 @@ const otherReducers = combineReducers(Object.assign({
   sjOptions: createSingleObjectReducer('UPDATE_SJ_OPTIONS'),
   vcfOptions: createSingleObjectReducer('UPDATE_VCF_OPTIONS'),
   bamOptions: createSingleObjectReducer('UPDATE_BAM_OPTIONS'),
-  gcnvOptions: createSingleObjectReducer('UPDATE_BAM_OPTIONS'),
+  gcnvOptions: createSingleObjectReducer('UPDATE_GCNV_OPTIONS'),
   user: createSingleObjectReducer('UPDATE_USER'),
   initialSettings: createSingleValueReducer('UPDATE_INITIAL_SETTINGS', {}),
   initialSettingsUrl: createSingleValueReducer('UPDATE_INITIAL_SETTINGS_URL', ''),
