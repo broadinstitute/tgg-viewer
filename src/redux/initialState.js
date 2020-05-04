@@ -164,7 +164,8 @@ DEFAULT_STATE.initialSettings = JSON.parse(JSON.stringify(DEFAULT_STATE)) // cre
 const KEYS_TO_PERSIST_IN_URL = {
   locus: 'locus',
   dataTypesToShow: 'show',
-  selectedRowNamesByCategoryName: 'selectedSamples',
+  selectedRowNamesByCategoryName: 'selectedRows',
+  selectedSamplesByCategoryNameAndRowName: 'selectedSamples',
   sjOptions: 'sjOptions',
   vcfOptions: 'vcfOptions',
   bamOptions: 'bamOptions',

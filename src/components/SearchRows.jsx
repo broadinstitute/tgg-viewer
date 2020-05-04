@@ -1,4 +1,6 @@
-/* eslint-disable */
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/require-optimization */
+
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -7,11 +9,11 @@ import styled from 'styled-components'
 import { Search } from 'semantic-ui-react'
 import {
   getRowsInCategories,
-  getSelectedRowNamesByCategoryName,
+  getSelectedRowNamesByCategoryName, getSelectedSamplesByCategoryNameAndRowName,
 } from '../redux/selectors'
-import AddOrEditRows from "./EditRows";
 
 const StyledSearch = styled(Search)`
+  margin-top: 15px; 
   .prompt {
     border-radius: 2px !important;
     width: 155px;
@@ -30,81 +32,148 @@ const MAX_AUTOCOMPLETE_RESULTS = 10
 const INITIAL_STATE = { isLoading: false, results: [], value: '' }
 
 class SearchRows extends React.Component {
-  state = INITIAL_STATE
+
+  constructor() {
+    super()
+    this.state = INITIAL_STATE
+  }
 
   handleResultSelect = (e, { result }) => {
-    console.log(result)
     this.setState({ value: '' })
+
+    console.log(e, result)
+
+    const idTokens = result.id.split('!!')
+    const action = idTokens[0]
+    const categoryName = idTokens[1]
+    const rowName = idTokens[2]
+    const sampleName = idTokens[3]
+
+    if (sampleName) {
+      if (action === 'ADD') {
+        this.props.updateSelectedRowNames(action, categoryName, [rowName])
+      }
+      this.props.updateSelectedSamples(action, categoryName, { [rowName]: [sampleName] })
+    } else {
+      this.props.updateSelectedRowNames(action, categoryName, [rowName])
+    }
   }
 
   handleSearchChange = (e, { value }) => {
     this.setState({ isLoading: true, value })
 
+    const isRowSelected = (categoryName, rowName) => (this.props.selectedRowNamesByCategoryName[categoryName] || []).includes(rowName)
+    const isSampleSelected = (categoryName, rowName, sample) => ((this.props.selectedSamplesByCategoryNameAndRowName[categoryName] || {})[rowName] || []).includes(sample)
+
     setTimeout(() => {
-      if (this.state.value.length < 1) return this.setState(INITIAL_STATE)
+      if (this.state.value.length < 1) {
+        return this.setState(INITIAL_STATE)
+      }
 
-      const useCategories = this.props.rowsInCategories.length > 1
-      const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
+      const inputStringRegExp = new RegExp(_.escapeRegExp(this.state.value), 'i')
 
-      let results = useCategories ? {} : []
+      const resultsByCategoryName = {}
       let resultsCounter = 0
-      this.props.rowsInCategories.forEach((category) => {
-        //category.categoryName
-        if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS) {
-          return
-        }
 
-        if (useCategories) {
-          results[category.categoryName] = {
-            name: category.categoryName,
-            results: [],
-          }
-        }
-        const resultsArray = useCategories ? results[category.categoryName].results : results
-
-        category.rows.forEach((row) => {
-          if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS) {
-            return
-          }
-
-          if (re.test(row.name)) {
+      // search actions
+      if (inputStringRegExp.test('Hide')) {
+        Object.keys(this.props.selectedRowNamesByCategoryName).forEach((categoryName) => {
+          if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS) return
+          this.props.selectedRowNamesByCategoryName[categoryName].forEach((rowName) => {
+            if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS) return
+            resultsByCategoryName[categoryName] = resultsByCategoryName[categoryName] || []
+            const newResult = { action: 'REMOVE', categoryName, rowName }
+            if (!_.some(resultsByCategoryName[categoryName], newResult)) {
+              resultsByCategoryName[categoryName].push(newResult)
+            }
             resultsCounter += 1
-            resultsArray.push({
-              id: `${row.name}`,
-              title: `${row.name}`,
+          })
+        })
+      }
+
+      if (inputStringRegExp.test('Hide') || inputStringRegExp.test('Hide sample')) {
+        Object.keys(this.props.selectedSamplesByCategoryNameAndRowName).forEach((categoryName) => {
+          if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS) return
+          Object.keys(this.props.selectedSamplesByCategoryNameAndRowName[categoryName]).forEach((rowName) => {
+            if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS || !isRowSelected(categoryName, rowName)) return
+            this.props.selectedSamplesByCategoryNameAndRowName[categoryName][rowName].forEach((sample) => {
+              if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS) return
+              resultsByCategoryName[categoryName] = resultsByCategoryName[categoryName] || []
+              const newResult = { action: 'REMOVE', categoryName, rowName, sample }
+              if (!_.some(resultsByCategoryName[categoryName], newResult)) {
+                resultsByCategoryName[categoryName].push(newResult)
+              }
+              resultsCounter += 1
             })
+          })
+        })
+      }
+
+      // search rows
+      this.props.rowsInCategories.forEach((category) => {
+        if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS) return
+        category.rows.forEach((row) => {
+          if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS) return
+          if (inputStringRegExp.test(row.name)) {
+            resultsByCategoryName[category.categoryName] = resultsByCategoryName[category.categoryName] || []
+            const newResult = {
+              action: isRowSelected(category.categoryName, row.name) ? 'REMOVE' : 'ADD',
+              categoryName: category.categoryName,
+              rowName: row.name,
+            }
+            if (!_.some(resultsByCategoryName[category.categoryName], newResult)) {
+              resultsByCategoryName[category.categoryName].push(newResult)
+            }
+            resultsCounter += 1
           }
 
           row.data.forEach((data) => {
-            if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS) {
-              return
-            }
-
+            if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS) return
             (data.samples || []).forEach((sample) => {
-              if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS) {
-                return
-              }
-
-              if (re.test(sample)) {
+              if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS) return
+              if (inputStringRegExp.test(sample)) {
+                resultsByCategoryName[category.categoryName] = resultsByCategoryName[category.categoryName] || []
+                const newResult = {
+                  action: isRowSelected(category.categoryName, row.name) && isSampleSelected(category.categoryName, row.name, sample) ? 'REMOVE' : 'ADD',
+                  categoryName: category.categoryName,
+                  rowName: row.name,
+                  sample,
+                }
+                if (!_.some(resultsByCategoryName[category.categoryName], newResult)) {
+                  resultsByCategoryName[category.categoryName].push(newResult)
+                }
                 resultsCounter += 1
-                resultsArray.push({
-                  id: `${row.name} > ${sample}`,
-                  title: `${row.name} > ${sample}`,
-                })
               }
             })
           })
         })
       })
 
+      const useCategories = this.props.rowsInCategories.length > 1
+      const results = useCategories ? {} : []
+      Object.keys(resultsByCategoryName).forEach((categoryName) => {
+        if (useCategories) {
+          results[categoryName] = { name: categoryName, results: [] }
+        }
+        const resultsArray = useCategories ? results[categoryName].results : results
+        resultsByCategoryName[categoryName].forEach((item) => {
+          if (item.sample) {
+            const actionLabel = item.action === 'ADD' ? 'Show sample' : 'Hide sample'
+            resultsArray.push({
+              id: `${item.action}!!${categoryName}!!${item.rowName}!!${item.sample}`,
+              title: `${actionLabel} ${item.rowName} > ${item.sample}`,
+            })
+          } else {
+            const actionLabel = item.action === 'ADD' ? 'Show' : 'Hide'
+            resultsArray.push({
+              id: `${item.action}!!${categoryName}!!${item.rowName}`,
+              title: `${actionLabel} ${item.rowName}`,
+            })
+          }
+        })
+      })
 
-
-      //console.warn('results', results)
-      //const re = new RegExp(_.escapeRegExp(this.state.value), 'i')
-      //const isMatch = (result) => re.test(result.title)
-
-
-      this.setState({
+      return this.setState({
         isLoading: false,
         results,
       })
@@ -118,9 +187,7 @@ class SearchRows extends React.Component {
       category={this.props.rowsInCategories.length > 1}
       loading={isLoading}
       onResultSelect={this.handleResultSelect}
-      onSearchChange={_.debounce(this.handleSearchChange, 500, {
-        leading: true,
-      })}
+      onSearchChange={this.handleSearchChange}
       placeholder="Select data"
       results={results}
       value={value}
@@ -131,12 +198,15 @@ class SearchRows extends React.Component {
 SearchRows.propTypes = {
   rowsInCategories: PropTypes.array,
   selectedRowNamesByCategoryName: PropTypes.object,
+  selectedSamplesByCategoryNameAndRowName: PropTypes.object,
   updateSelectedRowNames: PropTypes.func,
+  updateSelectedSamples: PropTypes.func,
 }
 
 const mapStateToProps = (state) => ({
   rowsInCategories: getRowsInCategories(state),
   selectedRowNamesByCategoryName: getSelectedRowNamesByCategoryName(state),
+  selectedSamplesByCategoryNameAndRowName: getSelectedSamplesByCategoryNameAndRowName(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -147,8 +217,15 @@ const mapDispatchToProps = (dispatch) => ({
       selectedRowNames,
     })
   },
-})
 
+  updateSelectedSamples: (actionType, categoryName, selectedSamplesByRowName) => {
+    dispatch({
+      type: `${actionType}_SELECTED_SAMPLES`,
+      categoryName,
+      selectedSamplesByRowName,
+    })
+  },
+})
 
 
 export default connect(mapStateToProps, mapDispatchToProps)(SearchRows)

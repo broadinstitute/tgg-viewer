@@ -58,9 +58,9 @@ const selectedRowNamesByCategoryNameReducer = (state, action) => {
     case 'REMOVE_SELECTED_ROW_NAMES': {
       let updatedList
       if (action.type === 'SET_SELECTED_ROW_NAMES') {
-        updatedList = [...action.selectedRowNames] // make a copy of action.values
+        updatedList = Array.from(new Set(action.selectedRowNames)) // make a copy of action.values
       } else if (action.type === 'ADD_SELECTED_ROW_NAMES') {
-        updatedList = [...previousList, ...action.selectedRowNames]
+        updatedList = Array.from(new Set([...previousList, ...action.selectedRowNames]))
       } else {
         const valuesToRemove = action.selectedRowNames
         updatedList = previousList.filter((v) => !valuesToRemove.includes(v))
@@ -69,6 +69,53 @@ const selectedRowNamesByCategoryNameReducer = (state, action) => {
       return {
         ...state,
         [action.categoryName]: updatedList,
+      }
+    }
+    default:
+      console.trace(`Unknown action type: ${action.type}`)
+  }
+
+  return state
+}
+
+
+const selectedSamplesByCategoryNameAndRowNameReducer = (state, action) => {
+  if (!action || !action.categoryName || !action.selectedSamplesByRowName) {
+    return state || {}
+  }
+
+  const previousSelectedSamplesByRowName = state[action.categoryName] || {}
+  switch (action.type) {
+    case 'SET_SELECTED_SAMPLES':
+    case 'ADD_SELECTED_SAMPLES':
+    case 'REMOVE_SELECTED_SAMPLES': {
+
+      let updatedSelectedSamplesByRowName
+      if (action.type === 'SET_SELECTED_SAMPLES') {
+        updatedSelectedSamplesByRowName = { ...previousSelectedSamplesByRowName, ...action.selectedSamplesByRowName }
+      } else if (action.type === 'ADD_SELECTED_SAMPLES') {
+        updatedSelectedSamplesByRowName = Array.from(new Set([
+          ...Object.keys(previousSelectedSamplesByRowName),
+          ...Object.keys(action.selectedSamplesByRowName),
+        ])).reduce((acc, rowName) => {
+          acc[rowName] = Array.from(new Set([...(previousSelectedSamplesByRowName[rowName] || []), ...(action.selectedSamplesByRowName[rowName] || [])]))
+
+          return acc
+        }, {})
+      } else {
+        updatedSelectedSamplesByRowName = Object.keys(previousSelectedSamplesByRowName).reduce((acc, rowName) => {
+          const valuesToRemove = action.selectedSamplesByRowName[rowName] || []
+          const updatedList = (previousSelectedSamplesByRowName[rowName] || []).filter((v) => !valuesToRemove.includes(v))
+          if (updatedList.length > 0) {
+            acc[rowName] = updatedList
+          }
+          return acc
+        }, {})
+      }
+
+      return {
+        ...state,
+        [action.categoryName]: updatedSelectedSamplesByRowName,
       }
     }
     default:
@@ -87,6 +134,7 @@ const otherReducers = combineReducers(Object.assign({
   dataTypesToShow: createArrayReducer('DATA_TYPES_TO_SHOW'),
   rowsInCategories: rowsInCategoriesReducer,
   selectedRowNamesByCategoryName: selectedRowNamesByCategoryNameReducer,
+  selectedSamplesByCategoryNameAndRowName: selectedSamplesByCategoryNameAndRowNameReducer,
   sjOptions: createSingleObjectReducer('UPDATE_SJ_OPTIONS'),
   vcfOptions: createSingleObjectReducer('UPDATE_VCF_OPTIONS'),
   bamOptions: createSingleObjectReducer('UPDATE_BAM_OPTIONS'),

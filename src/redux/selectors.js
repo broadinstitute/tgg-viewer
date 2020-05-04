@@ -13,6 +13,7 @@ export const getGenome = (state) => state.genome
 export const getDataTypesToShow = (state) => state.dataTypesToShow
 export const getRowsInCategories = (state) => state.rowsInCategories
 export const getSelectedRowNamesByCategoryName = (state) => state.selectedRowNamesByCategoryName
+export const getSelectedSamplesByCategoryNameAndRowName = (state) => state.selectedSamplesByCategoryNameAndRowName
 export const getSjOptions = (state) => state.sjOptions
 export const getVcfOptions = (state) => state.vcfOptions
 export const getBamOptions = (state) => state.bamOptions
@@ -44,7 +45,6 @@ export const getEnabledDataTypes = createSelector(
   getAllDataTypes,
   getDataTypesToShow,
   (allDataTypes, dataTypesToShow) => {
-    console.warn(allDataTypes, dataTypesToShow, 'enabled datatypes', allDataTypes.filter((dataType) => dataTypesToShow.includes(dataType)))
     return allDataTypes.length < 2 ? allDataTypes : allDataTypes.filter((dataType) => dataTypesToShow.includes(dataType))
   })
 
@@ -72,12 +72,21 @@ export const getSelectedRowsByCategoryName = createSelector(
 
 export const getTracks = createSelector(
   getSelectedRowsByCategoryName,
+  getSelectedSamplesByCategoryNameAndRowName,
   getDataTypesToShow,
   getSjOptions,
   getVcfOptions,
   getBamOptions,
   getGcnvOptions,
-  (selectedRowsByCategoryName, dataTypesToShow, sjOptions, vcfOptions, bamOptions, gcnvOptions) => {
+  (
+    selectedRowsByCategoryName,
+    selectedSamplesByCategoryNameAndRowName,
+    dataTypesToShow,
+    sjOptions,
+    vcfOptions,
+    bamOptions,
+    gcnvOptions,
+  ) => {
     const igvTracks = []
 
     Object.entries(selectedRowsByCategoryName).forEach(([categoryName, selectedRows]) => selectedRows.forEach((row, i) => {
@@ -100,12 +109,15 @@ export const getTracks = createSelector(
             min: gcnvOptions.trackMin,
             max: gcnvOptions.trackMax,
             autoscale: gcnvOptions.autoscale,
-            highlightSamples: {
-              C2168_SHE_3134F_1_v1_Exome_GCP: 'blue',
-            },
+            highlightSamples: ((selectedSamplesByCategoryNameAndRowName[categoryName] || {})[row.name] || []).reduce((acc, sampleName) => {
+              acc[sampleName] = 'blue'
+              return acc
+            }, {}),
             onlyHandleClicksForHighlightedSamples: gcnvOptions.onlyHandleClicksForHighlightedSamples,
             oauthToken: getGoogleAccessToken,
             order: i * 100 + j,
+            rowName: row.name,
+            categoryName: categoryName,
           })
         }
         else if ((data.type === 'junctions' || data.url.includes('junctions.bed')) && dataTypesToShow.includes('junctions')) {
@@ -117,7 +129,6 @@ export const getTracks = createSelector(
             oauthToken: getGoogleAccessToken,
             order: i * 10,
             name: row.name,
-            categoryName: categoryName,
             height: sjOptions.trackHeight,
             minUniquelyMappedReads: sjOptions.minUniquelyMappedReads,
             minTotalReads: sjOptions.minTotalReads,
@@ -136,6 +147,8 @@ export const getTracks = createSelector(
             hideAnnotatedJunctions: sjOptions.hideAnnotated,
             hideUnannotatedJunctions: sjOptions.hideUnannotated,
             hideMotifs: MOTIFS.filter((motif) => sjOptions[`hideMotif${motif}`]), //options: 'GT/AG', 'CT/AC', 'GC/AG', 'CT/GC', 'AT/AC', 'GT/AT', 'non-canonical'
+            rowName: row.name,
+            categoryName: categoryName,
           }
         }
         else if ((data.type === 'coverage' || data.url.includes('.bigWig')) && dataTypesToShow.includes('coverage')) {
@@ -145,9 +158,10 @@ export const getTracks = createSelector(
             url: data.url,
             oauthToken: getGoogleAccessToken,
             name: row.name,
-            categoryName: categoryName,
             height: sjOptions.trackHeight,
             order: i * 10 + j,
+            rowName: row.name,
+            categoryName: categoryName,
           }
 
           if (data.url.includes('spliceai')) {
@@ -178,10 +192,11 @@ export const getTracks = createSelector(
             indexURL: `${data.url}.tbi`,
             indexed: true,
             name: `${row.name} ${data.label || data.type}`,
-            categoryName: categoryName,
             displayMode: vcfOptions.displayMode,
             oauthToken: getGoogleAccessToken,
             order: i * 100 + j,
+            rowName: row.name,
+            categoryName: categoryName,
           })
         }
         else if ((data.type === 'alignment' || data.url.includes('.bam') || data.url.includes('.cram')) && dataTypesToShow.includes('alignment')) {
@@ -193,13 +208,14 @@ export const getTracks = createSelector(
             url: data.url,
             indexed: true,
             name: `${row.name} ${data.label || ''}`,
-            categoryName: categoryName,
             height: bamOptions.trackHeight,
             colorBy: bamOptions.colorBy,
             viewAsPairs: bamOptions.viewAsPairs,
             showSoftClips: bamOptions.showSoftClips,
             oauthToken: getGoogleAccessToken,
             order: i * 100 + j,
+            rowName: row.name,
+            categoryName: categoryName,
           })
         }
       })
@@ -209,10 +225,11 @@ export const getTracks = createSelector(
         igvTracks.push({
           type: 'merged',
           name: junctionsTrack.name,
-          categoryName: categoryName,
           height: sjOptions.trackHeight,
           tracks: [coverageTrack, junctionsTrack],
           order: i * 10 + 2,
+          rowName: row.name,
+          categoryName: categoryName,
         })
       } else if (junctionsTrack) {
         console.log(`Adding ${junctionsTrack.url} track`)
