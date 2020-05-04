@@ -26,6 +26,13 @@ const StyledSearch = styled(Search)`
   .results {
       min-width: max-content;
   }
+
+  .red-text {
+    .title {
+      color: #CC0000 !important;
+      font-weight: 500 !important;
+     }
+  }
 `
 
 const MAX_AUTOCOMPLETE_RESULTS = 10
@@ -174,12 +181,14 @@ class SearchRows extends React.Component {
             resultsArray.push({
               id: `${item.action}!!${categoryName}!!${item.rowName}!!${item.sample}`,
               title: `${actionLabel} ${item.rowName} > ${item.sample}`,
+              className: item.action !== 'ADD' && 'red-text',
             })
           } else {
             const actionLabel = item.action === 'ADD' ? 'Show' : 'Hide'
             resultsArray.push({
               id: `${item.action}!!${categoryName}!!${item.rowName}`,
               title: `${actionLabel} ${item.rowName}`,
+              className: item.action !== 'ADD' && 'red-text',
             })
           }
         })
