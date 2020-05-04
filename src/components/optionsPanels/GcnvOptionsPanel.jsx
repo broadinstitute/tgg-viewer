@@ -30,30 +30,27 @@ const DeleteButton = styled(Button).attrs({ basic: true, icon: true })`
 
 const SampleNameText = styled.span`
   word-wrap: break-word;
+  word-break: break-all;  
   white-space: normal;
 `
 
 const NONE_HIGHLIGHTED_MESSAGE = <GrayText>Use search box in left side-bar to select which samples to highlight.</GrayText>
 
-const SamplePanel = ({ categoryName, rowName, sample, sampleSettings, unhighlightSample, updateSampleSettings }) => {
-  console.warn('SamplePanel render', rowName, sample, sampleSettings)
+const SamplePanel = ({ categoryName, rowName, sample, sampleSettings, unhighlightSample, updateSampleSettings }) => (
+  <div style={{ whiteSpace: 'nowrap' }}>
+    <DeleteButton onClick={() => unhighlightSample(categoryName, rowName, sample)}>
+      <Icon name="delete" />
+    </DeleteButton>
+    <SampleNameText>{sample}</SampleNameText>
+    <span style={{ marginLeft: '8px' }}>
+      <ColorPicker
+        key={sampleSettings.color}
+        color={sampleSettings.color || GCNV_DEFAULT_HIGHLIGHT_COLOR}
+        colorChangedHandler={(newColor) => updateSampleSettings(categoryName, rowName, sample, { color: newColor })}
+      />
+    </span>
+  </div>)
 
-  return (
-    <div style={{ whiteSpace: 'nowrap' }}>
-      <DeleteButton onClick={() => unhighlightSample(categoryName, rowName, sample)}>
-        <Icon name="delete" />
-      </DeleteButton>
-      <SampleNameText>{sample}</SampleNameText>
-      <span style={{ marginLeft: '8px' }}>
-        <ColorPicker
-          key={sampleSettings.color}
-          color={sampleSettings.color || GCNV_DEFAULT_HIGHLIGHT_COLOR}
-          colorChangedHandler={(newColor) => updateSampleSettings(categoryName, rowName, sample, { color: newColor })}
-        />
-      </span>
-    </div>
-  )
-}
 
 SamplePanel.propTypes = {
   categoryName: PropTypes.string,
@@ -105,7 +102,6 @@ const GcnvOptionsPanel = ({ gcnvOptions, selectedSamplesByCategoryNameAndRowName
     }
   }
 
-  console.warn('GcnvOptionsPanel render', selectedSamplesByCategoryNameAndRowName)
   return (
     <div>
       <CategoryH3>GCNV OPTIONS</CategoryH3><br />
