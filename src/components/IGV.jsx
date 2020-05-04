@@ -1,10 +1,22 @@
+/* eslint-disable eqeqeq */
+import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import igv from 'igv/dist/igv.esm'
 import { connect } from 'react-redux'
 
-import { getGenome, getLocus, getTracks, getSjOptions, getVcfOptions, getBamOptions } from '../redux/selectors'
+import {
+  getGenome,
+  getLocus,
+  getTracks,
+  getSelectedSamplesByCategoryNameAndRowName,
+  getEnabledDataTypes,
+  getSjOptions,
+  getVcfOptions,
+  getBamOptions,
+  getGcnvOptions,
+} from '../redux/selectors'
 import { getGoogleUserEmail, googleSignIn, initGoogleClient } from '../utils/googleAuth'
 import { throttle } from '../utils/throttle'
 
@@ -85,17 +97,19 @@ class IGV extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    if (!this.container) {
+    if (!this.container || !this.browser) {
       return false
     }
 
     const {
       tracks,
+      selectedSamplesByCategoryNameAndRowName,
+      enabledDataTypes,
       sjOptions,
       vcfOptions,
       bamOptions,
+      gcnvOptions,
     } = this.props
-
 
     const currentIGVLocus = this.browser.$searchInput.val()
     const nextIGVLocus = nextProps.locus
@@ -111,15 +125,32 @@ class IGV extends React.Component {
 
     // update or remove existing tracks
     tracks.forEach((track) => {
-      // TODO check if any tracks need google sign-in
-
       const nextTrackSettings = nextTrackSettingsByTrackName[track.name]
       if (nextTrackSettings) {
-        if ((nextProps.sjOptions !== sjOptions && ['merged', 'wig', 'spliceJunctions'].includes(track.type))
-          || (nextProps.vcfOptions !== vcfOptions && track.type === 'variant')
-          || (nextProps.bamOptions !== bamOptions && track.type === 'alignment')
-        ) {
-          console.log('reloading track', track.name)
+        const junctionTrackDisplaySettingsChanged = ['merged', 'wig', 'spliceJunctions'].includes(track.type) && (
+          nextProps.enabledDataTypes.includes('junctions') !== enabledDataTypes.includes('junctions')
+          || nextProps.enabledDataTypes.includes('coverage') !== enabledDataTypes.includes('coverage')
+          || nextProps.sjOptions !== sjOptions)
+        const vcfTrackDisplaySettingsChanged = track.type === 'variant' && nextProps.vcfOptions !== vcfOptions
+        const alignmentTrackDisplaySettingsChanged = track.type === 'alignment' && nextProps.bamOptions !== bamOptions
+        const gcnvTrackDisplaySettingsChanged = track.type === 'gcnv' && nextProps.gcnvOptions !== gcnvOptions
+        const gcnvTrackHighlightedSamplesChanged = track.type === 'gcnv' && (
+          !_.isEqual(
+            ((nextProps.selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).selectedSamples || {})[track.rowName],
+            ((selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).selectedSamples || {})[track.rowName])
+          || !_.isEqual(
+            ((nextProps.selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).sampleSettings || {})[track.rowName],
+            ((selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).sampleSettings || {})[track.rowName])
+        )
+
+        console.log('gcnvTrackHighlightedSamplesChanged:', gcnvTrackHighlightedSamplesChanged, (nextProps.selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).sampleSettings, (selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).sampleSettings)
+        if (junctionTrackDisplaySettingsChanged
+          || vcfTrackDisplaySettingsChanged
+          || alignmentTrackDisplaySettingsChanged
+          || gcnvTrackDisplaySettingsChanged
+          || gcnvTrackHighlightedSamplesChanged)
+        {
+          console.log('Reloading track', track.name)
           this.ignoreNextTrackRemovedEvent = true
           this.browser.removeTrackByName(track.name)
           this.browser.loadTrack(nextTrackSettings)
@@ -132,7 +163,7 @@ class IGV extends React.Component {
         // remove track that was de-selected
         try {
           this.ignoreNextTrackRemovedEvent = true
-          console.log('removing track', track.name)
+          console.log('Removing track', track.name)
           this.browser.removeTrackByName(track.name)
         } catch (e) {
           console.warn('Unable to remove track', track.name, e)
@@ -143,7 +174,7 @@ class IGV extends React.Component {
     // load any newly-selected track(s)
     Object.values(nextTrackSettingsByTrackName).forEach((track) => {
       try {
-        console.log('loading track', track.name)
+        console.log('Loading track', track.name)
         this.browser.loadTrack(track)
       } catch (e) {
         console.warn('Unable to add track', track.name, e)
@@ -154,14 +185,31 @@ class IGV extends React.Component {
   }
 }
 
+IGV.propTypes = {
+  genome: PropTypes.string.isRequired,
+  locus: PropTypes.string.isRequired,
+  tracks: PropTypes.array.isRequired,
+  selectedSamplesByCategoryNameAndRowName: PropTypes.object.isRequired,
+  enabledDataTypes: PropTypes.array.isRequired,
+  locusChangedHandler: PropTypes.func,
+  trackRemovedHandler: PropTypes.func,
+  userChangedHandler: PropTypes.func,
+  sjOptions: PropTypes.object,
+  vcfOptions: PropTypes.object,
+  bamOptions: PropTypes.object,
+  gcnvOptions: PropTypes.object,
+}
 
 const mapStateToProps = (state) => ({
   genome: getGenome(state),
   locus: getLocus(state),
   tracks: getTracks(state),
+  enabledDataTypes: getEnabledDataTypes(state),
+  selectedSamplesByCategoryNameAndRowName: getSelectedSamplesByCategoryNameAndRowName(state),
   sjOptions: getSjOptions(state),
   vcfOptions: getVcfOptions(state),
   bamOptions: getBamOptions(state),
+  gcnvOptions: getGcnvOptions(state),
 })
 
 
@@ -183,28 +231,15 @@ const mapDispatchToProps = (dispatch) => ({
   },
 
   trackRemovedHandler: (track) => {
-    console.log('removing track', track.config.categoryName, track.config.name)
+    console.log('Removing track', track.config.categoryName, track.config.name)
 
     dispatch({
-      type: 'REMOVE_SELECTED_SAMPLE_NAMES',
+      type: 'REMOVE_SELECTED_ROW_NAMES',
       categoryName: [track.config.categoryName],
-      selectedSampleNames: [track.config.name],
+      selectedRowNames: [track.config.name],
     })
   },
 })
 
-IGV.propTypes = {
-  genome: PropTypes.string.isRequired,
-  locus: PropTypes.string.isRequired,
-  tracks: PropTypes.array.isRequired,
-  locusChangedHandler: PropTypes.func,
-  trackRemovedHandler: PropTypes.func,
-  userChangedHandler: PropTypes.func,
-  sjOptions: PropTypes.object,
-  vcfOptions: PropTypes.object,
-  bamOptions: PropTypes.object,
-}
-
-export { IGV as IGVComponent }
 
 export default connect(mapStateToProps, mapDispatchToProps)(IGV)

@@ -31,6 +31,4 @@ const mapStateToProps = (state) => ({
 
 })
 
-export { UserInfo as UserInfoComponent }
-
 export default connect(mapStateToProps)(UserInfo)

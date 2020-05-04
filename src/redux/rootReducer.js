@@ -14,8 +14,8 @@ import {
 import modalReducers from './utils/modalReducer'
 
 
-const samplesInCategoriesReducer = (state, action) => {
-  if (!action || !action.categoryName || !action.samples) {
+const rowsInCategoriesReducer = (state, action) => {
+  if (!action || !action.categoryName || !action.rows) {
     return state || []
   }
 
@@ -24,45 +24,45 @@ const samplesInCategoriesReducer = (state, action) => {
       return category
     }
 
-    let updatedSamples
+    let updatedRows
     switch (action.type) {
-      case 'SET_SAMPLES':
-        updatedSamples = [...action.samples]
+      case 'SET_ROWS':
+        updatedRows = [...action.rows]
         break
 
-      case 'ADD_SAMPLES':
-        updatedSamples = [...category.samples, ...action.samples]
+      case 'ADD_ROWS':
+        updatedRows = [...category.rows, ...action.rows]
         break
 
       default:
-        updatedSamples = category.samples
+        updatedRows = category.rows
     }
 
     return {
       ...category,
-      samples: updatedSamples,
+      rows: updatedRows,
     }
   })
 }
 
 
-const selectedSampleNamesByCategoryNameReducer = (state, action) => {
-  if (!action || !action.categoryName || !Array.isArray(action.selectedSampleNames)) {
+const selectedRowNamesByCategoryNameReducer = (state, action) => {
+  if (!action || !action.categoryName || !Array.isArray(action.selectedRowNames)) {
     return state || {}
   }
 
   const previousList = state[action.categoryName] || []
   switch (action.type) {
-    case 'SET_SELECTED_SAMPLE_NAMES':
-    case 'ADD_SELECTED_SAMPLE_NAMES':
-    case 'REMOVE_SELECTED_SAMPLE_NAMES': {
+    case 'SET_SELECTED_ROW_NAMES':
+    case 'ADD_SELECTED_ROW_NAMES':
+    case 'REMOVE_SELECTED_ROW_NAMES': {
       let updatedList
-      if (action.type === 'SET_SELECTED_SAMPLE_NAMES') {
-        updatedList = [...action.selectedSampleNames] // make a copy of action.values
-      } else if (action.type === 'ADD_SELECTED_SAMPLE_NAMES') {
-        updatedList = [...previousList, ...action.selectedSampleNames]
+      if (action.type === 'SET_SELECTED_ROW_NAMES') {
+        updatedList = Array.from(new Set(action.selectedRowNames)) // make a copy of action.values
+      } else if (action.type === 'ADD_SELECTED_ROW_NAMES') {
+        updatedList = Array.from(new Set([...previousList, ...action.selectedRowNames]))
       } else {
-        const valuesToRemove = action.selectedSampleNames
+        const valuesToRemove = action.selectedRowNames
         updatedList = previousList.filter((v) => !valuesToRemove.includes(v))
       }
 
@@ -78,17 +78,83 @@ const selectedSampleNamesByCategoryNameReducer = (state, action) => {
   return state
 }
 
+
+const selectedSamplesByCategoryNameAndRowNameReducer = (state, action) => {
+  if (!action || !action.categoryName || (!action.selectedSamplesByRowName && !action.sampleSettingsByRowName)) {
+    return state || {}
+  }
+
+  const categoryObj = state[action.categoryName] || {}
+  const previousSelectedSamplesByRowName = categoryObj.selectedSamples || {}
+  const previousSampleSettingsByRowName = categoryObj.sampleSettings || {}
+  let updatedSelectedSamplesByRowName = previousSelectedSamplesByRowName
+  let updatedSampleSettingsByRowName = previousSampleSettingsByRowName
+
+  switch (action.type) {
+    case 'SET_SELECTED_SAMPLES':
+    case 'ADD_SELECTED_SAMPLES':
+    case 'REMOVE_SELECTED_SAMPLES': {
+      if (action.type === 'SET_SELECTED_SAMPLES') {
+        updatedSelectedSamplesByRowName = { ...previousSelectedSamplesByRowName, ...action.selectedSamplesByRowName }
+      } else if (action.type === 'ADD_SELECTED_SAMPLES') {
+        updatedSelectedSamplesByRowName = Array.from(new Set([
+          ...Object.keys(previousSelectedSamplesByRowName),
+          ...Object.keys(action.selectedSamplesByRowName),
+        ])).reduce((acc, rowName) => {
+          acc[rowName] = Array.from(new Set([...(previousSelectedSamplesByRowName[rowName] || []), ...(action.selectedSamplesByRowName[rowName] || [])]))
+
+          return acc
+        }, {})
+      } else {
+        updatedSelectedSamplesByRowName = Object.keys(previousSelectedSamplesByRowName).reduce((acc, rowName) => {
+          const valuesToRemove = action.selectedSamplesByRowName[rowName] || []
+          const updatedList = (previousSelectedSamplesByRowName[rowName] || []).filter((v) => !valuesToRemove.includes(v))
+          if (updatedList.length > 0) {
+            acc[rowName] = updatedList
+          }
+          return acc
+        }, {})
+      }
+      break
+    }
+
+    case 'UPDATE_SAMPLE_SETTINGS': {
+      updatedSampleSettingsByRowName = { ...previousSampleSettingsByRowName } //make a copy
+      Object.keys(action.sampleSettingsByRowName).forEach((rowName) => {
+        updatedSampleSettingsByRowName[rowName] = action.sampleSettingsByRowName[rowName]
+      })
+      break
+    }
+
+    default: {
+      console.trace(`Unknown action type: ${action.type}`)
+      return state
+    }
+  }
+
+  return {
+    ...state,
+    [action.categoryName]: {
+      selectedSamples: updatedSelectedSamplesByRowName,
+      sampleSettings: updatedSampleSettingsByRowName,
+    },
+  }
+}
+
 // combined reducers
 const otherReducers = combineReducers(Object.assign({
   genome: zeroActionsReducer,
   locus: createSingleValueReducer('UPDATE_LOCUS', ''),
   rightSideBarLocusList: createArrayReducer('RIGHT_SIDE_BAR_LOCUS_LIST'),
   leftSideBarLocusList: createArrayReducer('LEFT_SIDE_BAR_LOCUS_LIST'),
-  samplesInCategories: samplesInCategoriesReducer,
-  selectedSampleNamesByCategoryName: selectedSampleNamesByCategoryNameReducer,
+  dataTypesToShow: createArrayReducer('DATA_TYPES_TO_SHOW'),
+  rowsInCategories: rowsInCategoriesReducer,
+  selectedRowNamesByCategoryName: selectedRowNamesByCategoryNameReducer,
+  selectedSamplesByCategoryNameAndRowName: selectedSamplesByCategoryNameAndRowNameReducer,
   sjOptions: createSingleObjectReducer('UPDATE_SJ_OPTIONS'),
   vcfOptions: createSingleObjectReducer('UPDATE_VCF_OPTIONS'),
   bamOptions: createSingleObjectReducer('UPDATE_BAM_OPTIONS'),
+  gcnvOptions: createSingleObjectReducer('UPDATE_GCNV_OPTIONS'),
   user: createSingleObjectReducer('UPDATE_USER'),
   initialSettings: createSingleValueReducer('UPDATE_INITIAL_SETTINGS', {}),
   initialSettingsUrl: createSingleValueReducer('UPDATE_INITIAL_SETTINGS_URL', ''),
@@ -98,7 +164,6 @@ const otherReducers = combineReducers(Object.assign({
 
 const rootReducer = (state, action) => {
   if (action.type === 'RESET_GLOBAL_STATE') {
-    console.log('RESET_GLOBAL_STATE to', action.newState)
     return action.newState
   }
 
@@ -119,8 +184,7 @@ export const createReduxStore = () => {
 
   const initialState = computeInitialState()
 
-  console.log('Initializing store to:')
-  console.log(initialState)
+  console.log('Initializing store to:', initialState)
 
   return createStore(rootReducer, initialState, compose(applyMiddleware(thunkMiddleware)))
 }

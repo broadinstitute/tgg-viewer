@@ -43,17 +43,17 @@ const StyledPopup = styled(Popup).attrs({ position: 'bottom center' })`
 `
 
 
-class EditSamplePathsButtonAndModal extends React.PureComponent {
+class EditRowsButtonAndModal extends React.PureComponent {
 
   getInitialState = () => {
     const {
-      samples,
+      rows,
     } = this.props
-    const format = samples && samples.length > 0 ? 'yaml' : 'basic'
+    const format = rows && rows.length > 0 ? 'yaml' : 'basic'
 
     return {
       format: format,
-      textAreaValue: this.convertSamplesToTextAreaValue(samples || [], format),
+      textAreaValue: this.convertRowsToTextAreaValue(rows || [], format),
       warningMessage: null,
       errorMessage: null,
     }
@@ -65,9 +65,9 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
     this.state = this.getInitialState()
   }
 
-  parseTextAreaValueToSamples = (textAreaValue, format) => {
+  parseTextAreaValueToRows = (textAreaValue, format) => {
     if (!textAreaValue.trim()) {
-      return { samples: [], errorMessage: null }
+      return { rows: [], errorMessage: null }
     }
 
     let samples = []
@@ -120,18 +120,23 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
     return { samples, errorMessage }
   }
 
-  convertSamplesToTextAreaValue = (samples, format) => {
-    if (!samples || samples.length === 0) {
+  convertRowsToTextAreaValue = (rows, format) => {
+    if (!rows || rows.length === 0) {
       return ''
     }
 
     let textAreaValue
     if (format === 'basic') {
-      textAreaValue = samples.map((sample) => Object.keys(sample).filter((key) => key !== 'name' && key !== 'description').map((key) => sample[key])).flat().join('\n')
+      textAreaValue = rows.map((row) => Object.keys(row)
+        .filter(
+          (key) => key !== 'name' && key !== 'description')
+        .map(
+          (key) => row[key]))
+        .flat().join('\n')
     } else if (format === 'yaml') {
-      textAreaValue = yaml.safeDump(samples, { flowLevel: 2 })
+      textAreaValue = yaml.safeDump(rows, { flowLevel: 2 })
     } else if (format === 'json') {
-      textAreaValue = JSON.stringify(samples, null, 2)
+      textAreaValue = JSON.stringify(rows, null, 2)
     }
 
     return textAreaValue
@@ -143,7 +148,7 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
       format,
     } = this.state
 
-    const { samples, errorMessage } = this.parseTextAreaValueToSamples(textAreaValue, format)
+    const { rows, errorMessage } = this.parseTextAreaValueToRows(textAreaValue, format)
     if (errorMessage) {
       e.preventDefault()
       this.setState({ errorMessage: errorMessage })
@@ -152,24 +157,24 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
     this.setState({ errorMessage: '' })
 
     if (data.checked) {
-      this.setState({ format: data.label, textAreaValue: this.convertSamplesToTextAreaValue(samples, data.label) })
+      this.setState({ format: data.label, textAreaValue: this.convertRowsToTextAreaValue(rows, data.label) })
     }
 
     return true
   }
 
-  getInitialSamplesInCategory = () => {
-    // cache originalSamples for reset button
+  getInitialRowsInCategory = () => {
+    // cache originalCategories for reset button
     const {
       categoryName,
       showResetButton,
-      initialSamplesInCategories,
+      initialRowsInCategories,
     } = this.props
 
-    if (showResetButton && initialSamplesInCategories) {
-      const originalCategories = initialSamplesInCategories.filter((category) => category.categoryName === categoryName)
+    if (showResetButton && initialRowsInCategories) {
+      const originalCategories = initialRowsInCategories.filter((category) => category.categoryName === categoryName)
       if (originalCategories.length > 0) {
-        return originalCategories[0].samples
+        return originalCategories[0].rows
       }
     }
 
@@ -181,14 +186,14 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
       format,
     } = this.state
 
-    const initialSamplesInCategory = this.getInitialSamplesInCategory()
-    const textAreaValue = this.convertSamplesToTextAreaValue(initialSamplesInCategory, format)
+    const initialRowsInCategory = this.getInitialRowsInCategory()
+    const textAreaValue = this.convertRowsToTextAreaValue(initialRowsInCategory, format)
     this.setState({ textAreaValue: textAreaValue })
   }
 
   handleModalSave = () => {
     const {
-      setSamples,
+      setRows,
     } = this.props
 
     const {
@@ -196,14 +201,14 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
       format,
     } = this.state
 
-    const { samples, errorMessage } = this.parseTextAreaValueToSamples(textAreaValue, format)
+    const { rows, errorMessage } = this.parseTextAreaValueToRows(textAreaValue, format)
 
     if (errorMessage) {
       this.setState({ errorMessage: errorMessage })
       return false
     }
 
-    setSamples(samples)
+    setRows(rows)
     return true
 
   }
@@ -215,7 +220,7 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
 
   render = () => {
     const {
-      samples,
+      rows,
       title,
       showResetButton,
       trigger,
@@ -228,14 +233,14 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
       errorMessage,
     } = this.state
 
-    const fullTitle = `${title} Paths`
-    let initialSamplesInCategory
+    const fullTitle = `${title} Rows`
+    let initialRowsInCategory
     if (showResetButton) {
-      initialSamplesInCategory = this.getInitialSamplesInCategory()
+      initialRowsInCategory = this.getInitialRowsInCategory()
     }
 
-    const someSamplesHaveDescriptionOrMultipleDataFiles = samples.some(
-      (sample) => sample.description || Object.keys(sample).filter((key) => key !== 'name' && key !== 'description').length > 1,
+    const someRowsHaveDescriptionOrMultipleDataFiles = rows.some(
+      (row) => row.description || Object.keys(row).filter((key) => key !== 'name' && key !== 'description').length > 1,
     )
 
     return (
@@ -252,13 +257,13 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
           <br />
           <div>
             <b>Format:</b>
-            <StyledRadio name="format" label="basic" disabled={someSamplesHaveDescriptionOrMultipleDataFiles} checked={format === 'basic'} onChange={this.formatRadioButtonChangeHandler} />
+            <StyledRadio name="format" label="basic" disabled={someRowsHaveDescriptionOrMultipleDataFiles} checked={format === 'basic'} onChange={this.formatRadioButtonChangeHandler} />
             <StyledPopup trigger={<Icon style={{ marginLeft: '8px' }} name="question circle outline" />} content={
               <div>
                 {
-                  someSamplesHaveDescriptionOrMultipleDataFiles && (
+                  someRowsHaveDescriptionOrMultipleDataFiles && (
                   <div>
-                    <b>[Disabled]</b> because some samples have multiple data files and/or a description.<br />
+                    <b>[Disabled]</b> because some rows have multiple data files and/or a description.<br />
                     <br />
                   </div>)
                 }
@@ -268,11 +273,11 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
                 <br />
                 Example:<br />
                 <ExampleDiv>
-                 gs://your-bucket/dir/sample-name1.bigWig <br />
-                 gs://your-bucket/dir/sample2.bigWig <br />
-                 gs://your-bucket/dir/sample-name1.junctions.bed.gz <br />
-                 gs://your-bucket/dir/sample-name1.bam <br />
-                 gs://your-bucket/dir/sample2.junctions.bed.gz <br />
+                  gs://your-bucket/dir/sample-name1.bigWig <br />
+                  gs://your-bucket/dir/sample2.bigWig <br />
+                  gs://your-bucket/dir/sample-name1.junctions.bed.gz <br />
+                  gs://your-bucket/dir/sample-name1.bam <br />
+                  gs://your-bucket/dir/sample2.junctions.bed.gz <br />
                 </ExampleDiv>
                 Paths that have the same prefix (like <ExamplePath>gs://your-bucket/dir/sample-name1</ExamplePath> in the example) will be interpreted as different data types from the same sample.<br />
                 <br />
@@ -328,7 +333,7 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
             {
               showResetButton && (
               <LinkButton style={{ float: 'right' }} onClick={this.resetButtonClickHandler}>
-                Reset {(initialSamplesInCategory && initialSamplesInCategory.length > 0) ? `To ${initialSamplesInCategory.length} Original Samples` : null}
+                Reset {(initialRowsInCategory && initialRowsInCategory.length > 0) ? `To ${initialRowsInCategory.length} Original Samples` : null}
               </LinkButton>)
             }
           </div>
@@ -363,61 +368,61 @@ class EditSamplePathsButtonAndModal extends React.PureComponent {
   }
 }
 
-EditSamplePathsButtonAndModal.propTypes = {
+EditRowsButtonAndModal.propTypes = {
   title: PropTypes.string,
   categoryName: PropTypes.string,
-  samples: PropTypes.array,
-  setSamples: PropTypes.func,
+  rows: PropTypes.array,
+  setRows: PropTypes.func,
   trigger: PropTypes.node,
   showResetButton: PropTypes.bool,
-  initialSamplesInCategories: PropTypes.array,
+  initialRowsInCategories: PropTypes.array,
 }
 
 
-const AddOrEditSamplePaths = ({ category, initialSamplesInCategories, updateSamples }) => {
+const AddOrEditRows = ({ category, initialRowsInCategories, updateRows }) => {
   return (
     <div>
-      <EditSamplePathsButtonAndModal
-        key={`${JSON.stringify(category.samples)}_add`}
+      <EditRowsButtonAndModal
+        key={`${JSON.stringify(category.rows)}_add`}
         title={`Add ${category.categoryName}`}
         categoryName={category.categoryName}
-        samples={[]}
-        setSamples={(samples) => updateSamples('ADD', category.categoryName, samples)}
-        initialSamplesInCategories={initialSamplesInCategories}
-        trigger={<LinkButton>Add {category.samples.length === 0 ? category.categoryName : null} Paths</LinkButton>}
+        rows={[]}
+        setRows={(rows) => updateRows('ADD', category.categoryName, rows)}
+        initialRowsInCategories={initialRowsInCategories}
+        trigger={<LinkButton>Add {category.rows.length === 0 ? category.categoryName : null} Rows</LinkButton>}
       />
-      {category.samples.length > 0 && <EditSamplePathsButtonAndModal
-        key={`${JSON.stringify(category.samples)}_edit`}
+      {category.rows.length > 0 && <EditRowsButtonAndModal
+        key={`${JSON.stringify(category.rows)}_edit`}
         title={`Edit ${category.categoryName}`}
         categoryName={category.categoryName}
-        samples={category.samples}
-        setSamples={(samples) => updateSamples('SET', category.categoryName, samples)}
-        initialSamplesInCategories={initialSamplesInCategories}
-        trigger={<LinkButton>Edit Paths</LinkButton>}
+        rows={category.rows}
+        setRows={(rows) => updateRows('SET', category.categoryName, rows)}
+        initialRowsInCategories={initialRowsInCategories}
+        trigger={<LinkButton>Edit Rows</LinkButton>}
         showResetButton
       />}
     </div>)
 }
 
-AddOrEditSamplePaths.propTypes = {
+AddOrEditRows.propTypes = {
   category: PropTypes.object,
-  initialSamplesInCategories: PropTypes.array,
-  updateSamples: PropTypes.func,
+  initialRowsInCategories: PropTypes.array,
+  updateRows: PropTypes.func,
 }
 
 const mapStateToProps = (state) => ({
-  initialSamplesInCategories: getInitialSettings(state).samplesInCategories,
+  initialRowsInCategories: getInitialSettings(state).rowsInCategories,
 })
 
 
 const mapDispatchToProps = (dispatch) => ({
-  updateSamples: (actionType, categoryName, samples) => {
+  updateRows: (actionType, categoryName, rows) => {
     dispatch({
-      type: `${actionType}_SAMPLES`,
+      type: `${actionType}_ROWS`,
       categoryName: categoryName,
-      samples: samples,
+      rows: rows,
     })
   },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddOrEditSamplePaths)
+export default connect(mapStateToProps, mapDispatchToProps)(AddOrEditRows)

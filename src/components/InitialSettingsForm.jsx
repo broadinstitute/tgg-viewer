@@ -5,7 +5,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { Button, Input } from 'semantic-ui-react'
+import { Button, Input, Popup } from 'semantic-ui-react'
 import delay from 'timeout-as-promise'
 import yaml from 'js-yaml'
 import { getInitialSettingsUrl, getInitialSettingsUrlHasBeenApplied } from '../redux/selectors'
@@ -79,12 +79,14 @@ class InitialSettingsForm extends React.PureComponent
       throw new Error(`Invalid url: "${url}"`)
     }
 
-    const isYamlURL = url.search('.yaml') !== -1 || url.search('.yml') !== -1
-    const isJsonURL = url.search('.json') !== -1
-    if (!isYamlURL && !isJsonURL) {
-      throw new Error('Expected file extensions (".yaml", ".yml", or ".json") not found in the URL')
-    }
+    const isYaml = url.search('.yaml') !== -1 || url.search('.yml') !== -1
+    const isJson = url.search('.json') !== -1
+    const isUnknown = !isYaml && !isJson
 
+    //NOTE: changed my mind about requiring a .yaml or .json extension to allow for more flexibility.
+    //if (!isYamlURL && !isJsonURL) {
+    //  throw new Error('Expected file extensions (".yaml", ".yml", or ".json") not found in the URL')
+    //}
 
     const response = await fetch(url)
     if (!response.ok) {
@@ -93,21 +95,32 @@ class InitialSettingsForm extends React.PureComponent
 
     const fileContents = await response.text()
 
-    let settings
-    if (isYamlURL) {
+    let settings = null
+    if (!settings && (isYaml || isUnknown)) {
       try {
         settings = yaml.safeLoad(fileContents)
       } catch (e) {
-        throw new Error(`Unable to parse YAML file: ${e}`)
+        if (isYaml) {
+          console.error(`Unable to parse YAML file: ${url}. ${e}`)
+          return
+        }
       }
     }
 
-    if (isJsonURL) {
+    if (!settings && (isJson || isUnknown)) {
       try {
         settings = JSON.parse(fileContents)
       } catch (e) {
-        throw new Error(`Unable to parse JSON file: ${e}`)
+        if (isJson) {
+          console.error(`Unable to parse JSON file: ${url}. ${e}`)
+          return
+        }
       }
+    }
+
+    if (!settings) {
+      console.error(`Unable to parse JSON or YAML from: ${url}`)
+      return
     }
 
     // TODO validate settings more
@@ -147,6 +160,19 @@ class InitialSettingsForm extends React.PureComponent
     }
   }
 
+  exportCurrentSettings = () => {
+    //convert global state to a JSON string
+    const EXCLUDED_KEYS = ['initialSettings', 'initialSettingsUrlHasBeenApplied', 'user', 'modals']
+    const globalStateForExport = Object.keys(this.props.globalState).reduce((acc, key) => {
+      if (!EXCLUDED_KEYS.includes(key)) {
+        acc[key] = this.props.globalState[key]
+      }
+      return acc
+    }, {})
+
+    return encodeURIComponent(JSON.stringify(globalStateForExport, null, 5))
+  }
+
   render() {
     const {
       initialSettingsUrl,
@@ -170,6 +196,15 @@ class InitialSettingsForm extends React.PureComponent
           status={this.state.requestStatus}
           errorMessage={this.state.errorMessage}
           successMessage={this.state.successMessage}
+        />
+        <Popup
+          content="Export current settings to a .json file. If you upload this file to a public url (for example on github) and then paste the url here, these settings will be restored."
+          position="right center"
+          trigger={
+            <a download="settings.json" href={`data:text/json;charset=utf-8,${this.exportCurrentSettings()}`}>
+              <Button icon="download" />
+            </a>
+          }
         />
       </StyledDiv>)
   }
@@ -210,7 +245,5 @@ const mapDispatchToProps = (dispatch) => ({
     })
   },
 })
-
-export { InitialSettingsForm as InitialSettingsFormComponent }
 
 export default connect(mapStateToProps, mapDispatchToProps)(InitialSettingsForm)

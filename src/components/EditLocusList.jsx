@@ -60,11 +60,12 @@ class EditLocusListButtonAndModal extends React.PureComponent {
             placeholder="Enter genomic positions, intervals, and/or gene names separated by commas, spaces, or new lines. &#10;
               These can be in any format recognized by the IGV search bar. &#10;
               For example: DMD, ENST00000589830, chr1:55516888, 2:152341851-152591002"
-          >
-          </Form.Field>
+          />
         </Form>
         <br />
-        <b><i>NOTE:</i></b> This locus list will be saved across page refreshes in this browser, but will not be recorded in the page url like other settings. Sharing or bookmarking this page won&apos;t include the contents of this list.
+        <b><i>NOTE:</i></b> This locus list will be saved across page refreshes in this browser, &nbsp;
+        but will not be recorded in the page url like other settings.&nbsp;
+        Sharing or bookmarking this page won&apos;t include the contents of this list.
       </Modal>)
   }
 }
@@ -75,7 +76,7 @@ EditLocusListButtonAndModal.propTypes = {
   setLocusList: PropTypes.func,
 }
 
-export const EditLocusList = ({ name, locusList, setLocus, setLocusList }) => (
+const EditLocusList = ({ name, locusList, setLocus, setLocusList }) => (
   <div>
     {
       locusList.map((locus, i) => <div key={locus}>{i + 1}. &nbsp; <LinkButton onClick={() => { setLocus(locus) }}>{locus}</LinkButton></div>)
@@ -90,3 +91,5 @@ EditLocusList.propTypes = {
   setLocus: PropTypes.func,
   setLocusList: PropTypes.func,
 }
+
+export default EditLocusList

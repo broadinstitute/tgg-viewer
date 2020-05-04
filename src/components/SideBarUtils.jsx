@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Popup } from 'semantic-ui-react'
+import { Icon, Popup } from 'semantic-ui-react'
 
 export const CategoryH3 = styled.h3` 
   display: inline-block;
@@ -12,4 +12,15 @@ export const OptionDiv = styled.div`
 
 export const StyledPopup = styled(Popup)`
   opacity: 0.95;
+`
+
+export const ColorLegendIcon = styled(Icon)`
+  margin-top: 5px !important;
+`
+
+export const OptionInput = styled.input`
+  display: inline;
+  width: 50px;
+  margin-left: 5px;
+  padding-left: 5px;
 `
