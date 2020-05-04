@@ -13,9 +13,13 @@ const GrayText = styled.span`
   color: gray;
 `
 
+const StyledOptionDiv = styled(OptionDiv)`
+  margin-bottom: 8px; 
+`
+
 const HighlightedSamplesSectionHeading = styled.div`
   font-weight: 700;
-  margin: 15px 0px 8px 0px;
+  margin: 8px 0px;
 `
 
 const HighlightedSamplesCategory = styled.div`
@@ -105,15 +109,16 @@ const GcnvOptionsPanel = ({ gcnvOptions, selectedSamplesByCategoryNameAndRowName
   return (
     <div>
       <CategoryH3>GCNV OPTIONS</CategoryH3><br />
-      <OptionDiv>Track height: <OptionInput key={`track-height-${gcnvOptions.trackHeight}`} type="text" defaultValue={gcnvOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</OptionDiv>
-      <OptionDiv>
+      <StyledOptionDiv>Track height: <OptionInput key={`track-height-${gcnvOptions.trackHeight}`} type="text" defaultValue={gcnvOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</StyledOptionDiv>
+      <StyledOptionDiv>Y-max: <OptionInput key={`y-max-${gcnvOptions.trackMax}`} type="text" defaultValue={gcnvOptions.trackMax} onKeyUp={(e) => handleTextInput(e, 'trackMax', parseInt(e.target.value, 10))} /> copies</StyledOptionDiv>
+      <StyledOptionDiv>
         <HighlightedSamplesSectionHeading>Highlighted samples:</HighlightedSamplesSectionHeading>
         <HighlighedSamplesPanel
           selectedSamplesByCategoryNameAndRowName={selectedSamplesByCategoryNameAndRowName}
           unhighlightSample={unhighlightSample}
           updateSampleSettings={updateSampleSettings}
         />
-      </OptionDiv>
+      </StyledOptionDiv>
     </div>)
 }
 
