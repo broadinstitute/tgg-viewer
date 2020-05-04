@@ -76,7 +76,7 @@ EditLocusListButtonAndModal.propTypes = {
   setLocusList: PropTypes.func,
 }
 
-export const EditLocusList = ({ name, locusList, setLocus, setLocusList }) => (
+const EditLocusList = ({ name, locusList, setLocus, setLocusList }) => (
   <div>
     {
       locusList.map((locus, i) => <div key={locus}>{i + 1}. &nbsp; <LinkButton onClick={() => { setLocus(locus) }}>{locus}</LinkButton></div>)
@@ -91,3 +91,5 @@ EditLocusList.propTypes = {
   setLocus: PropTypes.func,
   setLocusList: PropTypes.func,
 }
+
+export default EditLocusList

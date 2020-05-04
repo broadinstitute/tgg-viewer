@@ -1,10 +1,12 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Checkbox, Icon, Radio } from 'semantic-ui-react'
 import { CategoryH3, ColorLegendIcon, OptionDiv, OptionInput, StyledPopup } from '../SideBarUtils'
 import { MOTIFS, DEFAULT_COLOR_BY_NUM_READS_THRESHOLD } from '../../constants'
+import { getSjOptions } from '../../redux/selectors'
 
 
 const StyledRadio = styled(Radio)`
@@ -70,7 +72,7 @@ ColorByLegend.propTypes = {
   handleTextInput: PropTypes.func,
 }
 
-export const SpliceJunctionsOptionsPanel = ({ sjOptions, updateSjOptions }) => {
+const SpliceJunctionsOptionsPanel = ({ sjOptions, updateSjOptions }) => {
   const handleTextInput = (e, name, value = null) => {
     if (e.keyCode === 13) {
       updateSjOptions({ [name]: value || e.target.value })
@@ -165,3 +167,18 @@ SpliceJunctionsOptionsPanel.propTypes = {
   sjOptions: PropTypes.object,
   updateSjOptions: PropTypes.func,
 }
+
+const mapStateToProps = (state) => ({
+  sjOptions: getSjOptions(state),
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  updateSjOptions: (newSettings) => {
+    dispatch({
+      type: 'UPDATE_SJ_OPTIONS',
+      updates: newSettings,
+    })
+  },
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(SpliceJunctionsOptionsPanel)

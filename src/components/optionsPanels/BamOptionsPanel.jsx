@@ -1,10 +1,12 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { Checkbox } from 'semantic-ui-react'
 import { CategoryH3, OptionDiv, OptionInput } from '../SideBarUtils'
+import { getBamOptions } from '../../redux/selectors'
 
-export const BamOptionsPanel = ({ bamOptions, updateBamOptions }) => {
+const BamOptionsPanel = ({ bamOptions, updateBamOptions }) => {
   const handleTextInput = (e, name, value = null) => {
     if (e.keyCode === 13) {
       updateBamOptions({ [name]: value || e.target.value })
@@ -34,3 +36,18 @@ BamOptionsPanel.propTypes = {
   bamOptions: PropTypes.object,
   updateBamOptions: PropTypes.func,
 }
+
+const mapStateToProps = (state) => ({
+  bamOptions: getBamOptions(state),
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  updateBamOptions: (newSettings) => {
+    dispatch({
+      type: 'UPDATE_BAM_OPTIONS',
+      updates: newSettings,
+    })
+  },
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(BamOptionsPanel)

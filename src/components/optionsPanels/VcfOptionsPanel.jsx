@@ -1,11 +1,11 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { CategoryH3, OptionDiv } from '../SideBarUtils'
+import { getVcfOptions } from '../../redux/selectors'
 
-
-export const VcfOptionsPanel = ({ vcfOptions, updateVcfOptions }) => {
-
+const VcfOptionsPanel = ({ vcfOptions, updateVcfOptions }) => {
   return (
     <div>
       <CategoryH3>VCF TRACK <br />OPTIONS</CategoryH3><br />
@@ -24,3 +24,18 @@ VcfOptionsPanel.propTypes = {
   vcfOptions: PropTypes.object,
   updateVcfOptions: PropTypes.func,
 }
+
+const mapStateToProps = (state) => ({
+  vcfOptions: getVcfOptions(state),
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  updateVcfOptions: (newSettings) => {
+    dispatch({
+      type: 'UPDATE_VCF_OPTIONS',
+      updates: newSettings,
+    })
+  },
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(VcfOptionsPanel)
