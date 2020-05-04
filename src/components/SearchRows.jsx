@@ -127,8 +127,16 @@ class SearchRows extends React.Component {
             resultsCounter += 1
           }
 
-          row.data.forEach((data) => {
-            if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS) return
+          if (!row.data) {
+            return
+          }
+
+          const dataItemsWithSamples = row.data.filter((data) => data.samples && data.samples.length > 0)
+          if (dataItemsWithSamples.length > 1) {
+            console.warn('Found row with multiple data items each of which has a samples array. This may behave unexpectedly if there are duplicate samples')
+          }
+
+          dataItemsWithSamples.forEach((data) => {
             (data.samples || []).forEach((sample) => {
               if (resultsCounter >= MAX_AUTOCOMPLETE_RESULTS) return
               if (inputStringRegExp.test(sample)) {
