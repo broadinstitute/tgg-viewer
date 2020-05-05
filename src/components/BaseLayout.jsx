@@ -13,22 +13,25 @@ const StyledDiv = styled.div`
 
 const SIDE_BAR_WIDTH = 210
 
+const SideBarColumn = styled(Grid.Column)`
+  min-width: ${SIDE_BAR_WIDTH}px !important;
+`
+
+const MiddleColumn = styled(Grid.Column)`
+  min-width: calc(99% - ${2 * SIDE_BAR_WIDTH + 5}px) !important;
+`
+
 export default () => (
   <StyledDiv>
     <Grid>
       <Grid.Row>
-        <Grid.Column width={2} style={{ minWidth: `${SIDE_BAR_WIDTH}px` }}>
-          <LeftSideBar />
-        </Grid.Column>
-        <Grid.Column style={{ minWidth: '800px', width: `calc(100% - ${2 * SIDE_BAR_WIDTH}px)` }}>
+        <SideBarColumn><LeftSideBar /></SideBarColumn>
+        <MiddleColumn>
           <Header />
           <IGV />
           <InitialSettingsForm />
-
-        </Grid.Column>
-        <Grid.Column width={2} style={{ minWidth: `${SIDE_BAR_WIDTH}px` }}>
-          <RightSideBar />
-        </Grid.Column>
+        </MiddleColumn>
+        <SideBarColumn><RightSideBar /></SideBarColumn>
       </Grid.Row>
     </Grid>
   </StyledDiv>
