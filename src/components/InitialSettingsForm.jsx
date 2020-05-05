@@ -145,6 +145,11 @@ class InitialSettingsForm extends React.PureComponent
 
     this.setState({ requestStatus: RequestStatus.IN_PROGRESS })
 
+    if (url.startsWith('https://github.com/')) {
+      // switch to the github raw url
+      url = url.replace('https://github.com', 'https://raw.githubusercontent.com').replace('blob/', '')
+    }
+
     try {
       await this.loadInitialSettingsUrl(url)
 
