@@ -13,12 +13,12 @@ const LinkButton = styled.a`
 
 const AboutLink = () => (
   <Modal
-    title="About the Translational Genomics Group Viewer"
+    title="About the TGG Viewer"
     size="large"
     modalName="AboutModal"
     trigger={<LinkButton>About</LinkButton>}
   >
-    The Translational Genomics Group Viewer is a free, open-source web app for visualizing splice junctions, expression, and other sequencing data
+    The Translational Genomics Group (TGG) Viewer is a free, open-source web app for visualizing splice junctions, expression, and other sequencing data
     genome-wide using <a href="https://github.com/igvteam/igv.js" target="_blank">IGV.js</a><br />
     <br />
     Main features: <br />
