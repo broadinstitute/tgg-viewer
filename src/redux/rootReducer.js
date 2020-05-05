@@ -26,22 +26,24 @@ const rowsInCategoriesReducer = (state, action) => {
 
     let updatedRows
     switch (action.type) {
-      case 'SET_ROWS':
+      case 'SET_ROWS': {
         updatedRows = [...action.rows]
         break
-
-      case 'ADD_ROWS':
-        updatedRows = [...category.rows, ...action.rows]
+      }
+      case 'ADD_ROWS': {
+        const existingNames = category.rows.map((row) => row.name)
+        updatedRows = [...category.rows, ...action.rows.filter((row) => !existingNames.includes(row.name))]
         break
-
+      }
       default:
         updatedRows = category.rows
     }
 
-    return {
+    const result = {
       ...category,
       rows: updatedRows,
     }
+    return result
   })
 }
 

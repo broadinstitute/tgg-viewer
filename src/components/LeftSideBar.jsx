@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable react/no-array-index-key */
 
 import React from 'react'
 import PropTypes from 'prop-types'
@@ -8,7 +9,7 @@ import styled from 'styled-components'
 import { Checkbox, Icon, Popup } from 'semantic-ui-react'
 import { CategoryH3, OptionDiv, StyledPopup } from './SideBarUtils'
 import EditLocusList from './EditLocusList'
-import AddOrEditRows from './EditRows'
+import AddRows from './AddRows'
 import SearchRows from './SearchRows'
 import {
   getLeftSideBarLocusList,
@@ -69,8 +70,8 @@ const RowColorLabelsWithPopup = ({ row }) => {
       <table>
         <tbody>
           {
-            (row.data || []).map((d) =>
-              <tr key={`${d.url} ${d.type}`}>
+            (row.data || []).map((d, i) =>
+              <tr key={`${d.url} ${d.type} ${i}`}>
                 <td style={{ paddingRight: '10px' }}><b>{d.type && d.type.toUpperCase()}:</b></td><td><NoWrapDiv>{d.url}</NoWrapDiv></td>
               </tr>,
             )
@@ -83,7 +84,7 @@ const RowColorLabelsWithPopup = ({ row }) => {
     trigger={
       <RowColorLabelsContainer onClick={handleCopyToClipboard}>
         {
-          (row.data || []).map((d) => <DataTypeIcon key={`${d.url} ${d.type}`} color={dataTypeIconColors[d.type] || dataTypeIconColors.default} />)
+          (row.data || []).map((d, i) => <DataTypeIcon key={`${d.url} ${d.type} ${i}`} color={dataTypeIconColors[d.type] || dataTypeIconColors.default} />)
         }
       </RowColorLabelsContainer>
     }
@@ -100,7 +101,7 @@ const ShowTrackTypesPanel = ({ allDataTypes, enabledDataTypes, updateDataTypesTo
     return null
   }
 
-  const checkBoxes = [...allDataTypes].map((dataType) => {
+  const checkBoxes = [...allDataTypes].map((dataType, i) => {
     let label = dataType
     if (dataType === 'junctions') {
       label = 'Splice Junctions'
@@ -113,7 +114,7 @@ const ShowTrackTypesPanel = ({ allDataTypes, enabledDataTypes, updateDataTypesTo
     }
 
     return (
-      <OptionDiv key={dataType}>
+      <OptionDiv key={`${dataType} ${i}`}>
         <Checkbox label={`${label.toLocaleString()}`} checked={enabledDataTypes.includes(dataType)} onChange={(e, data) => updateDataTypesToShow(data.checked ? 'ADD' : 'REMOVE', [dataType])} />
         <RowColorLabelsContainer><Popup content={`This color stripe marks rows that have ${label} data. Select this checkbox to show ${label} tracks for each row selected below.`} position="right center" trigger={<DataTypeIcon color={dataTypeIconColors[dataType] || dataTypeIconColors.default} />} /></RowColorLabelsContainer>
       </OptionDiv>)
@@ -162,15 +163,15 @@ CategoryPanel.propTypes = {
 
 const RowsPanel = ({ rowsInCategories, selectedRowNamesByCategoryName, updateSelectedRowNames }) => (
   rowsInCategories.map((category, i) => (
-    <div key={category.categoryName || i}>
+    <div key={`${category.categoryName} ${i}`}>
       <CategoryPanel category={category} updateSelectedRowNames={updateSelectedRowNames} />
       {
         category.rows.map((row, j) => {
           const selectedRowNames = selectedRowNamesByCategoryName[category.categoryName] || []
-          return <RowPanel key={row.name || j} row={row} categoryName={category.categoryName} selectedRowNames={selectedRowNames} updateSelectedRowNames={updateSelectedRowNames} />
+          return <RowPanel key={`${row.name} ${j}`} row={row} categoryName={category.categoryName} selectedRowNames={selectedRowNames} updateSelectedRowNames={updateSelectedRowNames} />
         })
       }
-      <AddOrEditRows category={category} />
+      <AddRows category={category} />
     </div>),
   ))
 

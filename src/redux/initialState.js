@@ -18,76 +18,104 @@ const REFERENCE_DATA_INFO_LIST = [
   {
     name: 'GTEx 100 Muscle',
     description: '100 randomly-chosen GTEx v3 muscle samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all 100 samples.',
-    junctions: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/muscle_100_GTEx_samples.junctions.bed.gz`,
-    coverage: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/muscle_100_GTEx_samples.bigWig`,
+    data: [
+      { type: 'junctions', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/muscle_100_GTEx_samples.junctions.bed.gz` },
+      { type: 'coverage', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/muscle_100_GTEx_samples.bigWig` },
+    ],
   },
   {
     name: 'GTEx 100 Blood',
     description: '100 randomly-chosen GTEx v3 blood samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all 100 samples.',
-    junctions: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/blood_100_GTEx_samples.junctions.bed.gz`,
-    coverage: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/blood_100_GTEx_samples.bigWig`,
+    data: [
+      { type: 'junctions', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/blood_100_GTEx_samples.junctions.bed.gz` },
+      { type: 'coverage', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/blood_100_GTEx_samples.bigWig` },
+    ],
   },
   {
     name: 'GTEx 100 Fibs',
     description: '100 randomly-chosen GTEx v3 fibroblast samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all 100 samples.',
-    junctions: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/fibs_100_GTEx_samples.junctions.bed.gz`,
-    coverage: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/fibs_100_GTEx_samples.bigWig`,
+    data: [
+      { type: 'junctions', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/fibs_100_GTEx_samples.junctions.bed.gz` },
+      { type: 'coverage', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/fibs_100_GTEx_samples.bigWig` },
+    ],
   },
   {
     name: 'GTEx All Muscle',
     description: 'All 803 GTEx v3 muscle samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all samples.',
-    junctions: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_muscle.803_samples.junctions.bed.gz`,
-    coverage: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_muscle.803_samples.bigWig`,
+    data: [
+      { type: 'junctions', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_muscle.803_samples.junctions.bed.gz` },
+      { type: 'coverage', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_muscle.803_samples.bigWig` },
+    ],
   },
   {
     name: 'GTEx All Blood',
     description: 'All 755 GTEx v3 blood samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all samples.',
-    junctions: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_blood.755_samples.junctions.bed.gz`,
-    coverage: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_blood.755_samples.bigWig`,
+    data: [
+      { type: 'junctions', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_blood.755_samples.junctions.bed.gz` },
+      { type: 'coverage', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_blood.755_samples.bigWig` },
+    ],
   },
   {
     name: 'GTEx All Fibs',
     description: 'All 504 GTEx v3 fibroblast samples combined by summing raw coverage values and raw splice-junction-spanning read counts across all samples.',
-    junctions: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_fibs.504_samples.junctions.bed.gz`,
-    coverage: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_fibs.504_samples.bigWig`,
+    data: [
+      { type: 'junctions', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_fibs.504_samples.junctions.bed.gz` },
+      { type: 'coverage', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_fibs.504_samples.bigWig` },
+    ],
   },
   {
     name: 'GTEx All Muscle - Norm.',
     description: 'All 803 GTEx v3 muscle samples combined by summing raw coverage values across all samples and also summing normalized splice-junction-spanning read counts across all samples. The normalization is done by computing the normalized read count for each junction as normalized_read_count = raw_read_count * scalar. Here scalar = average_unique_reads_per_muscle_sample / (total_unqiue_reads_in_this_sample * number_of_muscle_samples), and average_unique_reads_per_muscle_sample = (total_unqiue_reads_in_all_muscle_samples / number_of_muscle_samples)',
-    junctions: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_muscle.803_samples.normalized.junctions.bed.gz`,
-    coverage: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_muscle.803_samples.bigWig`,
+    data: [
+      { type: 'junctions', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_muscle.803_samples.normalized.junctions.bed.gz` },
+      { type: 'coverage', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_muscle.803_samples.bigWig` },
+    ],
   },
   {
     name: 'GTEx All Blood - Norm.',
     description: 'All 755 GTEx v3 blood samples combined by summing raw coverage values across all samples and also summing normalized splice-junction-spanning read counts across all samples. The normalization is done by computing the normalized read count for each junction as normalized_read_count = raw_read_count * scalar. Here scalar = average_unique_reads_per_blood_sample / (total_unqiue_reads_in_this_sample * number_of_blood_samples), and average_unique_reads_per_blood_sample = (total_unqiue_reads_in_all_blood_samples / number_of_blood_samples)',
-    junctions: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_blood.755_samples.normalized.junctions.bed.gz`,
-    coverage: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_blood.755_samples.bigWig`,
+    data: [
+      { type: 'junctions', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_blood.755_samples.normalized.junctions.bed.gz` },
+      { type: 'coverage', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_blood.755_samples.bigWig` },
+    ],
   },
   {
     name: 'GTEx All Fibs - Norm.',
     description: 'All 504 GTEx v3 fibroblast samples combined by summing raw coverage values across all samples and also summing normalized splice-junction-spanning read counts across all samples. The normalization is done by computing the normalized read count for each junction as normalized_read_count = raw_read_count * scalar. Here scalar = average_unique_reads_per_fibs_sample / (total_unqiue_reads_in_this_sample * number_of_fibs_samples), and average_unique_reads_per_fibs_sample = (total_unqiue_reads_in_all_fibs_samples / number_of_fibs_samples)',
-    junctions: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_fibs.504_samples.normalized.junctions.bed.gz`,
-    coverage: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_fibs.504_samples.bigWig`,
+    data: [
+      { type: 'junctions', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_fibs.504_samples.normalized.junctions.bed.gz` },
+      { type: 'coverage', url: `${REFERENCE_DATA_ROOT}/GTEx_ref_data/GTEX_fibs.504_samples.bigWig` },
+    ],
   },
   {
     name: 'splice AI scores - SNVs',
-    coverage: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.all.bigWig`,
+    data: [
+      { type: 'coverage', url: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.all.bigWig` },
+    ],
   },
   {
     name: 'splice AI scores - SNVs - alt allele A',
-    coverage: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.alt-allele-A.bigWig`,
+    data: [
+      { type: 'coverage', url: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.alt-allele-A.bigWig` },
+    ],
   },
   {
     name: 'splice AI scores - SNVs - alt allele C',
-    coverage: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.alt-allele-C.bigWig`,
+    data: [
+      { type: 'coverage', url: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.alt-allele-C.bigWig` },
+    ],
   },
   {
     name: 'splice AI scores - SNVs - alt allele G',
-    coverage: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.alt-allele-G.bigWig`,
+    data: [
+      { type: 'coverage', url: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.alt-allele-G.bigWig` },
+    ],
   },
   {
     name: 'splice AI scores - SNVs - alt allele T',
-    coverage: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.alt-allele-T.bigWig`,
+    data: [
+      { type: 'coverage', url: `${REFERENCE_DATA_ROOT}/spliceai/spliceai_scores.raw.snv.hg38.alt-allele-T.bigWig` },
+    ],
   },
   /*
   {

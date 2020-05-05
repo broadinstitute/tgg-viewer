@@ -1,4 +1,6 @@
 /* eslint-disable react/jsx-one-expression-per-line */
+/* eslint-disable react/no-array-index-key */
+
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -79,7 +81,7 @@ EditLocusListButtonAndModal.propTypes = {
 const EditLocusList = ({ name, locusList, setLocus, setLocusList }) => (
   <div>
     {
-      locusList.map((locus, i) => <div key={locus}>{i + 1}. &nbsp; <LinkButton onClick={() => { setLocus(locus) }}>{locus}</LinkButton></div>)
+      locusList.map((locus, i) => <div key={`${locus} ${i}`}>{i + 1}. &nbsp; <LinkButton onClick={() => { setLocus(locus) }}>{locus}</LinkButton></div>)
     }
     <EditLocusListButtonAndModal name={name} locusList={locusList} setLocusList={setLocusList} />
   </div>)

@@ -143,7 +143,6 @@ class IGV extends React.Component {
             ((selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).sampleSettings || {})[track.rowName])
         )
 
-        console.log('gcnvTrackHighlightedSamplesChanged:', gcnvTrackHighlightedSamplesChanged, (nextProps.selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).sampleSettings, (selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).sampleSettings)
         if (junctionTrackDisplaySettingsChanged
           || vcfTrackDisplaySettingsChanged
           || alignmentTrackDisplaySettingsChanged
