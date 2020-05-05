@@ -4,6 +4,7 @@
 
 import React from 'react'
 import styled from 'styled-components'
+import { Icon } from 'semantic-ui-react'
 import Modal from './Modal'
 
 const LinkButton = styled.a`
@@ -29,8 +30,10 @@ const AboutLink = () => (
       <li>Supports adding gene or locus lists to left or right side bar for quick navigation across a list of regions.</li>
       <li>Can load data files or reference tracks from any Google bucket to which you have read-access.</li>
       <li>Retrieves just the on-screen sections of the files directly from Google buckets.</li>
-      <li>All settings, gene lists and data paths can be exported and later restored or shared with others via .json config files
-      by using the uploading the .json file to github (or another public url).</li>
+      <li>All settings, gene lists, and data paths can be exported and later restored or shared with others via a .json config file.
+        To export all current settings, click the <Icon name="download" /> button, upload the .json file to github (or another public url), and then
+        to restore the settings, paste the file's URL into the Initial Settings input, and Apply. </li>
+      <li>The page url also records page settings so that they can be bookmarked or shared, but does not include gene lists.</li>
     </ul>
 
     <a href="https://github.com/broadinstitute/tgg-viewer/issues" target="_blank">Issues</a>
