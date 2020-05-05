@@ -18,18 +18,19 @@ const AboutLink = () => (
     modalName="AboutModal"
     trigger={<LinkButton>About</LinkButton>}
   >
-    The Translational Genomics Group (TGG) Viewer is a free, open-source web app for visualizing splice junctions, expression, and other sequencing data
+    The Translational Genomics Group (TGG) Viewer is a free, open-source web app for visualizing splice junctions, copy number, and other data
     genome-wide using <a href="https://github.com/igvteam/igv.js" target="_blank">IGV.js</a><br />
     <br />
     Main features: <br />
     <ul>
       <li>Supports most file formats supported by IGV.js, including: .bed, .vcf, .bam, .cram, .bigWig, as well as
-        several custom formats for splice junctions (.junctions.bed.gz) and gCNV copy-number variants (.gcnv.bed) </li>
-      <li>Includes reference tracks such as splice junctions from GTEx v8 muscle, blood, and fibroblast samples.</li>
-      <li>Can load data files or reference tracks from any Google bucket to which you have read-access.</li>
-      <li>Reads just the on-screen sections of the files directly from Google buckets.</li>
+        several custom formats for splice junctions (.junctions.bed.gz) and gCNV copy-number variants (.gcnv.bed.gz) </li>
+      <li>Includes custom reference tracks such as splice junctions from GTEx v8 muscle, blood, and fibroblast samples.</li>
       <li>Supports adding gene or locus lists to left or right side bar for quick navigation across a list of regions.</li>
-      <li>All settings and data paths can be customized and shared via .json config files.</li>
+      <li>Can load data files or reference tracks from any Google bucket to which you have read-access.</li>
+      <li>Retrieves just the on-screen sections of the files directly from Google buckets.</li>
+      <li>All settings, gene lists and data paths can be exported and later restored or shared with others via .json config files
+      by using the uploading the .json file to github (or another public url).</li>
     </ul>
 
     <a href="https://github.com/broadinstitute/tgg-viewer/issues" target="_blank">Issues</a>
