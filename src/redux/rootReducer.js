@@ -82,15 +82,15 @@ const selectedRowNamesByCategoryNameReducer = (state, action) => {
 
 
 const selectedSamplesByCategoryNameAndRowNameReducer = (state, action) => {
-  if (!action || !action.categoryName || (!action.selectedSamplesByRowName && !action.sampleSettingsByRowName)) {
+  if (!action || !action.categoryName || (!action.selectedSamplesByRowName && !action.sampleSettingsByRowNameAndSampleName)) {
     return state || {}
   }
 
   const categoryObj = state[action.categoryName] || {}
   const previousSelectedSamplesByRowName = categoryObj.selectedSamples || {}
-  const previousSampleSettingsByRowName = categoryObj.sampleSettings || {}
+  const previousSampleSettingsByRowNameAndSampleName = categoryObj.sampleSettings || {}
   let updatedSelectedSamplesByRowName = previousSelectedSamplesByRowName
-  let updatedSampleSettingsByRowName = previousSampleSettingsByRowName
+  let updatedSampleSettingsByRowNameAndSampleName = previousSampleSettingsByRowNameAndSampleName
 
   switch (action.type) {
     case 'SET_SELECTED_SAMPLES':
@@ -121,9 +121,26 @@ const selectedSamplesByCategoryNameAndRowNameReducer = (state, action) => {
     }
 
     case 'UPDATE_SAMPLE_SETTINGS': {
-      updatedSampleSettingsByRowName = { ...previousSampleSettingsByRowName } //make a copy
-      Object.keys(action.sampleSettingsByRowName).forEach((rowName) => {
-        updatedSampleSettingsByRowName[rowName] = action.sampleSettingsByRowName[rowName]
+      updatedSampleSettingsByRowNameAndSampleName = {
+        ...previousSampleSettingsByRowNameAndSampleName,
+        ...action.sampleSettingsByRowNameAndSampleName,
+      }
+      Object.keys(action.sampleSettingsByRowNameAndSampleName).forEach((rowName) => {
+        const previousSampleSettingsBySampleName = previousSampleSettingsByRowNameAndSampleName[rowName] || {}
+        const newSampleSettingsBySampleName = action.sampleSettingsByRowNameAndSampleName[rowName]
+        const mergedSamplesSettingsBySampleName = {
+          ...previousSampleSettingsBySampleName,
+          ...newSampleSettingsBySampleName,
+        }
+        Object.entries(newSampleSettingsBySampleName).forEach(
+          ([sampleName, sampleSettings]) => {
+            const mergedSampleSettings = {
+              ...previousSampleSettingsBySampleName[sampleName] || {},
+              ...sampleSettings,
+            }
+            mergedSamplesSettingsBySampleName[sampleName] = mergedSampleSettings
+          })
+        updatedSampleSettingsByRowNameAndSampleName[rowName] = mergedSamplesSettingsBySampleName
       })
       break
     }
@@ -138,7 +155,7 @@ const selectedSamplesByCategoryNameAndRowNameReducer = (state, action) => {
     ...state,
     [action.categoryName]: {
       selectedSamples: updatedSelectedSamplesByRowName,
-      sampleSettings: updatedSampleSettingsByRowName,
+      sampleSettings: updatedSampleSettingsByRowNameAndSampleName,
     },
   }
 }

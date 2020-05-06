@@ -159,7 +159,7 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch({
       type: 'UPDATE_SAMPLE_SETTINGS',
       categoryName,
-      sampleSettingsByRowName: {
+      sampleSettingsByRowNameAndSampleName: {
         [rowName]: {
           [sample]: newSettings,
         },

@@ -117,11 +117,11 @@ class IGV extends React.Component {
       this.browser.search(nextIGVLocus)
     }
 
-    const nextTrackSettingsByTrackName = nextProps.tracks.reduce((acc, item) => {
-      return { [item.name]: item, ...acc }
+    const nextTrackSettingsByTrackName = nextProps.tracks.reduce((acc, track) => {
+      return { [track.name]: track, ...acc }
     }, {})
 
-    //console.log('IGV.nextProps:', nextProps)
+    console.log('IGV.nextProps:', nextProps)
 
     // update or remove existing tracks
     tracks.forEach((track) => {
