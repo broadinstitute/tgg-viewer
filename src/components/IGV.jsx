@@ -1,8 +1,11 @@
 /* eslint-disable eqeqeq */
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/no-unused-prop-types */
+
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
+//import styled from 'styled-components'
 import igv from 'igv/dist/igv.esm'
 import { connect } from 'react-redux'
 
@@ -29,8 +32,6 @@ const IGV_SETTINGS = {
   showCommandBar: true,
 }
 
-const StyledDiv = styled.div``
-
 
 class IGV extends React.Component {
 
@@ -39,14 +40,13 @@ class IGV extends React.Component {
 
     this.container = null
     this.browser = null
-    this.ignoreNextTrackRemovedEvent = false
   }
 
   setContainerElement = (element) => {
     this.container = element
   }
 
-  render = () => <StyledDiv><div ref={this.setContainerElement} /></StyledDiv>
+  render = () => <div><div ref={this.setContainerElement} /></div>
 
   async componentDidMount() {
 
@@ -79,6 +79,7 @@ class IGV extends React.Component {
     console.log('Calling igv.createBrowser(..)', igvBrowserOptions)
     igv.createBrowser(this.container, igvBrowserOptions).then((browser) => {
       this.browser = browser
+      window.igvBrowser = browser //for debugging
 
       if (locusChangedHandler) {
         this.browser.on('locuschange', throttle(300, locusChangedHandler)) //{chr, start, end, label}
@@ -86,12 +87,103 @@ class IGV extends React.Component {
 
       if (trackRemovedHandler) {
         this.browser.on('trackremoved', (track) => {
-          if (!this.ignoreNextTrackRemovedEvent) {
-            trackRemovedHandler(track)
-          }
-
-          this.ignoreNextTrackRemovedEvent = false
+          trackRemovedHandler(track.config.categoryName, track.config.name)
         })
+      }
+    })
+  }
+
+  shouldTrackBeReloaded = (track, props, nextProps) => {
+    const {
+      selectedSamplesByCategoryNameAndRowName,
+      enabledDataTypes,
+      sjOptions,
+      vcfOptions,
+      bamOptions,
+      gcnvOptions,
+    } = props
+
+    const junctionTrackDisplaySettingsChanged = ['merged', 'wig', 'spliceJunctions'].includes(track.type) && (
+      nextProps.enabledDataTypes.includes('junctions') !== enabledDataTypes.includes('junctions')
+      || nextProps.enabledDataTypes.includes('coverage') !== enabledDataTypes.includes('coverage')
+      || nextProps.sjOptions !== sjOptions)
+    const vcfTrackDisplaySettingsChanged = track.type === 'variant' && nextProps.vcfOptions !== vcfOptions
+    const alignmentTrackDisplaySettingsChanged = track.type === 'alignment' && nextProps.bamOptions !== bamOptions
+    const gcnvTrackDisplaySettingsChanged = track.type === 'gcnv' && nextProps.gcnvOptions !== gcnvOptions
+    const gcnvTrackHighlightedSamplesChanged = track.type === 'gcnv' && (
+      !_.isEqual(
+        ((nextProps.selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).selectedSamples || {})[track.rowName],
+        ((selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).selectedSamples || {})[track.rowName])
+      || !_.isEqual(
+        ((nextProps.selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).sampleSettings || {})[track.rowName],
+        ((selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).sampleSettings || {})[track.rowName])
+    )
+
+    return junctionTrackDisplaySettingsChanged
+      || vcfTrackDisplaySettingsChanged
+      || alignmentTrackDisplaySettingsChanged
+      || gcnvTrackDisplaySettingsChanged
+      || gcnvTrackHighlightedSamplesChanged
+  }
+
+  isTrackAlreadyLoaded = (trackSettings) => {
+    const trackId = `${trackSettings.url}|${trackSettings.name}`
+
+    const existingTracks = this.browser.trackViews.filter((existingTrackView) => {
+      const config = (existingTrackView.track || {}).config || {}
+      const existingTrackId = `${config.url}|${config.name}`
+
+      return trackId === existingTrackId
+    })
+
+    return existingTracks.length > 0
+  }
+
+  reloadRemoveAndAddTracks = (nextProps) => {
+
+    const nextTrackSettingsByTrackName = nextProps.tracks.reduce((acc, track) => {
+      return { [track.name]: track, ...acc }
+    }, {})
+
+    //console.log('IGV.nextProps:', nextProps)
+
+    // reload or remove existing tracks
+    this.props.tracks.forEach((track) => {
+      const nextTrackSettings = nextTrackSettingsByTrackName[track.name]
+      if (nextTrackSettings) {
+        if (this.shouldTrackBeReloaded(track, this.props, nextProps))
+        {
+          console.log('Reloading track', track.name)
+          this.browser.removeTrackByName(track.name)
+          if (!this.isTrackAlreadyLoaded(track)) {
+            this.browser.loadTrack(nextTrackSettings)
+          }
+        }
+
+        // delete track from nextTrackSettingsByTrackName to indicate that it's still selected
+        delete nextTrackSettingsByTrackName[track.name]
+
+      } else {
+        // remove track that was de-selected
+        try {
+          //console.log('Removing track', track.name)
+          this.browser.removeTrackByName(track.name)
+        } catch (e) {
+          console.warn('Unable to remove track', track.name, e)
+        }
+      }
+    })
+
+    // load any newly-selected track(s)
+    const remainingTracks = Object.values(nextTrackSettingsByTrackName)
+    remainingTracks.forEach((trackSettings) => {
+      try {
+        if (!this.isTrackAlreadyLoaded(trackSettings)) {
+          console.log('Loading new track', trackSettings.name)
+          this.browser.loadTrack(trackSettings)
+        }
+      } catch (e) {
+        console.warn('Unable to add track', trackSettings.name, e)
       }
     })
   }
@@ -101,84 +193,14 @@ class IGV extends React.Component {
       return false
     }
 
-    const {
-      tracks,
-      selectedSamplesByCategoryNameAndRowName,
-      enabledDataTypes,
-      sjOptions,
-      vcfOptions,
-      bamOptions,
-      gcnvOptions,
-    } = this.props
-
+    //update locus
     const currentIGVLocus = this.browser.$searchInput.val()
     const nextIGVLocus = nextProps.locus
     if (nextProps.locus && (!currentIGVLocus || nextIGVLocus.replace(/,/g, '') !== currentIGVLocus.replace(/,/g, ''))) {
       this.browser.search(nextIGVLocus)
     }
 
-    const nextTrackSettingsByTrackName = nextProps.tracks.reduce((acc, track) => {
-      return { [track.name]: track, ...acc }
-    }, {})
-
-    console.log('IGV.nextProps:', nextProps)
-
-    // update or remove existing tracks
-    tracks.forEach((track) => {
-      const nextTrackSettings = nextTrackSettingsByTrackName[track.name]
-      if (nextTrackSettings) {
-        const junctionTrackDisplaySettingsChanged = ['merged', 'wig', 'spliceJunctions'].includes(track.type) && (
-          nextProps.enabledDataTypes.includes('junctions') !== enabledDataTypes.includes('junctions')
-          || nextProps.enabledDataTypes.includes('coverage') !== enabledDataTypes.includes('coverage')
-          || nextProps.sjOptions !== sjOptions)
-        const vcfTrackDisplaySettingsChanged = track.type === 'variant' && nextProps.vcfOptions !== vcfOptions
-        const alignmentTrackDisplaySettingsChanged = track.type === 'alignment' && nextProps.bamOptions !== bamOptions
-        const gcnvTrackDisplaySettingsChanged = track.type === 'gcnv' && nextProps.gcnvOptions !== gcnvOptions
-        const gcnvTrackHighlightedSamplesChanged = track.type === 'gcnv' && (
-          !_.isEqual(
-            ((nextProps.selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).selectedSamples || {})[track.rowName],
-            ((selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).selectedSamples || {})[track.rowName])
-          || !_.isEqual(
-            ((nextProps.selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).sampleSettings || {})[track.rowName],
-            ((selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).sampleSettings || {})[track.rowName])
-        )
-
-        if (junctionTrackDisplaySettingsChanged
-          || vcfTrackDisplaySettingsChanged
-          || alignmentTrackDisplaySettingsChanged
-          || gcnvTrackDisplaySettingsChanged
-          || gcnvTrackHighlightedSamplesChanged)
-        {
-          console.log('Reloading track', track.name)
-          this.ignoreNextTrackRemovedEvent = true
-          this.browser.removeTrackByName(track.name)
-          this.browser.loadTrack(nextTrackSettings)
-        }
-
-        // delete track from nextTrackSettingsByTrackName to indicate that it's still selected
-        delete nextTrackSettingsByTrackName[track.name]
-
-      } else {
-        // remove track that was de-selected
-        try {
-          this.ignoreNextTrackRemovedEvent = true
-          console.log('Removing track', track.name)
-          this.browser.removeTrackByName(track.name)
-        } catch (e) {
-          console.warn('Unable to remove track', track.name, e)
-        }
-      }
-    })
-
-    // load any newly-selected track(s)
-    Object.values(nextTrackSettingsByTrackName).forEach((track) => {
-      try {
-        console.log('Loading track', track.name)
-        this.browser.loadTrack(track)
-      } catch (e) {
-        console.warn('Unable to add track', track.name, e)
-      }
-    })
+    this.reloadRemoveAndAddTracks(nextProps)
 
     return false
   }
@@ -229,13 +251,13 @@ const mapDispatchToProps = (dispatch) => ({
     })
   },
 
-  trackRemovedHandler: (track) => {
-    console.log('Removing track', track.config.categoryName, track.config.name)
+  trackRemovedHandler: (categoryName, trackName) => {
+    console.log('Removing track', categoryName, trackName)
 
     dispatch({
       type: 'REMOVE_SELECTED_ROW_NAMES',
-      categoryName: [track.config.categoryName],
-      selectedRowNames: [track.config.name],
+      categoryName: [categoryName],
+      selectedRowNames: [trackName],
     })
   },
 })
