@@ -101,7 +101,8 @@ const RowColorLabelsWithPopup = ({ row }) => {
     navigator.clipboard.writeText(s)
   }
 
-  return (<Popup fluid
+  return (<Popup
+    flowing
     content={
       <table>
         <tbody>
