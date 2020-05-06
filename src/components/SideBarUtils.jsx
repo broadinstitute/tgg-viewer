@@ -6,16 +6,20 @@ export const CategoryH3 = styled.h3`
   margin: 12px 0px 0px 0px !important;
 `
 
-export const OptionDiv = styled.div`
-  padding-top: 3px;
-`
-
 export const StyledPopup = styled(Popup)`
   opacity: 0.95;
 `
 
 export const ColorLegendIcon = styled(Icon)`
   margin-top: 5px !important;
+`
+
+export const OptionDiv = styled.div`
+  padding-top: 3px;
+`
+
+export const OptionInputDiv = styled(OptionDiv)`
+  margin: 10px 0px; 
 `
 
 export const OptionInput = styled.input`

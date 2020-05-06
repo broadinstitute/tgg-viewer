@@ -3,8 +3,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { Checkbox, Icon, Radio } from 'semantic-ui-react'
-import { CategoryH3, ColorLegendIcon, OptionDiv, OptionInput, StyledPopup } from '../SideBarUtils'
+import { Button, Checkbox, Icon, Radio } from 'semantic-ui-react'
+import { CategoryH3, ColorLegendIcon, OptionDiv, OptionInputDiv, OptionInput, StyledPopup } from '../SideBarUtils'
 import { SJ_MOTIFS, SJ_DEFAULT_COLOR_BY_NUM_READS_THRESHOLD } from '../../constants'
 import { getSjOptions } from '../../redux/selectors'
 
@@ -72,17 +72,23 @@ ColorByLegend.propTypes = {
   handleTextInput: PropTypes.func,
 }
 
+const editedFields = {}
+
 const SpliceJunctionsOptionsPanel = ({ sjOptions, updateSjOptions }) => {
   const handleTextInput = (e, name, value = null) => {
     if (e.keyCode === 13) {
-      updateSjOptions({ [name]: value || e.target.value })
+      updateSjOptions({ ...sjOptions, ...editedFields })
+    } else {
+      editedFields[name] = value
     }
+  }
+  const handleApplyButton = () => {
+    updateSjOptions({ ...sjOptions, ...editedFields })
   }
 
   return (
     <div>
       <CategoryH3>JUNCTION TRACK <br />OPTIONS</CategoryH3><br />
-      <OptionDiv>Track height: <OptionInput key={`track-height-${sjOptions.trackHeight}`} type="text" defaultValue={sjOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</OptionDiv>
       <OptionDiv>Color by:</OptionDiv>
       <OptionDiv>
         <select value={sjOptions.colorBy} onChange={(e) => updateSjOptions({ colorBy: e.target.value })}>
@@ -160,6 +166,8 @@ const SpliceJunctionsOptionsPanel = ({ sjOptions, updateSjOptions }) => {
           SJ_MOTIFS.map((motif) => <OptionDiv key={motif}><Checkbox label={`Show ${motif}`} checked={!sjOptions[`hideMotif${motif}`]} onChange={(e, data) => updateSjOptions({ [`hideMotif${motif}`]: !data.checked })} /></OptionDiv>)
         }
       </div>
+      <OptionInputDiv>Track height: <OptionInput key={`track-height-${sjOptions.trackHeight}`} type="text" defaultValue={sjOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</OptionInputDiv>
+      <OptionInputDiv><Button compact size="small" onClick={handleApplyButton}>Apply</Button></OptionInputDiv>
     </div>)
 }
 

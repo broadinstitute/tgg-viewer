@@ -5,16 +5,12 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Button, Icon } from 'semantic-ui-react'
 import ColorPicker from './ColorPicker'
-import { CategoryH3, OptionDiv, OptionInput } from '../SideBarUtils'
+import { CategoryH3, OptionInputDiv, OptionInput } from '../SideBarUtils'
 import { getGcnvOptions, getSelectedSamplesByCategoryNameAndRowName } from '../../redux/selectors'
 import { GCNV_DEFAULT_HIGHLIGHT_COLOR } from '../../constants'
 
 const GrayText = styled.span`
   color: gray;
-`
-
-const StyledOptionDiv = styled(OptionDiv)`
-  margin: 10px 0px; 
 `
 
 const HighlightedSamplesSectionHeading = styled.div`
@@ -116,17 +112,17 @@ const GcnvOptionsPanel = ({ gcnvOptions, selectedSamplesByCategoryNameAndRowName
   return (
     <div>
       <CategoryH3>GCNV OPTIONS</CategoryH3><br />
-      <StyledOptionDiv>Track height: <OptionInput key={`track-height-${gcnvOptions.trackHeight}`} type="text" defaultValue={gcnvOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</StyledOptionDiv>
-      <StyledOptionDiv>Y-max: <OptionInput key={`y-max-${gcnvOptions.trackMax}`} type="text" defaultValue={gcnvOptions.trackMax} onKeyUp={(e) => handleTextInput(e, 'trackMax', parseInt(e.target.value, 10))} /> copies</StyledOptionDiv>
-      <StyledOptionDiv><Button compact size="small" onClick={handleApplyButton}>Apply</Button></StyledOptionDiv>
-      <StyledOptionDiv>
+      <OptionInputDiv>Track height: <OptionInput key={`track-height-${gcnvOptions.trackHeight}`} type="text" defaultValue={gcnvOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</OptionInputDiv>
+      <OptionInputDiv>Y-max: <OptionInput key={`y-max-${gcnvOptions.trackMax}`} type="text" defaultValue={gcnvOptions.trackMax} onKeyUp={(e) => handleTextInput(e, 'trackMax', parseInt(e.target.value, 10))} /> copies</OptionInputDiv>
+      <OptionInputDiv><Button compact size="small" onClick={handleApplyButton}>Apply</Button></OptionInputDiv>
+      <OptionInputDiv>
         <HighlightedSamplesSectionHeading>Highlighted samples:</HighlightedSamplesSectionHeading>
         <HighlighedSamplesPanel
           selectedSamplesByCategoryNameAndRowName={selectedSamplesByCategoryNameAndRowName}
           unhighlightSample={unhighlightSample}
           updateSampleSettings={updateSampleSettings}
         />
-      </StyledOptionDiv>
+      </OptionInputDiv>
     </div>)
 }
 

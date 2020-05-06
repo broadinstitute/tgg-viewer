@@ -59,6 +59,46 @@ const NoWrapDiv = styled.div`
   white-space: nowrap;
 `
 
+const ShowTrackTypesPanel = ({ allDataTypes, enabledDataTypes, updateDataTypesToShow }) => {
+  if (allDataTypes.length < 2) {
+    return null
+  }
+
+  const checkBoxes = [...allDataTypes].map((dataType, i) => {
+    let label = dataType
+    if (dataType === 'junctions') {
+      label = 'Splice Junctions'
+    } else if (dataType === 'vcf') {
+      label = 'Variants (VCF)'
+    } else if (dataType === 'gcnv_bed') {
+      label = 'gCNV'
+    } else if (dataType === 'alignment') {
+      label = 'Reads (BAM)'
+    } else {
+      label = label.charAt(0).toUpperCase() + label.slice(1) //to Title case
+    }
+
+    return (
+      <OptionDiv key={`${dataType} ${i}`}>
+        <Checkbox label={`${label.toLocaleString()}`} checked={enabledDataTypes.includes(dataType)} onChange={(e, data) => updateDataTypesToShow(data.checked ? 'ADD' : 'REMOVE', [dataType])} />
+        <RowColorLabelsContainer><Popup content={`This color stripe marks rows that have ${label} data. Select this checkbox to show ${label} tracks for each row selected below.`} position="right center" trigger={<DataTypeIcon color={dataTypeIconColors[dataType] || dataTypeIconColors.default} />} /></RowColorLabelsContainer>
+      </OptionDiv>)
+  })
+
+  return (
+    <div>
+      <CategoryH3>SHOW TRACK TYPES</CategoryH3>
+      {checkBoxes}
+    </div>)
+}
+
+ShowTrackTypesPanel.propTypes = {
+  allDataTypes: PropTypes.array,
+  enabledDataTypes: PropTypes.array,
+  updateDataTypesToShow: PropTypes.func,
+}
+
+
 const RowColorLabelsWithPopup = ({ row }) => {
   const handleCopyToClipboard = () => {
     const s = (row.data || []).map((d) => d.url).join('\n')
@@ -95,44 +135,6 @@ const RowColorLabelsWithPopup = ({ row }) => {
 RowColorLabelsWithPopup.propTypes = {
   row: PropTypes.object,
 }
-
-const ShowTrackTypesPanel = ({ allDataTypes, enabledDataTypes, updateDataTypesToShow }) => {
-  if (allDataTypes.length < 2) {
-    return null
-  }
-
-  const checkBoxes = [...allDataTypes].map((dataType, i) => {
-    let label = dataType
-    if (dataType === 'junctions') {
-      label = 'Splice Junctions'
-    } else if (dataType === 'vcf') {
-      label = 'VCF'
-    } else if (dataType === 'gcnv_bed') {
-      label = 'gCNV'
-    } else {
-      label = label.charAt(0).toUpperCase() + label.slice(1) //to Title case
-    }
-
-    return (
-      <OptionDiv key={`${dataType} ${i}`}>
-        <Checkbox label={`${label.toLocaleString()}`} checked={enabledDataTypes.includes(dataType)} onChange={(e, data) => updateDataTypesToShow(data.checked ? 'ADD' : 'REMOVE', [dataType])} />
-        <RowColorLabelsContainer><Popup content={`This color stripe marks rows that have ${label} data. Select this checkbox to show ${label} tracks for each row selected below.`} position="right center" trigger={<DataTypeIcon color={dataTypeIconColors[dataType] || dataTypeIconColors.default} />} /></RowColorLabelsContainer>
-      </OptionDiv>)
-  })
-
-  return (
-    <div>
-      <CategoryH3>SHOW TRACK TYPES</CategoryH3>
-      {checkBoxes}
-    </div>)
-}
-
-ShowTrackTypesPanel.propTypes = {
-  allDataTypes: PropTypes.array,
-  enabledDataTypes: PropTypes.array,
-  updateDataTypesToShow: PropTypes.func,
-}
-
 
 const CategoryPanel = ({ category, updateSelectedRowNames }) => (
   <div>
