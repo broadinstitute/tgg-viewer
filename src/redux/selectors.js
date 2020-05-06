@@ -19,7 +19,6 @@ export const getVcfOptions = (state) => state.vcfOptions
 export const getBamOptions = (state) => state.bamOptions
 export const getGcnvOptions = (state) => state.gcnvOptions
 export const getUser = (state) => state.user
-export const getInitialSettings = (state) => state.initialSettings
 export const getInitialSettingsUrl = (state) => state.initialSettingsUrl
 export const getInitialSettingsUrlHasBeenApplied = (state) => state.initialSettingsUrlHasBeenApplied
 
@@ -241,12 +240,11 @@ export const getTracks = createSelector(
       }
     }))
 
-    /*
     igvTracks.push({
       name: 'Gencode v32 Genes',
       format: 'refgene',
-      url: 'gs://macarthurlab-rnaseq/reference_tracks/gencode_v32_knownGene.sorted.txt.gz',
-      indexURL: 'gs://macarthurlab-rnaseq/reference_tracks/gencode_v32_knownGene.sorted.txt.gz.tbi',
+      url: 'gs://tgg-viewer/ref_data/GRCh38/gencode_v32/gencode_v32_knownGene.sorted.txt.gz',
+      indexURL: 'gs://tgg-viewer/ref_data/GRCh38/gencode_v32/gencode_v32_knownGene.sorted.txt.gz.tbi',
       indexed: true,
       searchable: true,
       height: 350,
@@ -256,7 +254,6 @@ export const getTracks = createSelector(
       color: 'rgb(76,171,225)',
       oauthToken: getGoogleAccessToken,
     })
-    */
 
     return igvTracks
   },

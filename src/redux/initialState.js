@@ -187,8 +187,6 @@ export const DEFAULT_STATE = {
   initialSettingsUrl: '',
 }
 
-DEFAULT_STATE.initialSettings = JSON.parse(JSON.stringify(DEFAULT_STATE)) // create a deep-copy of DEFAULT_STATE
-
 const KEYS_TO_PERSIST_IN_URL = {
   locus: 'locus',
   dataTypesToShow: 'show',

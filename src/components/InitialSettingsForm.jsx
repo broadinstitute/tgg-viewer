@@ -133,8 +133,6 @@ class InitialSettingsForm extends React.PureComponent
       return acc
     }, {})
 
-    filteredSettings.initialSettings = JSON.parse(JSON.stringify(filteredSettings)) // deep-copy just in case
-
     // apply settings
     resetGlobalState({ ...globalState, ...filteredSettings })
     updateInitialSettingsUrl(url)
@@ -189,9 +187,8 @@ class InitialSettingsForm extends React.PureComponent
           label="Initial settings:"
           defaultValue={initialSettingsUrl}
           placeholder="URL of .yaml or .json settings file (eg. http://.../settings.json), or blank to reset all settings to defaults."
-          onChange={(e) => {
-            this.textInputValue = e.target.value
-          }}
+          onChange={(e) => { this.textInputValue = e.target.value }}
+          onKeyUp={(e) => e.keyCode === 13 && this.applyInitialSettingsUrl(e.target.value)}
         />
         <StyledButton
           content="Apply"
