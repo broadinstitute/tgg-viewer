@@ -41,7 +41,15 @@ const dataTypeIconColors = {
   coverage: '#B5D29A',
   alignment: '#5DB6E9',
   vcf: '#E6A01B',
+  gcnv_bed: '#AA3333',
   default: '#000000',
+}
+
+const dataTypeLabels = {
+  junctions: 'Splice Junctions',
+  vcf: 'Variants (VCF)',
+  gcnv_bed: 'gCNV',
+  alignment: 'Reads (BAM)',
 }
 
 const LinkButton = styled.a`
@@ -65,23 +73,11 @@ const ShowTrackTypesPanel = ({ allDataTypes, enabledDataTypes, updateDataTypesTo
   }
 
   const checkBoxes = [...allDataTypes].map((dataType, i) => {
-    let label = dataType
-    if (dataType === 'junctions') {
-      label = 'Splice Junctions'
-    } else if (dataType === 'vcf') {
-      label = 'Variants (VCF)'
-    } else if (dataType === 'gcnv_bed') {
-      label = 'gCNV'
-    } else if (dataType === 'alignment') {
-      label = 'Reads (BAM)'
-    } else {
-      label = label.charAt(0).toUpperCase() + label.slice(1) //to Title case
-    }
-
+    const label = dataTypeLabels[dataType] || (dataType.charAt(0).toUpperCase() + dataType.slice(1)) //to Title case
     return (
       <OptionDiv key={`${dataType} ${i}`}>
         <Checkbox label={`${label.toLocaleString()}`} checked={enabledDataTypes.includes(dataType)} onChange={(e, data) => updateDataTypesToShow(data.checked ? 'ADD' : 'REMOVE', [dataType])} />
-        <RowColorLabelsContainer><Popup content={`This color stripe marks rows that have ${label} data. Select this checkbox to show ${label} tracks for each row selected below.`} position="right center" trigger={<DataTypeIcon color={dataTypeIconColors[dataType] || dataTypeIconColors.default} />} /></RowColorLabelsContainer>
+        <RowColorLabelsContainer><Popup content={`This stripe marks rows that have ${label.toLowerCase()} data. Use the checkbox on the left to show or hide ${label.toLowerCase()} tracks for all rows selected below.`} position="right center" trigger={<DataTypeIcon color={dataTypeIconColors[dataType] || dataTypeIconColors.default} />} /></RowColorLabelsContainer>
       </OptionDiv>)
   })
 
@@ -105,14 +101,22 @@ const RowColorLabelsWithPopup = ({ row }) => {
     navigator.clipboard.writeText(s)
   }
 
-  return (<Popup
+  return (<Popup fluid
     content={
       <table>
         <tbody>
           {
             (row.data || []).map((d, i) =>
               <tr key={`${d.url} ${d.type} ${i}`}>
-                <td style={{ paddingRight: '10px' }}><b>{d.type && d.type.toUpperCase()}:</b></td><td><NoWrapDiv>{d.url}</NoWrapDiv></td>
+                <td style={{ paddingRight: '10px' }}>
+                  <b>{d.type && (dataTypeLabels[d.type] || d.type.toUpperCase())}:</b>
+                </td>
+                <td>
+                  <NoWrapDiv>{d.url}</NoWrapDiv>
+                </td>
+                <td style={{ color: 'gray', whiteSpace: 'nowrap', paddingLeft: '15px' }}>
+                  {d.samples ? `(${d.samples.length} samples)` : null}
+                </td>
               </tr>,
             )
           }

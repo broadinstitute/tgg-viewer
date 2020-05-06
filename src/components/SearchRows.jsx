@@ -22,6 +22,9 @@ const StyledSearch = styled(Search)`
   input {
       max-width: none !important;
       padding: 5px !important;
+      -webkit-box-shadow: 0px 0px 1px 0px rgba(201,201,201,1);
+      -moz-box-shadow: 0px 0px 1px 0px rgba(201,201,201,1);
+      box-shadow: 0px 0px 1px 0px rgba(201,201,201,1);
   }
   .results {
       min-width: max-content;
