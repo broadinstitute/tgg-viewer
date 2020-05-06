@@ -14,7 +14,7 @@ const GrayText = styled.span`
 `
 
 const StyledOptionDiv = styled(OptionDiv)`
-  margin-bottom: 8px; 
+  margin: 10px 0px; 
 `
 
 const HighlightedSamplesSectionHeading = styled.div`
@@ -98,12 +98,19 @@ HighlighedSamplesPanel.propTypes = {
   updateSampleSettings: PropTypes.func,
 }
 
+const editedFields = {}
 
 const GcnvOptionsPanel = ({ gcnvOptions, selectedSamplesByCategoryNameAndRowName, updateGcnvOptions, updateSampleSettings, unhighlightSample }) => {
   const handleTextInput = (e, name, value = null) => {
     if (e.keyCode === 13) {
-      updateGcnvOptions({ [name]: value || e.target.value })
+      updateGcnvOptions({ ...gcnvOptions, ...editedFields })
+    } else {
+      editedFields[name] = value
     }
+  }
+
+  const handleApplyButton = () => {
+    updateGcnvOptions({ ...gcnvOptions, ...editedFields })
   }
 
   return (
@@ -111,6 +118,7 @@ const GcnvOptionsPanel = ({ gcnvOptions, selectedSamplesByCategoryNameAndRowName
       <CategoryH3>GCNV OPTIONS</CategoryH3><br />
       <StyledOptionDiv>Track height: <OptionInput key={`track-height-${gcnvOptions.trackHeight}`} type="text" defaultValue={gcnvOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</StyledOptionDiv>
       <StyledOptionDiv>Y-max: <OptionInput key={`y-max-${gcnvOptions.trackMax}`} type="text" defaultValue={gcnvOptions.trackMax} onKeyUp={(e) => handleTextInput(e, 'trackMax', parseInt(e.target.value, 10))} /> copies</StyledOptionDiv>
+      <StyledOptionDiv><Button compact size="small" onClick={handleApplyButton}>Apply</Button></StyledOptionDiv>
       <StyledOptionDiv>
         <HighlightedSamplesSectionHeading>Highlighted samples:</HighlightedSamplesSectionHeading>
         <HighlighedSamplesPanel
