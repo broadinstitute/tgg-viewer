@@ -66,7 +66,7 @@ const selectedRowNamesByCategoryNameReducer = (state, action) => {
         const valuesToRemove = action.selectedRowNames
         updatedList = previousList.filter((v) => !valuesToRemove.includes(v))
       }
-      
+
       return {
         ...state,
         [action.categoryName]: updatedList,
