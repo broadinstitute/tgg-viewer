@@ -200,7 +200,7 @@ class InitialSettingsForm extends React.PureComponent
           successMessage={this.state.successMessage}
         />
         <Popup
-          content="Export current settings to a .json file. If you upload this file to a public url (for example on github) and then paste the url here, these settings will be restored."
+          content="Export current settings to a .json file. If you then upload this file to a public url (for example to github) and then paste the url here, these settings will be restored."
           position="right center"
           trigger={
             <a download="settings.json" href={`data:text/json;charset=utf-8,${this.exportCurrentSettings()}`}>

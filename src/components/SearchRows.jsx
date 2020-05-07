@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Search } from 'semantic-ui-react'
+import { CategoryH3 } from './SideBarUtils'
 import {
   getRowsInCategories,
   getSelectedRowNamesByCategoryName,
@@ -14,7 +15,7 @@ import {
 } from '../redux/selectors'
 
 const StyledSearch = styled(Search)`
-  margin-top: 15px; 
+  margin: 12px 0px 15px 0px; 
   .prompt {
     border-radius: 2px !important;
     width: 155px;
@@ -255,15 +256,19 @@ class SearchRows extends React.Component {
   render = () => {
     const { isLoading, value, results } = this.state
 
-    return <StyledSearch
-      category={this.props.rowsInCategories.length > 1}
-      loading={isLoading}
-      onResultSelect={this.handleResultSelect}
-      onSearchChange={this.handleSearchChange}
-      placeholder="Select data"
-      results={results}
-      value={value}
-    />
+    return (
+      <div>
+        <CategoryH3>Select Data</CategoryH3>
+        <StyledSearch
+          category={this.props.rowsInCategories.length > 1}
+          loading={isLoading}
+          onResultSelect={this.handleResultSelect}
+          onSearchChange={this.handleSearchChange}
+          placeholder="Select data"
+          results={results}
+          value={value}
+        />
+      </div>)
   }
 }
 

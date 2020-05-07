@@ -23,7 +23,7 @@ const BamOptionsPanel = ({ bamOptions, updateBamOptions }) => {
 
   return (
     <div>
-      <CategoryH3>BAM TRACK <br />OPTIONS</CategoryH3><br />
+      <CategoryH3>BAM Track <br />Options</CategoryH3><br />
       <OptionDiv><Checkbox label="View as pairs" checked={bamOptions.viewAsPairs} onChange={(e, data) => updateBamOptions({ viewAsPairs: data.checked })} /></OptionDiv>
       <OptionDiv><Checkbox label="Show soft-clips" checked={bamOptions.showSoftClips} onChange={(e, data) => updateBamOptions({ showSoftClips: data.checked })} /></OptionDiv>
       <OptionDiv>

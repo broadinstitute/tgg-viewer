@@ -83,7 +83,7 @@ const ShowTrackTypesPanel = ({ allDataTypes, enabledDataTypes, updateDataTypesTo
 
   return (
     <div>
-      <CategoryH3>SHOW TRACK TYPES</CategoryH3>
+      <CategoryH3>Show Track Types</CategoryH3>
       {checkBoxes}
     </div>)
 }

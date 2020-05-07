@@ -18,7 +18,7 @@ const HighlightedSamplesSectionHeading = styled.div`
   margin: 8px 0px;
 `
 
-const HighlightedSamplesCategory = styled.div`
+const HighlightedSamplesCategory = styled.span`
   margin: 10px 0px 8px 0px;
   font-style: italic;
 `
@@ -36,9 +36,9 @@ const SampleNameText = styled.span`
 
 const NONE_HIGHLIGHTED_MESSAGE = <GrayText>Use search box in left side-bar to select which samples to highlight.</GrayText>
 
-const SamplePanel = ({ categoryName, rowName, sample, sampleSettings, unhighlightSample, updateSampleSettings }) => (
+const SamplePanel = ({ categoryName, rowName, sample, sampleSettings, hideSample, updateSampleSettings }) => (
   <div style={{ whiteSpace: 'nowrap' }}>
-    <DeleteButton onClick={() => unhighlightSample(categoryName, rowName, sample)}>
+    <DeleteButton onClick={() => hideSample(categoryName, rowName, sample)}>
       <Icon name="delete" />
     </DeleteButton>
     <SampleNameText>{sample}</SampleNameText>
@@ -57,17 +57,22 @@ SamplePanel.propTypes = {
   rowName: PropTypes.string,
   sample: PropTypes.string,
   sampleSettings: PropTypes.object,
-  unhighlightSample: PropTypes.func,
+  hideSample: PropTypes.func,
   updateSampleSettings: PropTypes.func,
 }
 
-const HighlighedSamplesPanel = ({ selectedSamplesByCategoryNameAndRowName, unhighlightSample, updateSampleSettings }) => {
+const HighlighedSamplesPanel = ({ selectedSamplesByCategoryNameAndRowName, hideRow, hideSample, updateSampleSettings }) => {
   const result = []
   Object.entries(selectedSamplesByCategoryNameAndRowName).forEach(([categoryName, categoryObj]) => {
     Object.entries(categoryObj.selectedSamples || {}).forEach(([rowName, selectedSamples]) => {
       result.push(
         <div key={`${categoryName}!!${rowName}`}>
-          <HighlightedSamplesCategory>{categoryName}: {rowName}</HighlightedSamplesCategory>
+          <div style={{ whiteSpace: 'nowrap', margin: '15px 0px 7px 0px' }}>
+            <DeleteButton onClick={() => hideRow(categoryName, rowName)}>
+              <Icon name="delete" />
+            </DeleteButton>
+            <HighlightedSamplesCategory>{categoryName}: {rowName}</HighlightedSamplesCategory>
+          </div>
           {
             selectedSamples.map((sample) => (
               <SamplePanel
@@ -76,7 +81,8 @@ const HighlighedSamplesPanel = ({ selectedSamplesByCategoryNameAndRowName, unhig
                 rowName={rowName}
                 sample={sample}
                 sampleSettings={((categoryObj.sampleSettings || {})[rowName] || {})[sample] || {}}
-                unhighlightSample={unhighlightSample}
+                hideRow={hideRow}
+                hideSample={hideSample}
                 updateSampleSettings={updateSampleSettings}
               />),
             )
@@ -90,13 +96,14 @@ const HighlighedSamplesPanel = ({ selectedSamplesByCategoryNameAndRowName, unhig
 
 HighlighedSamplesPanel.propTypes = {
   selectedSamplesByCategoryNameAndRowName: PropTypes.object,
-  unhighlightSample: PropTypes.func,
+  hideRow: PropTypes.func,
+  hideSample: PropTypes.func,
   updateSampleSettings: PropTypes.func,
 }
 
 const editedFields = {}
 
-const GcnvOptionsPanel = ({ gcnvOptions, selectedSamplesByCategoryNameAndRowName, updateGcnvOptions, updateSampleSettings, unhighlightSample }) => {
+const GcnvOptionsPanel = ({ gcnvOptions, selectedSamplesByCategoryNameAndRowName, updateGcnvOptions, updateSampleSettings, hideRow, hideSample }) => {
   const handleTextInput = (e, name, value = null) => {
     if (e.keyCode === 13) {
       updateGcnvOptions({ ...gcnvOptions, ...editedFields })
@@ -111,15 +118,16 @@ const GcnvOptionsPanel = ({ gcnvOptions, selectedSamplesByCategoryNameAndRowName
 
   return (
     <div>
-      <CategoryH3>gCNV OPTIONS</CategoryH3><br />
+      <CategoryH3>gCNV Options</CategoryH3><br />
       <OptionInputDiv>Track height: <OptionInput key={`track-height-${gcnvOptions.trackHeight}`} type="text" defaultValue={gcnvOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</OptionInputDiv>
       <OptionInputDiv>Y-max: <OptionInput key={`y-max-${gcnvOptions.trackMax}`} type="text" defaultValue={gcnvOptions.trackMax} onKeyUp={(e) => handleTextInput(e, 'trackMax', parseInt(e.target.value, 10))} /> copies</OptionInputDiv>
       <OptionInputDiv><Button compact size="small" onClick={handleApplyButton}>Apply</Button></OptionInputDiv>
       <OptionInputDiv>
-        <HighlightedSamplesSectionHeading>Highlighted samples:</HighlightedSamplesSectionHeading>
+        <HighlightedSamplesSectionHeading>Selected data:</HighlightedSamplesSectionHeading>
         <HighlighedSamplesPanel
           selectedSamplesByCategoryNameAndRowName={selectedSamplesByCategoryNameAndRowName}
-          unhighlightSample={unhighlightSample}
+          hideRow={hideRow}
+          hideSample={hideSample}
           updateSampleSettings={updateSampleSettings}
         />
       </OptionInputDiv>
@@ -130,7 +138,8 @@ GcnvOptionsPanel.propTypes = {
   gcnvOptions: PropTypes.object,
   selectedSamplesByCategoryNameAndRowName: PropTypes.object,
   updateGcnvOptions: PropTypes.func,
-  unhighlightSample: PropTypes.func,
+  hideRow: PropTypes.func,
+  hideSample: PropTypes.func,
   updateSampleSettings: PropTypes.func,
 }
 
@@ -146,7 +155,14 @@ const mapDispatchToProps = (dispatch) => ({
       updates: newSettings,
     })
   },
-  unhighlightSample: (categoryName, rowName, sample) => {
+  hideRow: (categoryName, rowName) => {
+    dispatch({
+      type: 'REMOVE_SELECTED_ROW_NAMES',
+      categoryName,
+      selectedRowNames: [rowName],
+    })
+  },
+  hideSample: (categoryName, rowName, sample) => {
     dispatch({
       type: 'REMOVE_SELECTED_SAMPLES',
       categoryName,

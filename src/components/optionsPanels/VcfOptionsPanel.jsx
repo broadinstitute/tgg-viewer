@@ -8,7 +8,7 @@ import { getVcfOptions } from '../../redux/selectors'
 const VcfOptionsPanel = ({ vcfOptions, updateVcfOptions }) => {
   return (
     <div>
-      <CategoryH3>VCF TRACK <br />OPTIONS</CategoryH3><br />
+      <CategoryH3>VCF Track <br />Options</CategoryH3><br />
       <OptionDiv>
         Display mode: &nbsp;
         <select value={vcfOptions.displayMode} onChange={(e) => updateVcfOptions({ displayMode: e.target.value })}>

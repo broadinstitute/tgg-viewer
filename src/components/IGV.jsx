@@ -160,7 +160,7 @@ class IGV extends React.Component {
           console.log('Reloading track', track.name)
           this.ignoreNextTrackRemovedEvent = true
           this.browser.removeTrackByName(track.name)
-          if (!this.getIgvTrackView(track)) {  // double-check that the track isn't already loaded
+          if (!this.getIgvTrackView(track)) { // double-check that the track isn't already loaded
             //console.log('calling this.browser.loadTrack for', track.name)
             this.browser.loadTrack(nextTrack)
           }

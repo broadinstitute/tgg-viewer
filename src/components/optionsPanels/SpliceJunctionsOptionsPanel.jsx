@@ -88,7 +88,7 @@ const SpliceJunctionsOptionsPanel = ({ sjOptions, updateSjOptions }) => {
 
   return (
     <div>
-      <CategoryH3>JUNCTION TRACK <br />OPTIONS</CategoryH3><br />
+      <CategoryH3>Junctions Track <br />Options</CategoryH3><br />
       <OptionDiv>Color by:</OptionDiv>
       <OptionDiv>
         <select value={sjOptions.colorBy} onChange={(e) => updateSjOptions({ colorBy: e.target.value })}>
@@ -126,7 +126,7 @@ const SpliceJunctionsOptionsPanel = ({ sjOptions, updateSjOptions }) => {
         <OptionInput key={`junction-label-${sjOptions.labelAnnotatedJunctionValue}`} type="text" defaultValue={sjOptions.labelAnnotatedJunctionValue} onKeyUp={(e) => handleTextInput(e, 'labelAnnotatedJunctionValue')} style={{ width: '35px' }} />
       </OptionDiv>
 
-      <CategoryH3>JUNCTION TRACK FILTERS</CategoryH3><br />
+      <CategoryH3>Junctions Track Filters</CategoryH3><br />
       <OptionDiv>
         Show Strands:
         <StyledRadio label="both" name="strandButton" checked={!sjOptions.showOnlyPlusStrand && !sjOptions.showOnlyMinusStrand} onChange={(e, data) => data.checked && updateSjOptions({ showOnlyPlusStrand: false, showOnlyMinusStrand: false })} />
