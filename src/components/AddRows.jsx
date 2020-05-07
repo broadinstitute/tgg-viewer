@@ -36,7 +36,7 @@ const StyledPopup = styled(Popup).attrs({ position: 'right center' })`
 
 export const SUPPORTED_FILE_EXTENSIONS = {
   '.bigWig': 'coverage',
-
+  '.bw': 'coverage',
   '.junctions.bed': 'junctions',
   '.spliceJunctions.bed': 'junctions',
   '.junctions.bed.gz': 'junctions',
