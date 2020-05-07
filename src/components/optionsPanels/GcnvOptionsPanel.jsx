@@ -111,7 +111,7 @@ const GcnvOptionsPanel = ({ gcnvOptions, selectedSamplesByCategoryNameAndRowName
 
   return (
     <div>
-      <CategoryH3>GCNV OPTIONS</CategoryH3><br />
+      <CategoryH3>gCNV OPTIONS</CategoryH3><br />
       <OptionInputDiv>Track height: <OptionInput key={`track-height-${gcnvOptions.trackHeight}`} type="text" defaultValue={gcnvOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</OptionInputDiv>
       <OptionInputDiv>Y-max: <OptionInput key={`y-max-${gcnvOptions.trackMax}`} type="text" defaultValue={gcnvOptions.trackMax} onKeyUp={(e) => handleTextInput(e, 'trackMax', parseInt(e.target.value, 10))} /> copies</OptionInputDiv>
       <OptionInputDiv><Button compact size="small" onClick={handleApplyButton}>Apply</Button></OptionInputDiv>

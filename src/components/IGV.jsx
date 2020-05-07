@@ -83,7 +83,7 @@ class IGV extends React.Component {
       window.igvBrowser = browser //for debugging
 
       if (locusChangedHandler) {
-        this.browser.on('locuschange', throttle(300, locusChangedHandler)) //{chr, start, end, label}
+        this.browser.on('locuschange', throttle(300, locusChangedHandler))
       }
 
       if (trackRemovedHandler) {
@@ -130,22 +130,22 @@ class IGV extends React.Component {
       || gcnvTrackHighlightedSamplesChanged
   }
 
-  isTrackAlreadyLoaded = (trackSettings) => {
-    const trackId = `${trackSettings.url}|${trackSettings.name}`
+  getTrackId = (track) => `${track.url}|${track.categoryName}|${track.rowName}`
 
-    const existingTracks = this.browser.trackViews.filter((existingTrackView) => {
-      const config = (existingTrackView.track || {}).config || {}
-      const existingTrackId = `${config.url}|${config.name}`
+  getIgvTrackView = (track) => {
+    const trackId = this.getTrackId(track)
 
-      return trackId === existingTrackId
+    const existingTrackViews = this.browser.trackViews.filter((existingTrackView) => {
+      const existingTrackConfig = (existingTrackView.track || {}).config || {}
+      return trackId === this.getTrackId(existingTrackConfig)
     })
 
-    return existingTracks.length > 0
+    return existingTrackViews.length > 0 && existingTrackViews[0]
   }
 
   reloadRemoveAndAddTracks = (nextProps) => {
 
-    const nextTrackSettingsByTrackName = nextProps.tracks.reduce((acc, track) => {
+    const nextTrackByTrackName = nextProps.tracks.reduce((acc, track) => {
       return { [track.name]: track, ...acc }
     }, {})
 
@@ -153,20 +153,21 @@ class IGV extends React.Component {
 
     // reload or remove existing tracks
     this.props.tracks.forEach((track) => {
-      const nextTrackSettings = nextTrackSettingsByTrackName[track.name]
-      if (nextTrackSettings) {
+      const nextTrack = nextTrackByTrackName[track.name]
+      if (nextTrack) {
         if (this.shouldTrackBeReloaded(track, this.props, nextProps))
         {
           console.log('Reloading track', track.name)
           this.ignoreNextTrackRemovedEvent = true
           this.browser.removeTrackByName(track.name)
-          if (!this.isTrackAlreadyLoaded(track)) {
-            this.browser.loadTrack(nextTrackSettings)
+          if (!this.getIgvTrackView(track)) {  // double-check that the track isn't already loaded
+            //console.log('calling this.browser.loadTrack for', track.name)
+            this.browser.loadTrack(nextTrack)
           }
         }
 
-        // delete track from nextTrackSettingsByTrackName to indicate that it's still selected
-        delete nextTrackSettingsByTrackName[track.name]
+        // delete track from nextTrackByTrackName to indicate that it's still selected
+        delete nextTrackByTrackName[track.name]
 
       } else {
         // remove track that was de-selected
@@ -181,15 +182,15 @@ class IGV extends React.Component {
     })
 
     // load any newly-selected track(s)
-    const remainingTracks = Object.values(nextTrackSettingsByTrackName)
-    remainingTracks.forEach((trackSettings) => {
+    const remainingTracks = Object.values(nextTrackByTrackName)
+    remainingTracks.forEach((track) => {
       try {
-        if (!this.isTrackAlreadyLoaded(trackSettings)) {
-          console.log('Loading new track', trackSettings.name)
-          this.browser.loadTrack(trackSettings)
+        if (!this.getIgvTrackView(track)) { // double-check that the track isn't already loaded
+          console.log('Loading new track', track.name)
+          this.browser.loadTrack(track)
         }
       } catch (e) {
-        console.warn('Unable to add track', trackSettings.name, e)
+        console.warn('Unable to add track', track.name, e)
       }
     })
   }
@@ -258,8 +259,6 @@ const mapDispatchToProps = (dispatch) => ({
   },
 
   trackRemovedHandler: (categoryName, trackName) => {
-    console.log('Removing track', categoryName, trackName)
-
     dispatch({
       type: 'REMOVE_SELECTED_ROW_NAMES',
       categoryName,

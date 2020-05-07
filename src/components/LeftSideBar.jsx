@@ -143,7 +143,7 @@ RowColorLabelsWithPopup.propTypes = {
 
 const CategoryPanel = ({ category, updateSelectedRowNames }) => (
   <div>
-    <CategoryH3>{category.categoryName.toUpperCase()}</CategoryH3>
+    <CategoryH3>{category.categoryName}</CategoryH3>
     {
       category.rows.length >= 12 && <CategoryDetails>{`(N=${category.rows.length}) `}</CategoryDetails>
     }
