@@ -40,6 +40,7 @@ class IGV extends React.Component {
 
     this.container = null
     this.browser = null
+    this.ignoreNextTrackRemovedEvent = false
   }
 
   setContainerElement = (element) => {
@@ -87,7 +88,10 @@ class IGV extends React.Component {
 
       if (trackRemovedHandler) {
         this.browser.on('trackremoved', (track) => {
-          trackRemovedHandler(track.config.categoryName, track.config.name)
+          if (!this.ignoreNextTrackRemovedEvent) {
+            trackRemovedHandler(track.config.categoryName, track.config.rowName)
+          }
+          this.ignoreNextTrackRemovedEvent = false
         })
       }
     })
@@ -154,6 +158,7 @@ class IGV extends React.Component {
         if (this.shouldTrackBeReloaded(track, this.props, nextProps))
         {
           console.log('Reloading track', track.name)
+          this.ignoreNextTrackRemovedEvent = true
           this.browser.removeTrackByName(track.name)
           if (!this.isTrackAlreadyLoaded(track)) {
             this.browser.loadTrack(nextTrackSettings)
@@ -166,7 +171,8 @@ class IGV extends React.Component {
       } else {
         // remove track that was de-selected
         try {
-          //console.log('Removing track', track.name)
+          console.log('Removing track', track.name)
+          this.ignoreNextTrackRemovedEvent = true
           this.browser.removeTrackByName(track.name)
         } catch (e) {
           console.warn('Unable to remove track', track.name, e)
@@ -256,7 +262,7 @@ const mapDispatchToProps = (dispatch) => ({
 
     dispatch({
       type: 'REMOVE_SELECTED_ROW_NAMES',
-      categoryName: [categoryName],
+      categoryName,
       selectedRowNames: [trackName],
     })
   },

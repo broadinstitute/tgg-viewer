@@ -249,7 +249,7 @@ class SearchRows extends React.Component {
         isLoading: false,
         results,
       })
-    }, 300)
+    }, 1)
   }
 
   render = () => {

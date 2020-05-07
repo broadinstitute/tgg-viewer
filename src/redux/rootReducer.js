@@ -52,7 +52,6 @@ const selectedRowNamesByCategoryNameReducer = (state, action) => {
   if (!action || !action.categoryName || !Array.isArray(action.selectedRowNames)) {
     return state || {}
   }
-
   const previousList = state[action.categoryName] || []
   switch (action.type) {
     case 'SET_SELECTED_ROW_NAMES':
@@ -67,7 +66,6 @@ const selectedRowNamesByCategoryNameReducer = (state, action) => {
         const valuesToRemove = action.selectedRowNames
         updatedList = previousList.filter((v) => !valuesToRemove.includes(v))
       }
-
       return {
         ...state,
         [action.categoryName]: updatedList,
