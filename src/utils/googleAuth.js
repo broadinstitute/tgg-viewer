@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 
-const RNA_VIEWER_CLIENT_ID = '61200892608-qphtf65o323setqdcfj4hnf601mmetvs.apps.googleusercontent.com'
+const TGG_VIEWER_CLIENT_ID = '61200892608-qphtf65o323setqdcfj4hnf601mmetvs.apps.googleusercontent.com'
 
 export const initGoogleClient = () => new Promise((resolve) => {
   if (typeof gapi === 'undefined') {
@@ -11,7 +11,7 @@ export const initGoogleClient = () => new Promise((resolve) => {
   gapi.load('client:auth2', () => {
     gapi.client.load('storage', 'v1', () => {
       gapi.client.init({
-        clientId: RNA_VIEWER_CLIENT_ID,
+        clientId: TGG_VIEWER_CLIENT_ID,
         scope: 'https://www.googleapis.com/auth/devstorage.read_only',
         discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/storage/v1/rest'],
       })
