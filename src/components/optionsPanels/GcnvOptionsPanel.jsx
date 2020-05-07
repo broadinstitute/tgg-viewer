@@ -3,7 +3,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { Button, Icon } from 'semantic-ui-react'
+import { Button, Checkbox, Icon } from 'semantic-ui-react'
 import ColorPicker from './ColorPicker'
 import { CategoryH3, OptionInputDiv, OptionInput } from '../SideBarUtils'
 import { getGcnvOptions, getSelectedSamplesByCategoryNameAndRowName } from '../../redux/selectors'
@@ -119,8 +119,10 @@ const GcnvOptionsPanel = ({ gcnvOptions, selectedSamplesByCategoryNameAndRowName
   return (
     <div>
       <CategoryH3>gCNV Options</CategoryH3><br />
-      <OptionInputDiv>Track height: <OptionInput key={`track-height-${gcnvOptions.trackHeight}`} type="text" defaultValue={gcnvOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</OptionInputDiv>
+      <OptionInputDiv><Checkbox label="Enable clicking background samples" checked={!gcnvOptions.onlyHandleClicksForHighlightedSamples} onChange={(e, data) => updateGcnvOptions({ ...gcnvOptions, onlyHandleClicksForHighlightedSamples: !data.checked })} /></OptionInputDiv>
+      <OptionInputDiv>Y-min: <OptionInput key={`y-max-${gcnvOptions.trackMin}`} type="text" defaultValue={gcnvOptions.trackMin} onKeyUp={(e) => handleTextInput(e, 'trackMin', parseInt(e.target.value, 10))} /> copies</OptionInputDiv>
       <OptionInputDiv>Y-max: <OptionInput key={`y-max-${gcnvOptions.trackMax}`} type="text" defaultValue={gcnvOptions.trackMax} onKeyUp={(e) => handleTextInput(e, 'trackMax', parseInt(e.target.value, 10))} /> copies</OptionInputDiv>
+      <OptionInputDiv>Track height: <OptionInput key={`track-height-${gcnvOptions.trackHeight}`} type="text" defaultValue={gcnvOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</OptionInputDiv>
       <OptionInputDiv><Button compact size="small" onClick={handleApplyButton}>Apply</Button></OptionInputDiv>
       <OptionInputDiv>
         <HighlightedSamplesSectionHeading>Selected data:</HighlightedSamplesSectionHeading>
