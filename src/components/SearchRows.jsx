@@ -14,8 +14,12 @@ import {
   getSelectedSamplesByCategoryNameAndRowName,
 } from '../redux/selectors'
 
+const SearchPanelContainer = styled.div`
+  margin: 5px 0px;
+`
+
 const StyledSearch = styled(Search)`
-  margin: 12px 0px 15px 0px; 
+  margin: 13px 0px; 
   .prompt {
     border-radius: 2px !important;
     width: 155px;
@@ -257,7 +261,7 @@ class SearchRows extends React.Component {
     const { isLoading, value, results } = this.state
 
     return (
-      <div>
+      <SearchPanelContainer>
         <CategoryH3>Select Data</CategoryH3>
         <StyledSearch
           category={this.props.rowsInCategories.length > 1}
@@ -268,7 +272,7 @@ class SearchRows extends React.Component {
           results={results}
           value={value}
         />
-      </div>)
+      </SearchPanelContainer>)
   }
 }
 

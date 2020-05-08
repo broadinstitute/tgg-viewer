@@ -7,7 +7,8 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Checkbox, Icon, Popup } from 'semantic-ui-react'
-import { CategoryH3, OptionDiv, StyledPopup } from './SideBarUtils'
+import { CategoryH3, OptionDiv, OptionInputDiv, StyledPopup } from './SideBarUtils'
+import SelectedDataPanel from './SelectedDataPanel'
 import EditLocusList from './EditLocusList'
 import AddRows from './AddRows'
 import SearchRows from './SearchRows'
@@ -66,6 +67,13 @@ const RowColorLabelsContainer = styled.span`
 const NoWrapDiv = styled.div`
   white-space: nowrap;
 `
+
+/*
+const SelectedDataSectionHeading = styled.div`
+  font-weight: 700;
+  margin: 8px 0px;
+`
+*/
 
 const ShowTrackTypesPanel = ({ allDataTypes, enabledDataTypes, updateDataTypesToShow }) => {
   if (allDataTypes.length < 2) {
@@ -250,7 +258,6 @@ RowDetails.propTypes = {
   row: PropTypes.object,
 }
 
-
 class LeftSideBar extends React.PureComponent
 {
   render() {
@@ -276,6 +283,10 @@ class LeftSideBar extends React.PureComponent
           updateDataTypesToShow={updateDataTypesToShow}
         />
         <SearchRows />
+        <OptionInputDiv>
+          {/*<SelectedDataSectionHeading>Selected data:</SelectedDataSectionHeading>*/}
+          <SelectedDataPanel />
+        </OptionInputDiv>
         <RowsPanel
           rowsInCategories={rowsInCategories}
           selectedRowNamesByCategoryName={selectedRowNamesByCategoryName}

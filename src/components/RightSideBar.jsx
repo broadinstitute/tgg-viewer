@@ -33,7 +33,7 @@ class RightSideBar extends React.PureComponent
 
         {enabledDataTypes.includes('alignment') && <BamOptionsPanel />}
         {enabledDataTypes.includes('vcf') && <VcfOptionsPanel />}
-        {(enabledDataTypes.includes('coverage') || enabledDataTypes.includes('junctions')) && <SpliceJunctionsOptionsPanel />}
+        {enabledDataTypes.includes('junctions') && <SpliceJunctionsOptionsPanel />}
         {enabledDataTypes.includes('gcnv_bed') && <GcnvOptionsPanel />}
       </div>)
   }
