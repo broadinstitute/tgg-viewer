@@ -175,7 +175,6 @@ const otherReducers = combineReducers(Object.assign({
   gcnvOptions: createSingleObjectReducer('UPDATE_GCNV_OPTIONS'),
   user: createSingleObjectReducer('UPDATE_USER'),
   initialSettingsUrl: createSingleValueReducer('UPDATE_INITIAL_SETTINGS_URL', ''),
-  initialSettingsUrlHasBeenApplied: createSingleValueReducer('UPDATE_INITIAL_SETTINGS_URL_HAS_BEEN_APPLIED', false),
 }, modalReducers))
 
 

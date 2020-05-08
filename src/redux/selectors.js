@@ -20,7 +20,6 @@ export const getBamOptions = (state) => state.bamOptions
 export const getGcnvOptions = (state) => state.gcnvOptions
 export const getUser = (state) => state.user
 export const getInitialSettingsUrl = (state) => state.initialSettingsUrl
-export const getInitialSettingsUrlHasBeenApplied = (state) => state.initialSettingsUrlHasBeenApplied
 
 export const getAllDataTypes = createSelector(
   getRowsInCategories,

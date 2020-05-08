@@ -52,6 +52,24 @@ export const DEFAULT_STATE = {
   initialSettingsUrl: '',
 }
 
+
+const KEYS_TO_PERSIST_IN_LOCAL_STORAGE = [
+  'leftSideBarLocusList', 'rightSideBarLocusList',
+]
+
+export const getStateFromLocalStorage = () => {
+  // restore values from local storage
+  const stateFromLocalStorage = KEYS_TO_PERSIST_IN_LOCAL_STORAGE.reduce((acc, key) => {
+    const v = loadState(key)
+    if (v !== undefined) {
+      acc[key] = v
+    }
+    return acc
+  }, {})
+
+  return stateFromLocalStorage
+}
+
 const KEYS_TO_PERSIST_IN_URL = {
   locus: 'locus',
   dataTypesToShow: 'show',
@@ -62,25 +80,9 @@ const KEYS_TO_PERSIST_IN_URL = {
   bamOptions: 'bamOptions',
   gcnvOptions: 'gcnvOptions',
   initialSettingsUrl: 'settingsUrl',
-  initialSettingsUrlHasBeenApplied: 'settingsUrlApplied',
 }
 
-const KEYS_TO_PERSIST_IN_LOCAL_STORAGE = [
-  'rowsInCategories', 'leftSideBarLocusList', 'rightSideBarLocusList',
-]
-
-
-export const computeInitialState = () => {
-
-  // restore values from local storage
-  const stateFromLocalStorage = KEYS_TO_PERSIST_IN_LOCAL_STORAGE.reduce((acc, key) => {
-    const v = loadState(key)
-    if (v !== undefined) {
-      acc[key] = v
-    }
-    return acc
-  }, {})
-
+export const getStateFromUrlHash = () => {
   // restore values from url
   const REVERSE_KEY_NAME_LOOKUP = Object.entries(KEYS_TO_PERSIST_IN_URL).reduce(
     (acc, [key, value]) => {
@@ -105,8 +107,13 @@ export const computeInitialState = () => {
     }, {})
     : {}
 
-  // check google sign-in status
+  return stateFromUrlHash
+}
 
+export const computeInitialState = () => {
+
+  const stateFromLocalStorage = getStateFromLocalStorage()
+  const stateFromUrlHash = getStateFromUrlHash()
 
   // default values are over-ridden by values from local storage, which are over-ridden by values from the url
   const initialState = { ...DEFAULT_STATE, ...stateFromLocalStorage, ...stateFromUrlHash }

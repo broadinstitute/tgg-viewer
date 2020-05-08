@@ -8,9 +8,9 @@ import styled from 'styled-components'
 import { Button, Input, Popup } from 'semantic-ui-react'
 import delay from 'timeout-as-promise'
 import yaml from 'js-yaml'
-import { getInitialSettingsUrl, getInitialSettingsUrlHasBeenApplied } from '../redux/selectors'
+import { getInitialSettingsUrl } from '../redux/selectors'
 import RequestStatus from './RequestStatus'
-import { DEFAULT_STATE } from '../redux/initialState'
+import { DEFAULT_STATE, getStateFromLocalStorage, getStateFromUrlHash } from '../redux/initialState'
 
 const StyledDiv = styled.div`
   color: #999;
@@ -46,23 +46,18 @@ class InitialSettingsForm extends React.PureComponent
   }
 
   async componentDidMount() {
-    const {
-      initialSettingsUrl,
-      initialSettingsUrlHasBeenApplied,
-    } = this.props
-
-    if (initialSettingsUrl && !initialSettingsUrlHasBeenApplied) {
+    const { initialSettingsUrl } = this.props
+    if (initialSettingsUrl) {
       // download url
-      console.log('Loading settings from url', initialSettingsUrl)
-      await this.applyInitialSettingsUrl(initialSettingsUrl)
+      console.log('Loading settings from', initialSettingsUrl)
+      await this.applyInitialSettingsUrl(initialSettingsUrl, false)
     }
   }
 
-  loadInitialSettingsUrl = async (url) => {
+  loadInitialSettingsUrl = async (url, overrideLocalSettings) => {
     const {
       globalState,
       updateInitialSettingsUrl,
-      setInitialSettingsUrlHasBeenApplied,
       resetGlobalState,
     } = this.props
 
@@ -70,8 +65,14 @@ class InitialSettingsForm extends React.PureComponent
       //reset url to empty
       resetGlobalState({ ...DEFAULT_STATE, ...{ user: globalState.user } })
       updateInitialSettingsUrl('')
-      setInitialSettingsUrlHasBeenApplied()
       return
+    }
+
+    let stateFromLocalStorage
+    let stateFromUrlHash
+    if (!overrideLocalSettings) {
+      stateFromLocalStorage = getStateFromLocalStorage()
+      stateFromUrlHash = getStateFromUrlHash()
     }
 
     //validate url
@@ -133,13 +134,22 @@ class InitialSettingsForm extends React.PureComponent
       return acc
     }, {})
 
+    console.log('Retrieved state from config file:', filteredSettings)
+
     // apply settings
-    resetGlobalState({ ...globalState, ...filteredSettings })
+    let newState = { ...globalState, ...filteredSettings }
+    if (!overrideLocalSettings) {
+      console.log('Applying settings from local storage', stateFromLocalStorage)
+      console.log('Applying settings from url hash', stateFromUrlHash)
+      newState = { ...newState, ...stateFromLocalStorage, ...stateFromUrlHash }
+    }
+
+    console.log('Setting global state to', newState)
+    resetGlobalState(newState)
     updateInitialSettingsUrl(url)
-    setInitialSettingsUrlHasBeenApplied()
   }
 
-  applyInitialSettingsUrl = async (url) => {
+  applyInitialSettingsUrl = async (url, overrideLocalSettings = false) => {
 
     this.setState({ requestStatus: RequestStatus.IN_PROGRESS })
 
@@ -149,7 +159,7 @@ class InitialSettingsForm extends React.PureComponent
     }
 
     try {
-      await this.loadInitialSettingsUrl(url)
+      await this.loadInitialSettingsUrl(url, overrideLocalSettings)
 
       this.setState({ requestStatus: RequestStatus.SUCCEEDED, successMessage: url ? 'Successfully loaded URL and applied settings' : 'Reset all settings to defaults' })
     } catch (e) {
@@ -165,7 +175,7 @@ class InitialSettingsForm extends React.PureComponent
 
   exportCurrentSettings = () => {
     //convert global state to a JSON string
-    const EXCLUDED_KEYS = ['initialSettings', 'initialSettingsUrlHasBeenApplied', 'user', 'modals']
+    const EXCLUDED_KEYS = ['user', 'modals']
     const globalStateForExport = Object.keys(this.props.globalState).reduce((acc, key) => {
       if (!EXCLUDED_KEYS.includes(key)) {
         acc[key] = this.props.globalState[key]
@@ -188,11 +198,11 @@ class InitialSettingsForm extends React.PureComponent
           defaultValue={initialSettingsUrl}
           placeholder="URL of .yaml or .json settings file (eg. http://.../settings.json), or blank to reset all settings to defaults."
           onChange={(e) => { this.textInputValue = e.target.value }}
-          onKeyUp={(e) => e.keyCode === 13 && this.applyInitialSettingsUrl(e.target.value)}
+          onKeyUp={(e) => e.keyCode === 13 && this.applyInitialSettingsUrl(e.target.value, true)}
         />
         <StyledButton
           content="Apply"
-          onClick={() => this.applyInitialSettingsUrl(this.textInputValue)}
+          onClick={() => this.applyInitialSettingsUrl(this.textInputValue, true)}
         />
         <RequestStatus
           status={this.state.requestStatus}
@@ -214,17 +224,14 @@ class InitialSettingsForm extends React.PureComponent
 
 InitialSettingsForm.propTypes = {
   initialSettingsUrl: PropTypes.string.isRequired,
-  initialSettingsUrlHasBeenApplied: PropTypes.bool.isRequired,
   globalState: PropTypes.object,
   updateInitialSettingsUrl: PropTypes.func,
-  setInitialSettingsUrlHasBeenApplied: PropTypes.func,
   resetGlobalState: PropTypes.func,
 }
 
 const mapStateToProps = (state) => ({
   globalState: state,
   initialSettingsUrl: getInitialSettingsUrl(state),
-  initialSettingsUrlHasBeenApplied: getInitialSettingsUrlHasBeenApplied(state),
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -232,12 +239,6 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch({
       type: 'UPDATE_INITIAL_SETTINGS_URL',
       newValue: newUrl,
-    })
-  },
-  setInitialSettingsUrlHasBeenApplied: () => {
-    dispatch({
-      type: 'UPDATE_INITIAL_SETTINGS_URL_HAS_BEEN_APPLIED',
-      newValue: true,
     })
   },
   resetGlobalState: (state) => {
