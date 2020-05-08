@@ -5,7 +5,6 @@
 import _ from 'lodash'
 import React from 'react'
 import PropTypes from 'prop-types'
-//import styled from 'styled-components'
 import igv from 'igv/dist/igv.esm'
 import { connect } from 'react-redux'
 
@@ -20,7 +19,6 @@ import {
   getBamOptions,
   getGcnvOptions,
 } from '../redux/selectors'
-import { getGoogleUserEmail, googleSignIn, initGoogleClient } from '../utils/googleAuth'
 import { throttle } from '../utils/throttle'
 
 const IGV_SETTINGS = {
@@ -61,7 +59,6 @@ class IGV extends React.Component {
       tracks,
       locusChangedHandler,
       trackRemovedHandler,
-      userChangedHandler,
     } = this.props
 
     const igvBrowserOptions = {
@@ -70,12 +67,6 @@ class IGV extends React.Component {
       genome,
       tracks,
     }
-
-    // TODO check if any tracks need google sign-in
-    await initGoogleClient()
-    await googleSignIn()
-    const googleUserEmail = await getGoogleUserEmail()
-    userChangedHandler(googleUserEmail)
 
     console.log('Calling igv.createBrowser(..)', igvBrowserOptions)
     igv.createBrowser(this.container, igvBrowserOptions).then((browser) => {
@@ -221,7 +212,6 @@ IGV.propTypes = {
   enabledDataTypes: PropTypes.array.isRequired,
   locusChangedHandler: PropTypes.func,
   trackRemovedHandler: PropTypes.func,
-  userChangedHandler: PropTypes.func,
   sjOptions: PropTypes.object,
   vcfOptions: PropTypes.object,
   bamOptions: PropTypes.object,
@@ -248,13 +238,6 @@ const mapDispatchToProps = (dispatch) => ({
     dispatch({
       type: 'UPDATE_LOCUS',
       newValue: newLocus,
-    })
-  },
-
-  userChangedHandler: (googleUserEmail) => {
-    dispatch({
-      type: 'UPDATE_USER',
-      updates: { googleUserEmail },
     })
   },
 

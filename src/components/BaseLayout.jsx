@@ -4,7 +4,7 @@ import { Grid } from 'semantic-ui-react'
 import LeftSideBar from './LeftSideBar'
 import RightSideBar from './RightSideBar'
 import Header from './Header'
-import IGV from './IGV'
+import LoginAndShowIGV from './LoginAndShowIGV'
 import InitialSettingsForm from './InitialSettingsForm'
 
 const StyledDiv = styled.div`
@@ -28,7 +28,7 @@ export default () => (
         <SideBarColumn><LeftSideBar /></SideBarColumn>
         <MiddleColumn>
           <Header />
-          <IGV />
+          <LoginAndShowIGV />
           <InitialSettingsForm />
         </MiddleColumn>
         <SideBarColumn><RightSideBar /></SideBarColumn>

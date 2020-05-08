@@ -105,6 +105,9 @@ export const computeInitialState = () => {
     }, {})
     : {}
 
+  // check google sign-in status
+
+
   // default values are over-ridden by values from local storage, which are over-ridden by values from the url
   const initialState = { ...DEFAULT_STATE, ...stateFromLocalStorage, ...stateFromUrlHash }
 
