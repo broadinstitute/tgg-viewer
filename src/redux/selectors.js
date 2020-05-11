@@ -92,10 +92,14 @@ export const getTracks = createSelector(
       let coverageTrack
       (row.data || []).forEach((data, j) => {
         //docs @ https://github.com/igvteam/igv.js/wiki/Wig-Track
+        if (!dataTypesToShow.includes(data.type)) {
+          console.log(`Skipping hidden track: ${data.url}`)
+          return
+        }
 
         if (data.type === 'gcnv_bed') { // && vcfOptions.showGcnv
           //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
-          console.log(`Adding ${data.url} track #`, i * 100 + j)
+          console.log(`Adding ${data.url} track #`)
 
           igvTracks.push({
             type: 'gcnv',
@@ -119,7 +123,12 @@ export const getTracks = createSelector(
             categoryName: categoryName,
           })
         }
-        else if ((data.type === 'junctions' || data.url.includes('junctions.bed')) && dataTypesToShow.includes('junctions')) {
+        else if (data.type === 'junctions') {
+          if (junctionsTrack) {
+            console.error('More than one "junctions" track found in row', row)
+            return
+          }
+
           junctionsTrack = {
             type: 'spliceJunctions',
             format: 'bed',
@@ -150,7 +159,12 @@ export const getTracks = createSelector(
             categoryName: categoryName,
           }
         }
-        else if ((data.type === 'coverage' || data.url.includes('.bigWig')) && dataTypesToShow.includes('coverage')) {
+        else if (data.type === 'coverage') {
+          if (coverageTrack) {
+            console.error('More than one "coverage" track found in row', row)
+            return
+          }
+
           coverageTrack = {
             type: 'wig',
             format: 'bigwig',
@@ -180,9 +194,22 @@ export const getTracks = createSelector(
             }
           }
         }
+        else if (['bed', 'gff3', 'gtf', 'genePred', 'genePredExt', 'peaks', 'narrowPeak', 'broadPeak', 'bigBed', 'bedpe'].includes(data.type)) {
+          //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
+          console.log(`Adding ${data.url} track #`)
+
+          igvTracks.push({
+            type: 'annotation',
+            format: 'bed',
+            name: `${row.name} ${data.label || ''}`,
+            url: data.url,
+            indexURL: `${data.url}.tbi`,
+            height: gcnvOptions.trackHeight,
+          })
+        }
         else if ((data.type === 'vcf' || data.url.includes('.vcf')) && dataTypesToShow.includes('vcf')) {
           //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
-          console.log(`Adding ${data.url} track #`, i * 100 + j)
+          console.log(`Adding ${data.url} track #`)
 
           igvTracks.push({
             type: 'variant',
@@ -198,9 +225,9 @@ export const getTracks = createSelector(
             categoryName: categoryName,
           })
         }
-        else if ((data.type === 'alignment' || data.url.includes('.bam') || data.url.includes('.cram')) && dataTypesToShow.includes('alignment')) {
+        else if (data.type === 'alignment' || data.url.includes('.bam') || data.url.includes('.cram')) {
           //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
-          console.log(`Adding ${data.url} track #`, i * 100 + j)
+          console.log(`Adding ${data.url} track #`)
 
           igvTracks.push({
             type: 'alignment',
