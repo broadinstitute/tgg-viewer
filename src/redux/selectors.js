@@ -27,10 +27,9 @@ export const getAllDataTypes = createSelector(
     return [...rowsInCategories.reduce((acc, category) => {
       category.rows.forEach((row) => {
         if (row.data) {
-          row.data.forEach((data) => {
-            if (data.type) {
-              acc.add(data.type)
-            }
+          const dataTypes = row.data.filter((data) => data.type).map((data) => data.type)
+          dataTypes.forEach((dataType) => {
+            acc.add(dataType)
           })
         }
       })
@@ -39,11 +38,30 @@ export const getAllDataTypes = createSelector(
   })
 
 
+export const getDataTypesUsersCanToggle = createSelector(
+  getRowsInCategories,
+  (rowsInCategories) => {
+    return [...rowsInCategories.reduce((acc, category) => {
+      category.rows.forEach((row) => {
+        if (row.data) {
+          const dataTypes = row.data.filter((data) => data.type).map((data) => data.type)
+          if (new Set(dataTypes).size >= 2) { // only include data types when a row has more than one data type
+            dataTypes.forEach((dataType) => {
+              acc.add(dataType)
+            })
+          }
+        }
+      })
+      return acc
+    }, new Set())]
+  })
+
 export const getEnabledDataTypes = createSelector(
   getAllDataTypes,
+  getDataTypesUsersCanToggle,
   getDataTypesToShow,
-  (allDataTypes, dataTypesToShow) => {
-    return allDataTypes.length < 2 ? allDataTypes : allDataTypes.filter((dataType) => dataTypesToShow.includes(dataType))
+  (allDataTypes, dataTypesUsersCanToggle, dataTypesToShow) => {
+    return allDataTypes.filter((dataType) => (dataTypesUsersCanToggle.includes(dataType) ? dataTypesToShow.includes(dataType) : true))
   })
 
 export const getRowsByCategoryName = createSelector(

@@ -15,7 +15,7 @@ import SearchRows from './SearchRows'
 import {
   getLeftSideBarLocusList,
   getRowsInCategories,
-  getAllDataTypes,
+  getDataTypesUsersCanToggle,
   getEnabledDataTypes,
   getSelectedRowNamesByCategoryName,
 } from '../redux/selectors'
@@ -80,11 +80,11 @@ const SelectedDataSectionHeading = styled.div`
 `
 */
 
-const ShowTrackTypesPanel = ({ allDataTypes, enabledDataTypes, updateDataTypesToShow }) => {
-  if (allDataTypes.length < 2) {
+const ShowTrackTypesPanel = ({ dataTypesUsersCanToggle, enabledDataTypes, updateDataTypesToShow }) => {
+  if (dataTypesUsersCanToggle.length < 2) {
     return null
   }
-  const checkBoxes = [...allDataTypes].map((dataType, i) => {
+  const checkBoxes = [...dataTypesUsersCanToggle].map((dataType, i) => {
     const label = dataTypeLabels[dataType] || (dataType.charAt(0).toUpperCase() + dataType.slice(1)) //to Title case
     return (
       <OptionDiv key={`${dataType} ${i}`}>
@@ -101,7 +101,7 @@ const ShowTrackTypesPanel = ({ allDataTypes, enabledDataTypes, updateDataTypesTo
 }
 
 ShowTrackTypesPanel.propTypes = {
-  allDataTypes: PropTypes.array,
+  dataTypesUsersCanToggle: PropTypes.array,
   enabledDataTypes: PropTypes.array,
   updateDataTypesToShow: PropTypes.func,
 }
@@ -269,7 +269,7 @@ class LeftSideBar extends React.PureComponent
     const {
       locusList,
       rowsInCategories,
-      allDataTypes,
+      dataTypesUsersCanToggle,
       enabledDataTypes,
       selectedRowNamesByCategoryName,
       setLocus,
@@ -282,7 +282,7 @@ class LeftSideBar extends React.PureComponent
       <div>
         <EditLocusList name="Left Side Bar" locusList={locusList} setLocus={setLocus} setLocusList={setLocusList} />
         <ShowTrackTypesPanel
-          allDataTypes={allDataTypes}
+          dataTypesUsersCanToggle={dataTypesUsersCanToggle}
           enabledDataTypes={enabledDataTypes}
           updateDataTypesToShow={updateDataTypesToShow}
         />
@@ -303,7 +303,7 @@ class LeftSideBar extends React.PureComponent
 LeftSideBar.propTypes = {
   locusList: PropTypes.array,
   rowsInCategories: PropTypes.array,
-  allDataTypes: PropTypes.array,
+  dataTypesUsersCanToggle: PropTypes.array,
   enabledDataTypes: PropTypes.array,
   selectedRowNamesByCategoryName: PropTypes.object,
   setLocus: PropTypes.func,
@@ -315,7 +315,7 @@ LeftSideBar.propTypes = {
 const mapStateToProps = (state) => ({
   locusList: getLeftSideBarLocusList(state),
   rowsInCategories: getRowsInCategories(state),
-  allDataTypes: getAllDataTypes(state),
+  dataTypesUsersCanToggle: getDataTypesUsersCanToggle(state),
   enabledDataTypes: getEnabledDataTypes(state),
   selectedRowNamesByCategoryName: getSelectedRowNamesByCategoryName(state),
 })
