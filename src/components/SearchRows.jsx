@@ -70,6 +70,8 @@ class SearchRows extends React.Component {
     if (sampleName) {
       if (action === 'ADD') {
         this.props.updateSelectedRowNames(action, categoryName, [rowName])
+      } else if (this.getSelectedSamplesForRow(categoryName, rowName).length <= 1) {
+        this.props.updateSelectedRowNames(action, categoryName, [rowName])
       }
       this.props.updateSelectedSamples(action, categoryName, { [rowName]: [sampleName] })
     } else {

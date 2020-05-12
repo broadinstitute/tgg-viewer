@@ -51,10 +51,6 @@ export const SUPPORTED_FILE_EXTENSIONS = {
   '.wig': 'wig',
   '.bedGraph': 'wig',
 
-  '.bed': 'bed',
-  '.bed.gz': 'bed',
-
-  /*
   '.bed': 'annotation',
   '.bed.gz': 'annotation',
   '.gff3': 'annotation',
@@ -62,7 +58,6 @@ export const SUPPORTED_FILE_EXTENSIONS = {
   '.gtf.gz': 'annotation',
   '.genePred': 'annotation',
   '.bigBed': 'annotation',
-   */
 }
 
 

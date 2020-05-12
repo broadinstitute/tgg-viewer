@@ -51,6 +51,11 @@ const dataTypeLabels = {
   vcf: 'Variants (VCF)',
   gcnv_bed: 'gCNV',
   alignment: 'Reads (BAM)',
+  bed: 'Annotations (BED)',
+  gff3: 'Annotations (GFF3)',
+  gtf: 'Annotations (GTF)',
+  genePred: 'Annotations (genePred)',
+  bigBed: 'Annotations (bigBed)',
 }
 
 const LinkButton = styled.a`
@@ -79,7 +84,6 @@ const ShowTrackTypesPanel = ({ allDataTypes, enabledDataTypes, updateDataTypesTo
   if (allDataTypes.length < 2) {
     return null
   }
-
   const checkBoxes = [...allDataTypes].map((dataType, i) => {
     const label = dataTypeLabels[dataType] || (dataType.charAt(0).toUpperCase() + dataType.slice(1)) //to Title case
     return (

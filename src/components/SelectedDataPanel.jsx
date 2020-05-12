@@ -23,9 +23,9 @@ const SampleNameText = styled.span`
   white-space: normal;
 `
 
-const SamplePanel = ({ categoryName, rowName, sample, sampleSettings, hideSample, updateSampleSettings }) => (
+const SamplePanel = ({ categoryName, rowName, sample, sampleSettings, hideSample, updateSampleSettings, numSelectedSamplesInRow }) => (
   <div style={{ whiteSpace: 'nowrap' }}>
-    <DeleteButton onClick={() => hideSample(categoryName, rowName, sample)}>
+    <DeleteButton onClick={() => hideSample(categoryName, rowName, sample, numSelectedSamplesInRow)}>
       <Icon name="delete" />
     </DeleteButton>
     <SampleNameText>{sample}</SampleNameText>
@@ -46,6 +46,7 @@ SamplePanel.propTypes = {
   sampleSettings: PropTypes.object,
   hideSample: PropTypes.func,
   updateSampleSettings: PropTypes.func,
+  numSelectedSamplesInRow: PropTypes.number,
 }
 
 const SelectedDataPanel = ({ selectedSamplesByCategoryNameAndRowName, hideRow, hideSample, updateSampleSettings }) => {
@@ -74,6 +75,7 @@ const SelectedDataPanel = ({ selectedSamplesByCategoryNameAndRowName, hideRow, h
                 hideRow={hideRow}
                 hideSample={hideSample}
                 updateSampleSettings={updateSampleSettings}
+                numSelectedSamplesInRow={selectedSamples.length}
               />),
             )
           }
@@ -110,7 +112,16 @@ const mapDispatchToProps = (dispatch) => ({
       selectedRowNames: [rowName],
     })
   },
-  hideSample: (categoryName, rowName, sample) => {
+  hideSample: (categoryName, rowName, sample, numSelectedSamplesInRow) => {
+    if (numSelectedSamplesInRow <= 1) {
+      // if the last sample is being hidden, hide the row as well
+      dispatch({
+        type: 'REMOVE_SELECTED_ROW_NAMES',
+        categoryName,
+        selectedRowNames: [rowName],
+      })
+    }
+
     dispatch({
       type: 'REMOVE_SELECTED_SAMPLES',
       categoryName,
