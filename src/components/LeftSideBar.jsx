@@ -47,6 +47,7 @@ const dataTypeIconColors = {
 }
 
 const dataTypeLabels = {
+  coverage: 'Coverage',
   junctions: 'Splice Junctions',
   vcf: 'Variants (VCF)',
   gcnv_bed: 'gCNV',
@@ -248,8 +249,9 @@ DataSubrows.propTypes = {
 const RowDetails = ({ row }) => {
   return (
     row.description
-      ? <StyledPopup inverted
-        content={row.description}
+      ? <StyledPopup
+        flowing
+        content={<div dangerouslySetInnerHTML={{ __html: row.description }} />}
         position="right center"
         trigger={
           <Icon style={{ marginLeft: '10px' }} name="question circle outline" />
