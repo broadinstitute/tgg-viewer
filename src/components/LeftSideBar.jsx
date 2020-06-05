@@ -1,17 +1,21 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable react/no-array-index-key */
+/* eslint-disable react/no-danger */
+
 
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Checkbox, Icon, Popup } from 'semantic-ui-react'
+import DOMPurify from 'dompurify'
 import { CategoryH3, OptionDiv, OptionInputDiv, StyledPopup } from './SideBarUtils'
 import SelectedDataPanel from './SelectedDataPanel'
 import EditLocusList from './EditLocusList'
 import AddRows from './AddRows'
 import SearchRows from './SearchRows'
+
 import {
   getLeftSideBarLocusList,
   getRowsInCategories,
@@ -251,7 +255,7 @@ const RowDetails = ({ row }) => {
     row.description
       ? <StyledPopup
         flowing
-        content={<div dangerouslySetInnerHTML={{ __html: row.description }} />}
+        content={row.description && <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(row.description) }} />}
         position="right center"
         trigger={
           <Icon style={{ marginLeft: '10px' }} name="question circle outline" />
