@@ -1,4 +1,4 @@
-https://rnaseq-viewer.broadinstitute.org
+https://tgg-viewer.broadinstitute.org
 
 The Translational Genomics Group (TGG) Viewer is a free, open-source web app for visualizing splice junctions, expression, and other sequencing data genome-wide using [IGV.js](https://github.com/igvteam/igv.js)
 
