@@ -151,7 +151,7 @@ class IGV extends React.Component {
           try {
             this.browser.removeTrackByName(track.name)
           } catch(err) {
-            console.error(err)
+            console.warn('Unable to remove track', track.name, e)
           }
           if (!this.getIgvTrackView(track)) { // double-check that the track isn't already loaded
             //console.log('calling this.browser.loadTrack for', track.name)
