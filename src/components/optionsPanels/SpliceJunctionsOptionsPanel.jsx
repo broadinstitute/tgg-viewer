@@ -106,6 +106,7 @@ const SpliceJunctionsOptionsPanel = ({ sjOptions, updateSjOptions }) => {
           <option value="numUniqueReads"># uniquely-mapped reads</option>
           <option value="numReads"># total reads</option>
           <option value="isAnnotatedJunction">is known junction</option>
+          <option value="numSamplesWithThisJunction"># samples with this junction</option>
         </select>
       </OptionDiv>
       <OptionDiv>Junction bounce height:</OptionDiv>
@@ -116,17 +117,51 @@ const SpliceJunctionsOptionsPanel = ({ sjOptions, updateSjOptions }) => {
           <option value="thickness">thickness</option>
         </select>
       </OptionDiv>
-      <OptionDiv>Junction label:</OptionDiv>
-      <OptionDiv><Checkbox label="# uniquely-mapped" checked={sjOptions.labelUniqueReadCount} onChange={(e, data) => updateSjOptions({ labelUniqueReadCount: data.checked })} /></OptionDiv>
-      <OptionDiv><Checkbox label="# multi-mapped" checked={sjOptions.labelMultiMappedReadCount} onChange={(e, data) => updateSjOptions({ labelMultiMappedReadCount: data.checked })} /></OptionDiv>
-      <OptionDiv><Checkbox label="# total reads" checked={sjOptions.labelTotalReadCount} onChange={(e, data) => updateSjOptions({ labelTotalReadCount: data.checked })} /></OptionDiv>
-      <OptionDiv><Checkbox label="donor/acceptor motif" checked={sjOptions.labelMotif} onChange={(e, data) => updateSjOptions({ labelMotif: data.checked })} /></OptionDiv>
+      <OptionDiv>Junction label #1:</OptionDiv>
       <OptionDiv>
-        <Checkbox label="known junction:" checked={sjOptions.labelAnnotatedJunction} onChange={(e, data) => updateSjOptions({ labelAnnotatedJunction: data.checked })} />
-        <OptionInput key={`junction-label-${sjOptions.labelAnnotatedJunctionValue}`} type="text" defaultValue={sjOptions.labelAnnotatedJunctionValue} onKeyUp={(e) => handleTextInput(e, 'labelAnnotatedJunctionValue')} style={{ width: '35px' }} />
+        <StyledRadio label="# uniquely-mapped" name="junctionLabelButton" checked={sjOptions.labelWith === 'uniqueReadCount'} onChange={(e, data) => data.checked && updateSjOptions({ labelWith: 'uniqueReadCount' })} />
+        <StyledRadio label="# total reads" name="junctionLabelButton" checked={sjOptions.labelWith === 'totalReadCount'} onChange={(e, data) => data.checked && updateSjOptions({ labelWith: 'totalReadCount' })} />
+        <StyledRadio label="# samples with junction" name="junctionLabelButton" checked={sjOptions.labelWith === 'numSamplesWithThisJunction'} onChange={(e, data) => data.checked && updateSjOptions({ labelWith: 'numSamplesWithThisJunction' })} />
+        <StyledRadio label="% samples with junction" name="junctionLabelButton" checked={sjOptions.labelWith === 'percentSamplesWithThisJunction'} onChange={(e, data) => data.checked && updateSjOptions({ labelWith: 'percentSamplesWithThisJunction' })} />
+        <StyledRadio label="motif" name="junctionLabelButton" checked={sjOptions.labelWithInParen === 'motif'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'motif' })} />
       </OptionDiv>
-
+      <OptionDiv>Junction label #2:</OptionDiv>
+      <OptionDiv>
+        <StyledRadio label="# uniquely-mapped" name="junctionLabelButton" checked={sjOptions.labelWithInParen === 'uniqueReadCount'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'uniqueReadCount' })} />
+        <StyledRadio label="# total reads" name="junctionLabelButton" checked={sjOptions.labelWithInParen === 'totalReadCount'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'totalReadCount' })} />
+        <StyledRadio label="# multi-mapped" name="junctionLabelButton" checked={sjOptions.labelWithInParen === 'multiMappedReadCount'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'multiMappedReadCount' })} />
+        <StyledRadio label="# samples with junction" name="junctionLabelButton" checked={sjOptions.labelWithInParen === 'numSamplesWithThisJunction'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'numSamplesWithThisJunction' })} />
+        <StyledRadio label="% samples with junction" name="junctionLabelButton" checked={sjOptions.labelWithInParen === 'percentSamplesWithThisJunction'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'percentSamplesWithThisJunction' })} />
+        <StyledRadio label="motif" name="junctionLabelButton" checked={sjOptions.labelWithInParen === 'motif'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'motif' })} />
+      </OptionDiv>
       <CategoryH3>Junctions Track Filters</CategoryH3><br />
+      <OptionDiv>
+        Show: <br />
+        <StyledRadio label="only local junctions" name="minJunctionEndsVisibleButton" checked={sjOptions.minJunctionEndsVisible === 2} onChange={(e, data) => data.checked && updateSjOptions({ minJunctionEndsVisible: 2 })} />
+        <StyledPopup
+          content="Only show splice junctions that start and end on-screen"
+          position="left center"
+          trigger={
+            <Icon style={{ marginLeft: '8px' }} name="question circle outline" />
+          }
+        /><br />
+        <StyledRadio label="semi-local junctions" name="minJunctionEndsVisibleButton" checked={sjOptions.minJunctionEndsVisible === 1} onChange={(e, data) => data.checked && updateSjOptions({ minJunctionEndsVisible: 1 })} />
+        <StyledPopup
+          content="Show splice junctions that either start or end on-screen or both"
+          position="left center"
+          trigger={
+            <Icon style={{ marginLeft: '8px' }} name="question circle outline" />
+          }
+        /><br />
+        <StyledRadio label="all junctions" name="minJunctionEndsVisibleButton" checked={sjOptions.minJunctionEndsVisible === 0} onChange={(e, data) => data.checked && updateSjOptions({ minJunctionEndsVisible: 0 })} />
+        <StyledPopup
+          content="Show all splice junctions - including those that start, end, or span the screen"
+          position="left center"
+          trigger={
+            <Icon style={{ marginLeft: '8px' }} name="question circle outline" />
+          }
+        />
+      </OptionDiv>
       <OptionDiv>
         Show Strands:
         <StyledRadio label="both" name="strandButton" checked={!sjOptions.showOnlyPlusStrand && !sjOptions.showOnlyMinusStrand} onChange={(e, data) => data.checked && updateSjOptions({ showOnlyPlusStrand: false, showOnlyMinusStrand: false })} />
@@ -145,10 +180,9 @@ const SpliceJunctionsOptionsPanel = ({ sjOptions, updateSjOptions }) => {
       </div>
       <div>
         <OptionDiv>Fraction multi-mapped:
-          <StyledPopup inverted
+          <StyledPopup
             content="Allows filtering of junctions where most reads that span the junction are multi-mapped reads. For example, setting this to 0.79 will hide junctions where 8 out of 10 (or more) reads that span the junction are not uniquely mapped reads."
             position="left center"
-            on="click"
             trigger={
               <Icon style={{ marginLeft: '8px' }} name="question circle outline" />
             }
@@ -159,6 +193,30 @@ const SpliceJunctionsOptionsPanel = ({ sjOptions, updateSjOptions }) => {
       <div>
         <OptionDiv>Splice overhang base-pairs:</OptionDiv>
         at least <OptionInput key={`spliced-alignment-overhang-${sjOptions.minSplicedAlignmentOverhang}`} type="text" defaultValue={sjOptions.minSplicedAlignmentOverhang} onKeyUp={(e) => handleTextInput(e, 'minSplicedAlignmentOverhang', parseInt(e.target.value, 10))} />
+      </div>
+      <div>
+        <OptionDiv># samples with junction:
+          <StyledPopup
+            content="Filter junctions based on how many samples in the batch have this junction. A sample is counted as having the junction as long as the junction is supported by at least one read."
+            position="left center"
+            trigger={
+              <Icon style={{ marginLeft: '8px' }} name="question circle outline" />
+            }
+          />
+        </OptionDiv>
+        <OptionInput key={`samples-with-junction-more-than-${sjOptions.minSamplesWithThisJunction}`} type="text" defaultValue={sjOptions.minSamplesWithThisJunction} onKeyUp={(e) => handleTextInput(e, 'minSamplesWithThisJunction', parseInt(e.target.value, 10))} /> &nbsp;≤ n ≤ <OptionInput key={`samples-with-junction-less-than-${sjOptions.maxSamplesWithThisJunction}`} type="text" defaultValue={sjOptions.maxSamplesWithThisJunction} onKeyUp={(e) => handleTextInput(e, 'maxSamplesWithThisJunction', parseInt(e.target.value, 10))} />
+      </div>
+      <div>
+        <OptionDiv>% samples with junction:
+          <StyledPopup
+            content="Filter junctions based on what percentage of samples in the batch have this junction. A sample is counted as having the junction as long as the junction is supported by at least one read."
+            position="left center"
+            trigger={
+              <Icon style={{ marginLeft: '8px' }} name="question circle outline" />
+            }
+          />
+        </OptionDiv>
+        <OptionInput key={`percent-samples-with-junction-more-than-${sjOptions.minPercentSamplesWithThisJunction}`} type="text" defaultValue={sjOptions.minPercentSamplesWithThisJunction} onKeyUp={(e) => handleTextInput(e, 'minPercentSamplesWithThisJunction', parseInt(e.target.value, 10))} /> &nbsp;≤ % ≤ <OptionInput key={`percent-samples-with-junction-less-than-${sjOptions.maxPercentSamplesWithThisJunction}`} type="text" defaultValue={sjOptions.maxPercentSamplesWithThisJunction} onKeyUp={(e) => handleTextInput(e, 'maxPercentSamplesWithThisJunction', parseInt(e.target.value, 10))} />
       </div>
       <div>
         <OptionDiv>Donor/Acceptor Motifs:</OptionDiv>

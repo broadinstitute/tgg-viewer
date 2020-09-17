@@ -15,10 +15,12 @@ const SIDE_BAR_WIDTH = 210
 
 const SideBarColumn = styled(Grid.Column)`
   min-width: ${SIDE_BAR_WIDTH}px !important;
+  z-index: 2;
 `
 
 const MiddleColumn = styled(Grid.Column)`
   min-width: calc(99% - ${2 * SIDE_BAR_WIDTH + 5}px) !important;
+  z-index: 1;
 `
 
 export default () => (

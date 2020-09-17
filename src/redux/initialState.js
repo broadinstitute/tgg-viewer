@@ -27,12 +27,8 @@ export const DEFAULT_STATE = {
     minSplicedAlignmentOverhang: 0,
     thicknessBasedOn: 'numUniqueReads', //options: numUniqueReads (default), numReads, isAnnotatedJunction
     bounceHeightBasedOn: 'random', //options: random (default), distance, thickness
-    labelUniqueReadCount: true,
-    labelMultiMappedReadCount: false,
-    labelTotalReadCount: false,
-    labelMotif: false,
-    labelAnnotatedJunction: false,
-    labelAnnotatedJunctionValue: ' [A]',
+    labelWith: 'uniqueReadCount',
+    labelWithInParen: 'multiMappedReadCount',
   },
   vcfOptions: {
     displayMode: 'EXPANDED',

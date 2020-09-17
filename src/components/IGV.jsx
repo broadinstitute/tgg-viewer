@@ -68,7 +68,7 @@ class IGV extends React.Component {
       tracks,
     }
 
-    console.log('Calling igv.createBrowser(..)', igvBrowserOptions)
+    //console.log('Calling igv.createBrowser(..)', igvBrowserOptions)
     igv.createBrowser(this.container, igvBrowserOptions).then((browser) => {
       this.browser = browser
       window.igvBrowser = browser //for debugging
@@ -140,8 +140,6 @@ class IGV extends React.Component {
       return { [track.name]: track, ...acc }
     }, {})
 
-    //console.log('IGV.nextProps:', nextProps)
-
     // reload or remove existing tracks
     this.props.tracks.forEach((track) => {
       const nextTrack = nextTrackByTrackName[track.name]
@@ -191,6 +189,7 @@ class IGV extends React.Component {
       return false
     }
 
+    //console.log('Should component update', nextProps)
     //update locus
     const currentIGVLocus = this.browser.$searchInput.val()
     const nextIGVLocus = nextProps.locus

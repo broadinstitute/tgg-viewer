@@ -13,6 +13,7 @@ export const getGenome = (state) => state.genome
 export const getDataTypesToShow = (state) => state.dataTypesToShow
 export const getRowsInCategories = (state) => state.rowsInCategories
 export const getSelectedRowNamesByCategoryName = (state) => state.selectedRowNamesByCategoryName
+
 export const getSelectedSamplesByCategoryNameAndRowName = (state) => state.selectedSamplesByCategoryNameAndRowName
 export const getSjOptions = (state) => state.sjOptions
 export const getVcfOptions = (state) => state.vcfOptions
@@ -89,7 +90,7 @@ export const getSelectedRowsByCategoryName = createSelector(
 export const getTracks = createSelector(
   getSelectedRowsByCategoryName,
   getSelectedSamplesByCategoryNameAndRowName,
-  getDataTypesToShow,
+  getEnabledDataTypes,
   getSjOptions,
   getVcfOptions,
   getBamOptions,
@@ -97,7 +98,7 @@ export const getTracks = createSelector(
   (
     selectedRowsByCategoryName,
     selectedSamplesByCategoryNameAndRowName,
-    dataTypesToShow,
+    enabledDataTypes,
     sjOptions,
     vcfOptions,
     bamOptions,
@@ -110,7 +111,7 @@ export const getTracks = createSelector(
       let coverageTrack
       (row.data || []).forEach((data, j) => {
         //docs @ https://github.com/igvteam/igv.js/wiki/Wig-Track
-        if (!dataTypesToShow.includes(data.type)) {
+        if (!enabledDataTypes.includes(data.type)) {
           console.log(`Skipping hidden track: ${data.url}`)
           return
         }
@@ -160,16 +161,18 @@ export const getTracks = createSelector(
             minTotalReads: sjOptions.minTotalReads,
             maxFractionMultiMappedReads: sjOptions.maxFractionMultiMappedReads,
             minSplicedAlignmentOverhang: sjOptions.minSplicedAlignmentOverhang,
+            minSamplesWithThisJunction: sjOptions.minSamplesWithThisJunction,
+            maxSamplesWithThisJunction: sjOptions.maxSamplesWithThisJunction,
+            minPercentSamplesWithThisJunction: sjOptions.minPercentSamplesWithThisJunction,
+            maxPercentSamplesWithThisJunction: sjOptions.maxPercentSamplesWithThisJunction,
+            minJunctionEndsVisible: sjOptions.minJunctionEndsVisible,
             thicknessBasedOn: sjOptions.thicknessBasedOn, //options: numUniqueReads (default), numReads, isAnnotatedJunction
             bounceHeightBasedOn: sjOptions.bounceHeightBasedOn, //options: random (default), distance, thickness
             colorBy: sjOptions.colorBy, //options: numUniqueReads (default), numReads, isAnnotatedJunction, strand, motif
             colorByNumReadsThreshold: sjOptions.colorByNumReadsThreshold !== undefined ? sjOptions.colorByNumReadsThreshold : SJ_DEFAULT_COLOR_BY_NUM_READS_THRESHOLD,
             hideStrand: sjOptions.showOnlyPlusStrand ? '-' : (sjOptions.showOnlyMinusStrand ? '+' : undefined),
-            labelUniqueReadCount: sjOptions.labelUniqueReadCount,
-            labelMultiMappedReadCount: sjOptions.labelMultiMappedReadCount,
-            labelTotalReadCount: sjOptions.labelTotalReadCount,
-            labelMotif: sjOptions.labelMotif,
-            labelAnnotatedJunction: sjOptions.labelAnnotatedJunction && sjOptions.labelAnnotatedJunctionValue,
+            labelWith: sjOptions.labelWith,
+            labelWithInParen: sjOptions.labelWithInParen,
             hideAnnotatedJunctions: sjOptions.hideAnnotated,
             hideUnannotatedJunctions: sjOptions.hideUnannotated,
             hideMotifs: SJ_MOTIFS.filter((motif) => sjOptions[`hideMotif${motif}`]), //options: 'GT/AG', 'CT/AC', 'GC/AG', 'CT/GC', 'AT/AC', 'GT/AT', 'non-canonical'
@@ -214,18 +217,18 @@ export const getTracks = createSelector(
         }
         else if (['bed', 'gff3', 'gtf', 'genePred', 'genePredExt', 'peaks', 'narrowPeak', 'broadPeak', 'bigBed', 'bedpe'].includes(data.type)) {
           //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
-          console.log(`Adding ${data.url} track #`)
+          console.log(`Adding ${data.url} ${data.type} track`)
 
           igvTracks.push({
             type: 'annotation',
-            format: 'bed',
+            format: data.type,
             name: `${row.name} ${data.label || ''}`,
             url: data.url,
             indexURL: `${data.url}.tbi`,
-            height: gcnvOptions.trackHeight,
+            height: 100,
           })
         }
-        else if ((data.type === 'vcf' || data.url.includes('.vcf')) && dataTypesToShow.includes('vcf')) {
+        else if ((data.type === 'vcf' || data.url.includes('.vcf')) && enabledDataTypes.includes('vcf')) {
           //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
           console.log(`Adding ${data.url} track #`)
 
@@ -298,7 +301,7 @@ export const getTracks = createSelector(
       color: 'rgb(76,171,225)',
       oauthToken: getGoogleAccessToken,
     })
-
+    
     return igvTracks
   },
 )

@@ -16,6 +16,7 @@ export const ColorLegendIcon = styled(Icon)`
 
 export const OptionDiv = styled.div`
   padding-top: 3px;
+  z-index: 100000;
 `
 
 export const OptionInputDiv = styled(OptionDiv)`

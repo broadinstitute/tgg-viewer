@@ -33,6 +33,7 @@ const CategoryDetails = styled.div`
 
 const DataTypeIcon = styled.div.attrs({ name: 'stop' })`
   color: ${(props) => props.color};
+  background-color: ${(props) => props.color};
   border: 3px solid ${(props) => props.color};
   display: inline-block;
   width: 6px;

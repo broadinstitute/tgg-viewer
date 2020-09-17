@@ -49,9 +49,21 @@ class LoginAndShowIGV extends React.Component {
     // TODO check if any tracks need google sign-in
     try {
       await initGoogleClient()
+    } catch (e) {
+      console.error('Error during google sign-in init:', e)
+      this.setState({ show: 'signin-button' })
+      return
+    }
+
+    try {
+      this.setState({ signInError: null })
       await googleSignIn()
     } catch (e) {
       console.error('Error during google sign-in:', e)
+      if (e.details && e.details.search('Cookies are not enabled') >= 0) {
+        this.setState({ signInError: 'cookies-disabled' })
+      }
+
       this.setState({ show: 'signin-button' })
       return
     }
@@ -63,6 +75,7 @@ class LoginAndShowIGV extends React.Component {
 
   render = () => {
     if (this.state.show === 'igv') {
+      console.log('Render <IGV />')
       return <IGV />
     }
 
@@ -110,12 +123,22 @@ class LoginAndShowIGV extends React.Component {
                 </ul>
               </div>
             }
+            {
+              this.state.signInError === 'cookies-disabled' &&
+              <div style={{ marginTop: '20px', color: 'red', textAlign: 'left' }}>
+
+                <b>ERROR: Cookies are disabled</b><br />
+                Please allow cookies to enable sign in with Google.
+              </div>
+            }
           </InfoContainer>
+
           <SignInButtonContainer>
             <GoogleLogin
               clientId={window.TGG_VIEWER_CLIENT_ID}
               theme="dark"
               buttonText="Sign in with Google"
+              disabled={this.state.signInError}
               onSuccess={this.handleGoogleSignIn}
               onFailure={this.handleGoogleSignIn}
               cookiePolicy="single_host_origin"

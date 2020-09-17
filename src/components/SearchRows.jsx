@@ -239,14 +239,14 @@ class SearchRows extends React.Component {
             resultsArray.push({
               id: `${item.action}!!${categoryName}!!${item.rowName}!!${item.sample}`,
               title: `${actionLabel} ${item.rowName} > ${item.sample}`,
-              className: item.action !== 'ADD' && 'red-text',
+              className: item.action !== 'ADD' ? 'red-text' : null,
             })
           } else {
             const actionLabel = item.action === 'ADD' ? 'Show' : 'Hide'
             resultsArray.push({
               id: `${item.action}!!${categoryName}!!${item.rowName}`,
               title: `${actionLabel} ${item.rowName}`,
-              className: item.action !== 'ADD' && 'red-text',
+              className: item.action !== 'ADD' ? 'red-text' : null,
             })
           }
         })
@@ -269,6 +269,7 @@ class SearchRows extends React.Component {
           category={this.props.rowsInCategories.length > 1}
           loading={isLoading}
           onResultSelect={this.handleResultSelect}
+          onFocus={this.handleSearchChange}
           onSearchChange={this.handleSearchChange}
           placeholder="Select data"
           results={results}
