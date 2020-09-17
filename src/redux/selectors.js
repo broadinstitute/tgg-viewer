@@ -125,7 +125,7 @@ export const getTracks = createSelector(
             format: 'gcnv',
             name: `${row.name} ${data.label || ''}`,
             url: data.url,
-            indexURL: `${data.url}.tbi`,
+            indexURL: data.indexURL || `${data.url}.tbi`,
             height: gcnvOptions.trackHeight,
             min: gcnvOptions.trackMin,
             max: gcnvOptions.trackMax,
@@ -152,7 +152,7 @@ export const getTracks = createSelector(
             type: 'spliceJunctions',
             format: 'bed',
             url: data.url,
-            indexURL: `${data.url}.tbi`,
+            indexURL: data.indexURL || `${data.url}.tbi`,
             oauthToken: getGoogleAccessToken,
             order: i * 10,
             name: row.name,
@@ -224,7 +224,7 @@ export const getTracks = createSelector(
             format: data.type,
             name: `${row.name} ${data.label || ''}`,
             url: data.url,
-            indexURL: `${data.url}.tbi`,
+            indexURL: data.indexURL || `${data.url}.tbi`,
             height: 100,
           })
         }
@@ -236,7 +236,7 @@ export const getTracks = createSelector(
             type: 'variant',
             format: 'vcf',
             url: data.url,
-            indexURL: `${data.url}.tbi`,
+            indexURL: data.indexURL || `${data.url}.tbi`,
             indexed: true,
             name: `${row.name} ${data.label || 'vcf'}`,
             displayMode: vcfOptions.displayMode,
@@ -253,6 +253,7 @@ export const getTracks = createSelector(
           igvTracks.push({
             type: 'alignment',
             url: data.url,
+            indexURL: data.indexURL || (`${data.url}`.endsWith('cram') ? `${data.url}.crai` : `${data.url}`.endsWith('bam') ? `${data.url}.bai` : null),
             indexed: true,
             name: `${row.name} ${data.label || 'bam'}`,
             height: bamOptions.trackHeight,
@@ -301,7 +302,7 @@ export const getTracks = createSelector(
       color: 'rgb(76,171,225)',
       oauthToken: getGoogleAccessToken,
     })
-    
+
     return igvTracks
   },
 )
