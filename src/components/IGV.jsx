@@ -150,7 +150,7 @@ class IGV extends React.Component {
           this.ignoreNextTrackRemovedEvent = true
           try {
             this.browser.removeTrackByName(track.name)
-          } catch(e) {
+          } catch (e) {
             console.warn('Unable to remove track', track.name, e)
           }
           if (!this.getIgvTrackView(track)) { // double-check that the track isn't already loaded
