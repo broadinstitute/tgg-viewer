@@ -196,7 +196,7 @@ const RowsPanel = ({ rowsInCategories, selectedRowNamesByCategoryName, updateSel
           return <RowPanel key={`${row.name} ${j}`} row={row} categoryName={category.categoryName} selectedRowNames={selectedRowNames} updateSelectedRowNames={updateSelectedRowNames} />
         })
       }
-      <AddRows category={category} />
+      { i === rowsInCategories.length - 1 ? <AddRows category={category} /> : null }
     </div>),
   ))
 

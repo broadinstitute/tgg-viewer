@@ -51,8 +51,8 @@ export const SUPPORTED_FILE_EXTENSIONS = {
   '.wig': 'wig',
   '.bedGraph': 'wig',
 
-  '.bed': 'annotation',
-  '.bed.gz': 'annotation',
+  '.bed': 'bed',
+  '.bed.gz': 'bed',
   '.gff3': 'annotation',
   '.gtf': 'annotation',
   '.gtf.gz': 'annotation',
@@ -129,6 +129,7 @@ class AddRowsButtonAndModal extends React.PureComponent {
       return false
     } else {
       addRows(newRows)
+      this.setState(this.getInitialState())
       return true
     }
   }
@@ -177,7 +178,7 @@ class AddRowsButtonAndModal extends React.PureComponent {
                 gs://your-bucket/dir/sample-name1.bam <br />
                 gs://your-bucket/dir/sample2.junctions.bed.gz <br />
               </ExampleDiv>
-              Paths that have the same prefix (eg. <ExamplePath>gs://your-bucket/dir/sample-name1</ExamplePath> above) will be interpreted as different data types for same sample.<br />
+              Paths that have the same prefix (eg. <ExamplePath>gs://your-bucket/dir/sample-name1</ExamplePath> above) will be interpreted as different data types from the same sample.<br />
               The order of paths doesn&apos;t matter.<br />
               <br />
               IGV.js track types will be inferred from file extensions as follows:<br />

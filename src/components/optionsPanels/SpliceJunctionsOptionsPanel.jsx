@@ -129,16 +129,6 @@ const SpliceJunctionsOptionsPanel = ({ sjOptions, updateSjOptions }) => {
         </OptionDiv>
       </OptionBox>
       <OptionBox>
-        <OptionDiv>Junction bounce height:</OptionDiv>
-        <OptionDiv>
-          <select value={sjOptions.bounceHeightBasedOn} onChange={(e) => updateSjOptions({ bounceHeightBasedOn: e.target.value })}>
-            <option value="random">random</option>
-            <option value="distance">distance</option>
-            <option value="thickness">thickness</option>
-          </select>
-        </OptionDiv>
-      </OptionBox>
-      <OptionBox>
         <OptionDiv>Junction thickness:</OptionDiv>
         <OptionDiv>
           <select value={sjOptions.thicknessBasedOn} onChange={(e) => updateSjOptions({ thicknessBasedOn: e.target.value })}>
@@ -146,6 +136,16 @@ const SpliceJunctionsOptionsPanel = ({ sjOptions, updateSjOptions }) => {
             <option value="numReads"># total reads</option>
             <option value="isAnnotatedJunction">is known junction</option>
             <option value="numSamplesWithThisJunction"># samples with this junction</option>
+          </select>
+        </OptionDiv>
+      </OptionBox>
+      <OptionBox>
+        <OptionDiv>Junction bounce height:</OptionDiv>
+        <OptionDiv>
+          <select value={sjOptions.bounceHeightBasedOn} onChange={(e) => updateSjOptions({ bounceHeightBasedOn: e.target.value })}>
+            <option value="random">random</option>
+            <option value="distance">distance</option>
+            <option value="thickness">thickness</option>
           </select>
         </OptionDiv>
       </OptionBox>
