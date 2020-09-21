@@ -92,63 +92,6 @@ const SpliceJunctionsOptionsPanel = ({ sjOptions, updateSjOptions }) => {
 
   return (
     <div>
-      <CategoryH3>Junctions Track <br />Options</CategoryH3><br />
-      <OptionBox>
-        <OptionDiv>Color by:</OptionDiv>
-        <OptionDiv>
-          <select value={sjOptions.colorBy} onChange={(e) => updateSjOptions({ colorBy: e.target.value })}>
-            <option value="strand">strand</option>
-            <option value="motif">donor/acceptor motif</option>
-            <option value="numUniqueReads"># uniquely-mapped reads</option>
-            <option value="numReads"># total reads</option>
-            <option value="isAnnotatedJunction">is known junction</option>
-          </select>
-          <ColorByLegend sjOptions={sjOptions} handleTextInput={handleTextInput} />
-        </OptionDiv>
-      </OptionBox>
-      <OptionBox>
-        <OptionDiv>Junction label #1:</OptionDiv>
-        <OptionDiv>
-          <StyledRadio label="# uniquely-mapped" name="junctionLabelButton" checked={sjOptions.labelWith === 'uniqueReadCount'} onChange={(e, data) => data.checked && updateSjOptions({ labelWith: 'uniqueReadCount' })} />
-          <StyledRadio label="# total reads" name="junctionLabelButton" checked={sjOptions.labelWith === 'totalReadCount'} onChange={(e, data) => data.checked && updateSjOptions({ labelWith: 'totalReadCount' })} />
-          <StyledRadio label="# samples with junction" name="junctionLabelButton" checked={sjOptions.labelWith === 'numSamplesWithThisJunction'} onChange={(e, data) => data.checked && updateSjOptions({ labelWith: 'numSamplesWithThisJunction' })} />
-          <StyledRadio label="% samples with junction" name="junctionLabelButton" checked={sjOptions.labelWith === 'percentSamplesWithThisJunction'} onChange={(e, data) => data.checked && updateSjOptions({ labelWith: 'percentSamplesWithThisJunction' })} />
-          <StyledRadio label="motif" name="junctionLabelButton" checked={sjOptions.labelWith === 'motif'} onChange={(e, data) => data.checked && updateSjOptions({ labelWith: 'motif' })} />
-        </OptionDiv>
-      </OptionBox>
-      <OptionBox>
-        <OptionDiv>Junction label #2:</OptionDiv>
-        <OptionDiv>
-          <StyledRadio label="none" name="junctionLabel2Button" checked={!sjOptions.labelWithInParen} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: null })} />
-          <StyledRadio label="# uniquely-mapped" name="junctionLabel2Button" checked={sjOptions.labelWithInParen === 'uniqueReadCount'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'uniqueReadCount' })} />
-          <StyledRadio label="# total reads" name="junctionLabel2Button" checked={sjOptions.labelWithInParen === 'totalReadCount'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'totalReadCount' })} />
-          <StyledRadio label="# multi-mapped" name="junctionLabel2Button" checked={sjOptions.labelWithInParen === 'multiMappedReadCount'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'multiMappedReadCount' })} />
-          <StyledRadio label="# samples with junction" name="junctionLabel2Button" checked={sjOptions.labelWithInParen === 'numSamplesWithThisJunction'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'numSamplesWithThisJunction' })} />
-          <StyledRadio label="% samples with junction" name="junctionLabel2Button" checked={sjOptions.labelWithInParen === 'percentSamplesWithThisJunction'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'percentSamplesWithThisJunction' })} />
-          <StyledRadio label="motif" name="junctionLabel2Button" checked={sjOptions.labelWithInParen === 'motif'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'motif' })} />
-        </OptionDiv>
-      </OptionBox>
-      <OptionBox>
-        <OptionDiv>Junction thickness:</OptionDiv>
-        <OptionDiv>
-          <select value={sjOptions.thicknessBasedOn} onChange={(e) => updateSjOptions({ thicknessBasedOn: e.target.value })}>
-            <option value="numUniqueReads"># uniquely-mapped reads</option>
-            <option value="numReads"># total reads</option>
-            <option value="isAnnotatedJunction">is known junction</option>
-            <option value="numSamplesWithThisJunction"># samples with this junction</option>
-          </select>
-        </OptionDiv>
-      </OptionBox>
-      <OptionBox>
-        <OptionDiv>Junction bounce height:</OptionDiv>
-        <OptionDiv>
-          <select value={sjOptions.bounceHeightBasedOn} onChange={(e) => updateSjOptions({ bounceHeightBasedOn: e.target.value })}>
-            <option value="random">random</option>
-            <option value="distance">distance</option>
-            <option value="thickness">thickness</option>
-          </select>
-        </OptionDiv>
-      </OptionBox>
       <CategoryH3>Junctions Track Filters</CategoryH3><br />
       <OptionBox>
         <OptionDiv>
@@ -252,6 +195,63 @@ const SpliceJunctionsOptionsPanel = ({ sjOptions, updateSjOptions }) => {
         </div>
         <OptionInputDiv>Track height: <OptionInput key={`track-height-${sjOptions.trackHeight}`} type="text" defaultValue={sjOptions.trackHeight} onKeyUp={(e) => handleTextInput(e, 'trackHeight', parseInt(e.target.value, 10))} /> px</OptionInputDiv>
         <OptionInputDiv><Button compact size="small" onClick={handleApplyButton}>Apply</Button></OptionInputDiv>
+      </OptionBox>
+      <CategoryH3>Junctions Track <br />Options</CategoryH3><br />
+      <OptionBox>
+        <OptionDiv>Color by:</OptionDiv>
+        <OptionDiv>
+          <select value={sjOptions.colorBy} onChange={(e) => updateSjOptions({ colorBy: e.target.value })}>
+            <option value="strand">strand</option>
+            <option value="motif">donor/acceptor motif</option>
+            <option value="numUniqueReads"># uniquely-mapped reads</option>
+            <option value="numReads"># total reads</option>
+            <option value="isAnnotatedJunction">is known junction</option>
+          </select>
+          <ColorByLegend sjOptions={sjOptions} handleTextInput={handleTextInput} />
+        </OptionDiv>
+      </OptionBox>
+      <OptionBox>
+        <OptionDiv>Junction label #1:</OptionDiv>
+        <OptionDiv>
+          <StyledRadio label="# uniquely-mapped" name="junctionLabelButton" checked={sjOptions.labelWith === 'uniqueReadCount'} onChange={(e, data) => data.checked && updateSjOptions({ labelWith: 'uniqueReadCount' })} />
+          <StyledRadio label="# total reads" name="junctionLabelButton" checked={sjOptions.labelWith === 'totalReadCount'} onChange={(e, data) => data.checked && updateSjOptions({ labelWith: 'totalReadCount' })} />
+          <StyledRadio label="# samples with junction" name="junctionLabelButton" checked={sjOptions.labelWith === 'numSamplesWithThisJunction'} onChange={(e, data) => data.checked && updateSjOptions({ labelWith: 'numSamplesWithThisJunction' })} />
+          <StyledRadio label="% samples with junction" name="junctionLabelButton" checked={sjOptions.labelWith === 'percentSamplesWithThisJunction'} onChange={(e, data) => data.checked && updateSjOptions({ labelWith: 'percentSamplesWithThisJunction' })} />
+          <StyledRadio label="motif" name="junctionLabelButton" checked={sjOptions.labelWith === 'motif'} onChange={(e, data) => data.checked && updateSjOptions({ labelWith: 'motif' })} />
+        </OptionDiv>
+      </OptionBox>
+      <OptionBox>
+        <OptionDiv>Junction label #2:</OptionDiv>
+        <OptionDiv>
+          <StyledRadio label="none" name="junctionLabel2Button" checked={!sjOptions.labelWithInParen} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: null })} />
+          <StyledRadio label="# uniquely-mapped" name="junctionLabel2Button" checked={sjOptions.labelWithInParen === 'uniqueReadCount'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'uniqueReadCount' })} />
+          <StyledRadio label="# total reads" name="junctionLabel2Button" checked={sjOptions.labelWithInParen === 'totalReadCount'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'totalReadCount' })} />
+          <StyledRadio label="# multi-mapped" name="junctionLabel2Button" checked={sjOptions.labelWithInParen === 'multiMappedReadCount'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'multiMappedReadCount' })} />
+          <StyledRadio label="# samples with junction" name="junctionLabel2Button" checked={sjOptions.labelWithInParen === 'numSamplesWithThisJunction'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'numSamplesWithThisJunction' })} />
+          <StyledRadio label="% samples with junction" name="junctionLabel2Button" checked={sjOptions.labelWithInParen === 'percentSamplesWithThisJunction'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'percentSamplesWithThisJunction' })} />
+          <StyledRadio label="motif" name="junctionLabel2Button" checked={sjOptions.labelWithInParen === 'motif'} onChange={(e, data) => data.checked && updateSjOptions({ labelWithInParen: 'motif' })} />
+        </OptionDiv>
+      </OptionBox>
+      <OptionBox>
+        <OptionDiv>Junction thickness:</OptionDiv>
+        <OptionDiv>
+          <select value={sjOptions.thicknessBasedOn} onChange={(e) => updateSjOptions({ thicknessBasedOn: e.target.value })}>
+            <option value="numUniqueReads"># uniquely-mapped reads</option>
+            <option value="numReads"># total reads</option>
+            <option value="isAnnotatedJunction">is known junction</option>
+            <option value="numSamplesWithThisJunction"># samples with this junction</option>
+          </select>
+        </OptionDiv>
+      </OptionBox>
+      <OptionBox>
+        <OptionDiv>Junction bounce height:</OptionDiv>
+        <OptionDiv>
+          <select value={sjOptions.bounceHeightBasedOn} onChange={(e) => updateSjOptions({ bounceHeightBasedOn: e.target.value })}>
+            <option value="random">random</option>
+            <option value="distance">distance</option>
+            <option value="thickness">thickness</option>
+          </select>
+        </OptionDiv>
       </OptionBox>
     </div>)
 }

@@ -31,10 +31,10 @@ class RightSideBar extends React.PureComponent
           setLocusList={setLocusList}
         />
 
-        {enabledDataTypes.includes('alignment') && <BamOptionsPanel />}
-        {enabledDataTypes.includes('vcf') && <VcfOptionsPanel />}
         {enabledDataTypes.includes('junctions') && <SpliceJunctionsOptionsPanel />}
         {enabledDataTypes.includes('gcnv_bed') && <GcnvOptionsPanel />}
+        {enabledDataTypes.includes('alignment') && <BamOptionsPanel />}
+        {enabledDataTypes.includes('vcf') && <VcfOptionsPanel />}
       </div>)
   }
 }
