@@ -28,7 +28,7 @@ export const DEFAULT_STATE = {
     thicknessBasedOn: 'numUniqueReads', //options: numUniqueReads (default), numReads, isAnnotatedJunction
     bounceHeightBasedOn: 'random', //options: random (default), distance, thickness
     labelWith: 'uniqueReadCount',
-    labelWithInParen: 'multiMappedReadCount',
+    //labelWithInParen: 'multiMappedReadCount',
   },
   vcfOptions: {
     displayMode: 'EXPANDED',
