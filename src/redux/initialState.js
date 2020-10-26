@@ -45,7 +45,7 @@ export const DEFAULT_STATE = {
     autoscale: false,
     onlyHandleClicksForHighlightedSamples: true,
   },
-  initialSettingsUrl: '',
+  initialSettingsUrl: 'https://github.com/macarthur-lab/rnaseq-methods/blob/master/pipelines/tgg_viewer/configs/default.json',
 }
 
 
