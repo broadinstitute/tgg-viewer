@@ -1,6 +1,9 @@
 /* eslint-disable eqeqeq */
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/no-unused-prop-types */
+/* eslint-disable radix */
+/* eslint-disable prefer-template */
+/* eslint-disable no-else-return */
 
 import _ from 'lodash'
 import React from 'react'
@@ -28,6 +31,109 @@ const IGV_SETTINGS = {
   showCenterGuide: true,
   showCursorTrackingGuide: true,
   showCommandBar: true,
+}
+
+
+/**
+ * Use a custom popupData function for the spliceJunction track
+ */
+function popupData(clickState, features) {
+
+  if (!features) features = this.clickedFeatures(clickState)
+
+  const data = []
+  let featureData = []
+  features.forEach((feature) => {
+
+    if (this.config.type === 'spliceJunctions') {
+      if (!feature.isVisible || !feature.attributes) {
+        return
+      }
+      featureData.push('<hr />')
+      featureData.push(
+        { name: `<b>${feature.chr}:${feature.start}-${feature.end} (${feature.strand} strand)</b>`, value: ' ' })
+
+      if (feature.attributes.annotated_junction) {
+        if (feature.attributes.annotated_junction === 'true') {
+          featureData.push({ name: 'Known Junction', value: '' })
+        } else {
+          featureData.push({ name: 'Novel Junction', value: '' })
+        }
+      }
+      featureData.push('<hr />')
+
+      featureData.push(
+        { name: (feature.end - feature.start).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','), value: 'bp length' })
+
+      if (feature.attributes.uniquely_mapped) {
+        featureData.push(
+          { name: feature.attributes.uniquely_mapped, value: 'uniquely mapped reads' })
+      }
+      if (feature.attributes.multi_mapped) {
+        featureData.push(
+          { name: feature.attributes.multi_mapped, value: 'multi-mapped reads' })
+      }
+      if (feature.attributes.uniquely_mapped && feature.attributes.multi_mapped) {
+        featureData.push(
+          { name: parseInt(feature.attributes.uniquely_mapped) + parseInt(feature.attributes.multi_mapped), value: 'total reads' })
+      }
+      if (feature.attributes.maximum_spliced_alignment_overhang) {
+        featureData.push({ name: feature.attributes.maximum_spliced_alignment_overhang, value: 'bp maximum overhang' })
+      }
+
+      if (feature.attributes.num_samples_with_this_junction) {
+        featureData.push({
+          name: feature.attributes.num_samples_with_this_junction,
+          value: (feature.attributes.num_samples_total ? `out of ${feature.attributes.num_samples_total} ` : '') + 'samples have this junction',
+        })
+        if (feature.attributes.percent_samples_with_this_junction) {
+          featureData.push({ name: feature.attributes.percent_samples_with_this_junction.toFixed(1), value: '% of samples have this junction' })
+        }
+
+      }
+      if (feature.attributes.info) {
+        featureData.push({ name: ' ', value: feature.attributes.info.replace('_', ' ') })
+      }
+
+      //add any other keys not already processed above
+      Object.keys(feature.attributes).filter((key) => ![
+        'line_width', 'color', 'left_shape', 'right_shape', 'info',
+        'annotated_junction', 'uniquely_mapped', 'multi_mapped', 'maximum_spliced_alignment_overhang',
+        'num_samples_with_this_junction', 'percent_samples_with_this_junction', 'num_samples_total',
+      ].includes(key)).forEach((key) => {
+        featureData.push({ name: key.replace(/_/g, ' '), value: feature.attributes[key].replace(/_/g, ' ') })
+      })
+
+      featureData = featureData.map((fd) => {
+        if (fd.name && fd.value) {
+          return { name: `<b>${fd.name}</b>`, value: fd.value }
+        } else {
+          return fd
+        }
+      })
+    }
+
+    if (featureData) {
+      if (data.length > 0) {
+        data.push('<HR>')
+      }
+
+      Array.prototype.push.apply(data, featureData)
+    }
+  })
+
+  return data
+}
+
+
+const monkeyPatchPopupData = (track) => {
+  if (track.type === 'spliceJunctions') {
+    track.popupData = popupData
+  } else if (track.type === 'merged') {
+    track.tracks.filter((subTrack) => subTrack.type === 'spliceJunctions').forEach((subTrack) => {
+      subTrack.popupData = popupData
+    })
+  }
 }
 
 
@@ -72,6 +178,8 @@ class IGV extends React.Component {
     igv.createBrowser(this.container, igvBrowserOptions).then((browser) => {
       this.browser = browser
       window.igvBrowser = browser //for debugging
+
+      browser.trackViews.forEach((trackView) => { monkeyPatchPopupData(trackView.track) })
 
       if (locusChangedHandler) {
         this.browser.on('locuschange', throttle(300, locusChangedHandler))
@@ -154,8 +262,7 @@ class IGV extends React.Component {
             console.warn('Unable to remove track', track.name, e)
           }
           if (!this.getIgvTrackView(track)) { // double-check that the track isn't already loaded
-            //console.log('calling this.browser.loadTrack for', track.name)
-            this.browser.loadTrack(nextTrack)
+            this.browser.loadTrack(nextTrack).then(monkeyPatchPopupData)
           }
         }
 
@@ -180,7 +287,7 @@ class IGV extends React.Component {
       try {
         if (!this.getIgvTrackView(track)) { // double-check that the track isn't already loaded
           console.log('Loading new track', track.name)
-          this.browser.loadTrack(track)
+          this.browser.loadTrack(track).then(monkeyPatchPopupData)
         }
       } catch (e) {
         console.warn('Unable to add track', track.name, e)

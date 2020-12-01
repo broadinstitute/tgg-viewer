@@ -15,7 +15,7 @@ const SIDE_BAR_WIDTH = 210
 
 const SideBarColumn = styled(Grid.Column)`
   min-width: ${SIDE_BAR_WIDTH}px !important;
-  z-index: 2;
+  z-index: 0;
 `
 
 const MiddleColumn = styled(Grid.Column)`
