@@ -127,6 +127,11 @@ function popupData(clickState, features) {
 
 
 const monkeyPatchPopupData = (track) => {
+  if (!track) {
+    console.warn('monkeyPatchPopupData: track arg is undefined')
+    return
+  }
+
   if (track.type === 'spliceJunctions') {
     track.popupData = popupData
   } else if (track.type === 'merged') {
