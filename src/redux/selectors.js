@@ -224,6 +224,7 @@ export const getTracks = createSelector(
             format: data.type,
             name: `${row.name} ${data.label || ''}`,
             url: data.url,
+            oauthToken: getGoogleAccessToken,
             indexURL: data.indexURL || `${data.url}.tbi`,
             height: 100,
           })
