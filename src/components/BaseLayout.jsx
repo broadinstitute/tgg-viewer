@@ -13,7 +13,12 @@ const StyledDiv = styled.div`
 
 const SIDE_BAR_WIDTH = 210
 
-const SideBarColumn = styled(Grid.Column)`
+const LeftSideBarColumn = styled(Grid.Column)`
+  min-width: ${SIDE_BAR_WIDTH}px !important;
+  z-index: 2;
+`
+
+const RightSideBarColumn = styled(Grid.Column)`
   min-width: ${SIDE_BAR_WIDTH}px !important;
   z-index: 0;
 `
@@ -27,13 +32,13 @@ export default () => (
   <StyledDiv>
     <Grid>
       <Grid.Row>
-        <SideBarColumn><LeftSideBar /></SideBarColumn>
+        <LeftSideBarColumn><LeftSideBar /></LeftSideBarColumn>
         <MiddleColumn>
           <Header />
           <LoginAndShowIGV />
           <InitialSettingsForm />
         </MiddleColumn>
-        <SideBarColumn><RightSideBar /></SideBarColumn>
+        <RightSideBarColumn><RightSideBar /></RightSideBarColumn>
       </Grid.Row>
     </Grid>
   </StyledDiv>
