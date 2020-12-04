@@ -41,7 +41,6 @@ function popupData(clickState, features) {
 
   if (!features) features = this.clickedFeatures(clickState)
 
-  const data = []
   let featureData = []
   features.forEach((feature) => {
 
@@ -112,17 +111,9 @@ function popupData(clickState, features) {
         }
       })
     }
-
-    if (featureData) {
-      if (data.length > 0) {
-        data.push('<HR>')
-      }
-
-      Array.prototype.push.apply(data, featureData)
-    }
   })
 
-  return data
+  return featureData
 }
 
 
