@@ -44,6 +44,9 @@ function popupData(clickState, features) {
   let featureData = []
   features.forEach((feature) => {
 
+    if (feature.end < clickState.genomicLocation || feature.start > clickState.genomicLocation) {
+      return
+    }
     if (this.config.type === 'spliceJunctions') {
       if (!feature.isVisible || !feature.attributes) {
         return
