@@ -253,16 +253,9 @@ class IGV extends React.Component {
       if (nextTrack) {
         if (this.shouldTrackBeReloaded(track, this.props, nextProps))
         {
+          const trackView = this.getIgvTrackView(track)
           console.log('Reloading track', track.name)
-          this.ignoreNextTrackRemovedEvent = true
-          try {
-            this.browser.removeTrackByName(track.name)
-          } catch (e) {
-            console.warn('Unable to remove track', track.name, e)
-          }
-          if (!this.getIgvTrackView(track)) { // double-check that the track isn't already loaded
-            this.browser.loadTrack(nextTrack).then(monkeyPatchPopupData)
-          }
+          trackView.track.updateConfig(nextTrack, true)
         }
 
         // delete track from nextTrackByTrackName to indicate that it's still selected
