@@ -143,7 +143,9 @@ class IGV extends React.Component {
 
     this.container = null
     this.browser = null
+    this.ignoreNextLocusChangedEvent = false
     this.ignoreNextTrackRemovedEvent = false
+    this.ignoreNextTrackPropsAfterOrderChangedEvent = false
   }
 
   setContainerElement = (element) => {
@@ -164,6 +166,7 @@ class IGV extends React.Component {
       tracks,
       locusChangedHandler,
       trackRemovedHandler,
+      trackOrderChangedHandler,
     } = this.props
 
     const igvBrowserOptions = {
@@ -181,7 +184,12 @@ class IGV extends React.Component {
       browser.trackViews.forEach((trackView) => { monkeyPatchPopupData(trackView.track) })
 
       if (locusChangedHandler) {
-        this.browser.on('locuschange', throttle(300, locusChangedHandler))
+        this.browser.on('locuschange', throttle(300, (event) => {
+          if (!this.ignoreNextLocusChangedEvent) {
+            locusChangedHandler(event)
+          }
+          this.ignoreNextLocusChangedEvent = false
+        }))
       }
 
       if (trackRemovedHandler) {
@@ -190,6 +198,13 @@ class IGV extends React.Component {
             trackRemovedHandler(track.config.categoryName, track.config.rowName)
           }
           this.ignoreNextTrackRemovedEvent = false
+        })
+      }
+
+      if (trackOrderChangedHandler) {
+        this.browser.on('trackorderchanged', (trackNameToTrackOrderDict) => {
+          this.ignoreNextTrackPropsAfterOrderChangedEvent = true
+          trackOrderChangedHandler(trackNameToTrackOrderDict)
         })
       }
     })
@@ -221,11 +236,15 @@ class IGV extends React.Component {
         ((selectedSamplesByCategoryNameAndRowName[track.categoryName] || {}).sampleSettings || {})[track.rowName])
     )
 
-    return junctionTrackDisplaySettingsChanged
+    const result = junctionTrackDisplaySettingsChanged
       || vcfTrackDisplaySettingsChanged
       || alignmentTrackDisplaySettingsChanged
       || gcnvTrackDisplaySettingsChanged
       || gcnvTrackHighlightedSamplesChanged
+
+    console.log('Should track', track.name, track.order, 'be reloaded? ', result)
+
+    return result
   }
 
   getTrackId = (track) => `${track.url}|${track.categoryName}|${track.rowName}`
@@ -242,39 +261,45 @@ class IGV extends React.Component {
   }
 
   reloadRemoveAndAddTracks = (nextProps) => {
-
-    const nextTrackByTrackName = nextProps.tracks.reduce((acc, track) => {
-      return { [track.name]: track, ...acc }
+    if (this.ignoreNextTrackPropsAfterOrderChangedEvent) {
+      this.ignoreNextTrackPropsAfterOrderChangedEvent = false
+      return
+    }
+    const nextTrackByTrackNameAndType = nextProps.tracks.reduce((acc, track) => {
+      return { [`${track.name}|${track.type}`]: track, ...acc }
     }, {})
 
     // reload or remove existing tracks
-    this.props.tracks.forEach((track) => {
-      const nextTrack = nextTrackByTrackName[track.name]
-      if (nextTrack) {
-        if (this.shouldTrackBeReloaded(track, this.props, nextProps))
-        {
-          const trackView = this.getIgvTrackView(track)
-          console.log('Reloading track', track.name)
-          trackView.track.updateConfig(nextTrack, true)
+    if (this.props.tracks) {
+      this.props.tracks.forEach(async (track) => {
+        const nextTrack = nextTrackByTrackNameAndType[`${track.name}|${track.type}`]
+        if (nextTrack) {
+          if (this.shouldTrackBeReloaded(track, this.props, nextProps)) {
+            const trackView = this.getIgvTrackView(track)
+            console.log('Reloading track', track.name, nextTrack)
+            trackView.track.updateConfig(nextTrack)
+            await trackView.track.postInit()
+            //await trackView.updateViews(true)
+            trackView.repaintViews()
+          }
+
+          // delete track from nextTrackByTrackNameAndType to indicate that it's still selected
+          delete nextTrackByTrackNameAndType[`${track.name}|${track.type}`]
+
+        } else {
+          // remove track that was de-selected
+          try {
+            console.log('Removing track', track.name)
+            this.ignoreNextTrackRemovedEvent = true
+            this.browser.removeTrackByName(track.name)
+          } catch (e) {
+            console.warn('Unable to remove track', track.name, e)
+          }
         }
-
-        // delete track from nextTrackByTrackName to indicate that it's still selected
-        delete nextTrackByTrackName[track.name]
-
-      } else {
-        // remove track that was de-selected
-        try {
-          console.log('Removing track', track.name)
-          this.ignoreNextTrackRemovedEvent = true
-          this.browser.removeTrackByName(track.name)
-        } catch (e) {
-          console.warn('Unable to remove track', track.name, e)
-        }
-      }
-    })
-
+      })
+    }
     // load any newly-selected track(s)
-    const remainingTracks = Object.values(nextTrackByTrackName)
+    const remainingTracks = Object.values(nextTrackByTrackNameAndType)
     remainingTracks.forEach((track) => {
       try {
         if (!this.getIgvTrackView(track)) { // double-check that the track isn't already loaded
@@ -297,6 +322,7 @@ class IGV extends React.Component {
     const currentIGVLocus = this.browser.$searchInput.val()
     const nextIGVLocus = nextProps.locus
     if (nextProps.locus && (!currentIGVLocus || nextIGVLocus.replace(/,/g, '') !== currentIGVLocus.replace(/,/g, ''))) {
+      this.ignoreNextLocusChangedEvent = true
       this.browser.search(nextIGVLocus)
     }
 
@@ -314,6 +340,7 @@ IGV.propTypes = {
   enabledDataTypes: PropTypes.array.isRequired,
   locusChangedHandler: PropTypes.func,
   trackRemovedHandler: PropTypes.func,
+  trackOrderChangedHandler: PropTypes.func,
   sjOptions: PropTypes.object,
   vcfOptions: PropTypes.object,
   bamOptions: PropTypes.object,
@@ -336,7 +363,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   locusChangedHandler: (event) => {
     const newLocus = event.label.replace(/,/g, '')
-
+    //console.log('Locus changed handler', event.label, newLocus, event)
     dispatch({
       type: 'UPDATE_LOCUS',
       newValue: newLocus,
@@ -348,6 +375,23 @@ const mapDispatchToProps = (dispatch) => ({
       type: 'REMOVE_SELECTED_ROW_NAMES',
       categoryName,
       selectedRowNames: [trackName],
+    })
+  },
+
+  trackOrderChangedHandler: (trackNameToTrackOrderDict) => {
+    const rowNames = Object.keys(trackNameToTrackOrderDict)
+    rowNames.sort((a, b) => {
+      if (trackNameToTrackOrderDict[a] < trackNameToTrackOrderDict[b]) {
+        return -1
+      } else if (trackNameToTrackOrderDict[a] > trackNameToTrackOrderDict[b]) {
+        return 1
+      }
+      return 0
+    })
+    console.info('dispatch UPDATE_TRACK_ORDER', rowNames)
+    dispatch({
+      type: 'UPDATE_TRACK_ORDER',
+      newValue: rowNames,
     })
   },
 })

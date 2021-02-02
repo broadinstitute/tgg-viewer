@@ -35,6 +35,11 @@ const rowsInCategoriesReducer = (state, action) => {
         updatedRows = [...category.rows, ...action.rows.filter((row) => !existingNames.includes(row.name))]
         break
       }
+      case 'TRACK_ORDER_CHANGED': {
+        console.warn('category', category)
+        console.warn(action.trackNameToTrackOrderDict)
+        break
+      }
       default:
         updatedRows = category.rows
     }
@@ -169,6 +174,7 @@ const otherReducers = combineReducers(Object.assign({
   rowsInCategories: rowsInCategoriesReducer,
   selectedRowNamesByCategoryName: selectedRowNamesByCategoryNameReducer,
   selectedSamplesByCategoryNameAndRowName: selectedSamplesByCategoryNameAndRowNameReducer,
+  trackOrder: createSingleValueReducer('UPDATE_TRACK_ORDER', []),
   sjOptions: createSingleObjectReducer('UPDATE_SJ_OPTIONS'),
   vcfOptions: createSingleObjectReducer('UPDATE_VCF_OPTIONS'),
   bamOptions: createSingleObjectReducer('UPDATE_BAM_OPTIONS'),

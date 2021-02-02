@@ -13,8 +13,8 @@ export const getGenome = (state) => state.genome
 export const getDataTypesToShow = (state) => state.dataTypesToShow
 export const getRowsInCategories = (state) => state.rowsInCategories
 export const getSelectedRowNamesByCategoryName = (state) => state.selectedRowNamesByCategoryName
-
 export const getSelectedSamplesByCategoryNameAndRowName = (state) => state.selectedSamplesByCategoryNameAndRowName
+export const getTrackOrder = (state) => state.trackOrder
 export const getSjOptions = (state) => state.sjOptions
 export const getVcfOptions = (state) => state.vcfOptions
 export const getBamOptions = (state) => state.bamOptions
@@ -90,6 +90,7 @@ export const getSelectedRowsByCategoryName = createSelector(
 export const getTracks = createSelector(
   getSelectedRowsByCategoryName,
   getSelectedSamplesByCategoryNameAndRowName,
+  getTrackOrder,
   getEnabledDataTypes,
   getSjOptions,
   getVcfOptions,
@@ -98,6 +99,7 @@ export const getTracks = createSelector(
   (
     selectedRowsByCategoryName,
     selectedSamplesByCategoryNameAndRowName,
+    trackOrderArray,
     enabledDataTypes,
     sjOptions,
     vcfOptions,
@@ -116,14 +118,24 @@ export const getTracks = createSelector(
           return
         }
 
+        const computeTrackOrder = (trackName) => {
+          let trackOrder = 50000 + trackOrderArray.indexOf(trackName) //add category as prefix to trackOrder strings?
+          if (trackOrder === -1) {
+            trackOrder = i * 100 + j
+          }
+          return trackOrder
+        }
+
         if (data.type === 'gcnv_bed') { // && vcfOptions.showGcnv
           //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
-          console.log(`Adding ${data.url} track #`)
+          const trackName = `${row.name} ${data.label || ''}`
+          const trackOrder = computeTrackOrder(trackName)
+          console.log(`Adding ${trackName} (${data.url}) track: order ${trackOrder}`)
 
           igvTracks.push({
             type: 'gcnv',
             format: 'gcnv',
-            name: `${row.name} ${data.label || ''}`,
+            name: trackName,
             url: data.url,
             indexURL: data.indexURL || `${data.url}.tbi`,
             height: gcnvOptions.trackHeight,
@@ -137,7 +149,7 @@ export const getTracks = createSelector(
               }, {}),
             onlyHandleClicksForHighlightedSamples: gcnvOptions.onlyHandleClicksForHighlightedSamples,
             oauthToken: getGoogleAccessToken,
-            order: i * 100 + j,
+            order: trackOrder,
             rowName: row.name,
             categoryName: categoryName,
           })
@@ -154,8 +166,8 @@ export const getTracks = createSelector(
             url: data.url,
             indexURL: data.indexURL || `${data.url}.tbi`,
             oauthToken: getGoogleAccessToken,
-            order: i * 10,
             name: row.name,
+            order: computeTrackOrder(row.name),
             height: sjOptions.trackHeight,
             minUniquelyMappedReads: sjOptions.minUniquelyMappedReads,
             minTotalReads: sjOptions.minTotalReads,
@@ -192,8 +204,8 @@ export const getTracks = createSelector(
             url: data.url,
             oauthToken: getGoogleAccessToken,
             name: row.name,
+            order: computeTrackOrder(row.name),
             height: sjOptions.trackHeight,
-            order: i * 10 + j,
             rowName: row.name,
             categoryName: categoryName,
           }
@@ -217,12 +229,15 @@ export const getTracks = createSelector(
         }
         else if (['bed', 'gff3', 'gtf', 'genePred', 'genePredExt', 'peaks', 'narrowPeak', 'broadPeak', 'bigBed', 'bedpe'].includes(data.type)) {
           //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
-          console.log(`Adding ${data.url} ${data.type} track`)
+          const trackName = `${row.name} ${data.label || ''}`
+          const trackOrder = computeTrackOrder(trackName)
+          console.log(`Adding ${trackName} (${data.url}) ${data.type} track: order ${trackOrder}`)
 
           igvTracks.push({
             type: 'annotation',
             format: data.type,
-            name: `${row.name} ${data.label || ''}`,
+            name: trackName,
+            order: trackOrder,
             url: data.url,
             oauthToken: getGoogleAccessToken,
             indexURL: data.indexURL || `${data.url}.tbi`,
@@ -231,7 +246,9 @@ export const getTracks = createSelector(
         }
         else if ((data.type === 'vcf' || data.url.includes('.vcf')) && enabledDataTypes.includes('vcf')) {
           //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
-          console.log(`Adding ${data.url} track #`)
+          const trackName = `${row.name} ${data.label || 'vcf'}`
+          const trackOrder = computeTrackOrder(trackName)
+          console.log(`Adding ${trackName} (${data.url}) track: order ${trackOrder}`)
 
           igvTracks.push({
             type: 'variant',
@@ -239,30 +256,32 @@ export const getTracks = createSelector(
             url: data.url,
             indexURL: data.indexURL || `${data.url}.tbi`,
             indexed: true,
-            name: `${row.name} ${data.label || 'vcf'}`,
+            name: trackName,
+            order: trackOrder,
             displayMode: vcfOptions.displayMode,
             oauthToken: getGoogleAccessToken,
-            order: i * 100 + j,
             rowName: row.name,
             categoryName: categoryName,
           })
         }
         else if (data.type === 'alignment' || data.url.includes('.bam') || data.url.includes('.cram')) {
           //docs @ https://github.com/igvteam/igv.js/wiki/Alignment-Track
-          console.log(`Adding ${data.url} track #`)
+          const trackName = `${row.name} ${data.label || 'bam'}`
+          const trackOrder = computeTrackOrder(trackName)
+          console.log(`Adding ${trackName} (${data.url}) track: order ${trackOrder}`)
 
           igvTracks.push({
             type: 'alignment',
             url: data.url,
             indexURL: data.indexURL || (`${data.url}`.endsWith('cram') ? `${data.url}.crai` : `${data.url}`.endsWith('bam') ? `${data.url}.bai` : null),
             indexed: true,
-            name: `${row.name} ${data.label || 'bam'}`,
+            name: trackName,
+            order: trackOrder,
             height: bamOptions.trackHeight,
             colorBy: bamOptions.colorBy,
             viewAsPairs: bamOptions.viewAsPairs,
             showSoftClips: bamOptions.showSoftClips,
             oauthToken: getGoogleAccessToken,
-            order: i * 100 + j,
             rowName: row.name,
             categoryName: categoryName,
           })
@@ -270,27 +289,35 @@ export const getTracks = createSelector(
       })
 
       if (coverageTrack && junctionsTrack) {
-        console.log(`Adding ${junctionsTrack.url} & ${coverageTrack.url} track`)
+        console.log(`Adding ${junctionsTrack.name} (${junctionsTrack.url} & ${coverageTrack.url}) track: order ${junctionsTrack.order}`)
         igvTracks.push({
           type: 'merged',
           name: junctionsTrack.name,
+          order: junctionsTrack.order,
           height: sjOptions.trackHeight,
           tracks: [coverageTrack, junctionsTrack],
-          order: i * 10 + 2,
           rowName: row.name,
           categoryName: categoryName,
         })
       } else if (junctionsTrack) {
-        console.log(`Adding ${junctionsTrack.url} track`)
+        console.log(`Adding ${junctionsTrack.name} (${junctionsTrack.url}) track: order ${junctionsTrack.order}`)
         igvTracks.push(junctionsTrack)
       } else if (coverageTrack) {
-        console.log(`Adding ${coverageTrack.url} track`)
+        console.log(`Adding ${coverageTrack.name} (${coverageTrack.url}) track: order ${coverageTrack.order}`)
         igvTracks.push(coverageTrack)
       }
     }))
 
+    // add gencode genes
+    const gencodeGeneTrackName = 'Gencode v32 Genes'
+
+    let gencodeGeneTrackOrder = 50000 + trackOrderArray.indexOf(gencodeGeneTrackName)
+    if (gencodeGeneTrackOrder === -1) {
+      gencodeGeneTrackOrder = 1000001
+    }
+
     igvTracks.push({
-      name: 'Gencode v32 Genes',
+      name: gencodeGeneTrackName,
       format: 'refgene',
       url: 'gs://tgg-viewer/ref/GRCh38/gencode_v32/gencode_v32_knownGene.sorted.txt.gz',
       indexURL: 'gs://tgg-viewer/ref/GRCh38/gencode_v32/gencode_v32_knownGene.sorted.txt.gz.tbi',
@@ -299,7 +326,7 @@ export const getTracks = createSelector(
       height: 350,
       visibilityWindow: -1,
       displayMode: 'EXPANDED',
-      order: 1000001,
+      order: gencodeGeneTrackOrder,
       color: 'rgb(76,171,225)',
       oauthToken: getGoogleAccessToken,
     })

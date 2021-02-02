@@ -69,6 +69,7 @@ export const getStateFromLocalStorage = () => {
 const KEYS_TO_PERSIST_IN_URL = {
   locus: 'locus',
   dataTypesToShow: 'show',
+  trackOrder: 'order',
   selectedRowNamesByCategoryName: 'selectedRows',
   selectedSamplesByCategoryNameAndRowName: 'selectedSamples',
   sjOptions: 'sjOptions',
