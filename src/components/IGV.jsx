@@ -242,7 +242,7 @@ class IGV extends React.Component {
       || gcnvTrackDisplaySettingsChanged
       || gcnvTrackHighlightedSamplesChanged
 
-    console.log('Should track', track.name, track.order, 'be reloaded? ', result)
+    //console.log('Should track', track.name, track.order, 'be reloaded? ', result)
 
     return result
   }
@@ -388,7 +388,6 @@ const mapDispatchToProps = (dispatch) => ({
       }
       return 0
     })
-    console.info('dispatch UPDATE_TRACK_ORDER', rowNames)
     dispatch({
       type: 'UPDATE_TRACK_ORDER',
       newValue: rowNames,

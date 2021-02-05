@@ -119,9 +119,11 @@ export const getTracks = createSelector(
         }
 
         const computeTrackOrder = (trackName) => {
-          let trackOrder = 50000 + trackOrderArray.indexOf(trackName) //add category as prefix to trackOrder strings?
-          if (trackOrder === -1) {
-            trackOrder = i * 100 + j
+          let trackOrder = trackOrderArray.indexOf(trackName) //add category as prefix to trackOrder strings?
+          if (trackOrder !== -1) {
+            trackOrder += 50000
+          } else {
+            trackOrder = i * 100 + j //default track order
           }
           return trackOrder
         }
@@ -311,8 +313,10 @@ export const getTracks = createSelector(
     // add gencode genes
     const gencodeGeneTrackName = 'Gencode v32 Genes'
 
-    let gencodeGeneTrackOrder = 50000 + trackOrderArray.indexOf(gencodeGeneTrackName)
-    if (gencodeGeneTrackOrder === -1) {
+    let gencodeGeneTrackOrder = trackOrderArray.indexOf(gencodeGeneTrackName)
+    if (gencodeGeneTrackOrder !== -1) {
+      gencodeGeneTrackOrder += 50000
+    } else {
       gencodeGeneTrackOrder = 1000001
     }
 
