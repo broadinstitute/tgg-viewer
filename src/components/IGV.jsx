@@ -202,9 +202,9 @@ class IGV extends React.Component {
       }
 
       if (trackOrderChangedHandler) {
-        this.browser.on('trackorderchanged', (trackNameToTrackOrderDict) => {
+        this.browser.on('trackorderchanged', (trackNamesInOrder) => {
           this.ignoreNextTrackPropsAfterOrderChangedEvent = true
-          trackOrderChangedHandler(trackNameToTrackOrderDict)
+          trackOrderChangedHandler(trackNamesInOrder)
         })
       }
     })
@@ -378,19 +378,10 @@ const mapDispatchToProps = (dispatch) => ({
     })
   },
 
-  trackOrderChangedHandler: (trackNameToTrackOrderDict) => {
-    const rowNames = Object.keys(trackNameToTrackOrderDict)
-    rowNames.sort((a, b) => {
-      if (trackNameToTrackOrderDict[a] < trackNameToTrackOrderDict[b]) {
-        return -1
-      } else if (trackNameToTrackOrderDict[a] > trackNameToTrackOrderDict[b]) {
-        return 1
-      }
-      return 0
-    })
+  trackOrderChangedHandler: (trackNames) => {
     dispatch({
       type: 'UPDATE_TRACK_ORDER',
-      newValue: rowNames,
+      newValue: trackNames,
     })
   },
 })
