@@ -8,7 +8,9 @@ https://genome.ucsc.edu/cgi-bin/hgTables?hgsid=1032679709_0cw5CSR3uTIvedjA0A6B8W
 ### Segmental Duplications
 
 https://genome.ucsc.edu/cgi-bin/hgTables?hgsid=1032679709_0cw5CSR3uTIvedjA0A6B8WuAmDXj&clade=mammal&org=Human&db=hg38&hgta_group=rep&hgta_track=genomicSuperDups&hgta_table=0&hgta_regionType=genome&position=chrX%3A15%2C560%2C138-15%2C602%2C945&hgta_outputType=primaryTable&hgta_outFileName=hg38_genomicSuperDups.txt
+(download all fields from selected table)
 
+Then run 
 
 ### ClinGen:
 
