@@ -56,7 +56,7 @@ prefix=segdups
 echo Processing $inputFile which has $(cat $inputFile | wc -l) rows ...
 
 cat $inputFile  | grep -v _random | grep -v chrUn_ | grep -v chrom | awk -F $'\t' 'BEGIN {OFS=FS} { 
-    print $2, ".", "SegDup", ($3 + 1), $4, ".", $7, ".", "Name " $5 "; Locus " $2 ":" ($3 + 1) "-" $4 "; Size " ($4 - $3) " bp; SequenceSimilarity " $27 "; color " ($27 > 0.99 ? "#E78200": ($27 > 0.98 ? "#D1C800" : "#AAAAAA")) "; "
+    print $2, ".", "SegDup", ($3 + 1), $4, ".", $7, ".", "Name " $2 ":" ($3 + 1) "-" $4 "; Locus " $2 ":" ($3 + 1) "-" $4 "; Size " ($4 - $3) " bp; OtherLocus " $8 ":" ($9 + 1) "-" $10 "; SequenceSimilarity " $27 "; AlignedBases " $22 "; MatchingBases " $23 "; MismatchedBases " $24 "; NumIndels " $20 "; IndelBases " $63 "; color " ($27 > 0.99 ? "#E78200": ($27 > 0.98 ? "#D1C800" : "#AAAAAA")) "; "
 }' | bedtools sort -g ~/p1/ref/GRCh38/hg38.fa.fai -i - | bgzip > ${prefix}.gtf.gz
 
 tabix ${prefix}.gtf.gz
