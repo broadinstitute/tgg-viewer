@@ -53,11 +53,11 @@ export const SUPPORTED_FILE_EXTENSIONS = {
 
   '.bed': 'bed',
   '.bed.gz': 'bed',
-  '.gff3': 'annotation',
-  '.gtf': 'annotation',
-  '.gtf.gz': 'annotation',
-  '.genePred': 'annotation',
-  '.bigBed': 'annotation',
+  '.gff3': 'gff',
+  '.gtf': 'gtf',
+  '.gtf.gz': 'gtf',
+  '.genePred': 'genePred',
+  '.bigBed': 'bigBed',
 }
 
 
