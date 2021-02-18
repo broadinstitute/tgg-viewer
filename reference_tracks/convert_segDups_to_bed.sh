@@ -42,10 +42,16 @@ $30             k2K : 0.00664869
 
 
 #inputFile=$1
+
 inputFile=hg38_genomicSuperDups.txt
-fai=~/p1/ref/GRCh38/hg38.fa.fai
-prefix=$(echo $inputFile | sed s/.txt// | sed s/.gz//)
+
+if [ ! -f $inputFile ]; then
+    echo $inputFile not found
+    exit 1
+fi
+
 bucket="gs://tgg-viewer/ref/GRCh38/segdups"
+prefix=segdups
 
 echo Processing $inputFile which has $(cat $inputFile | wc -l) rows ...
 
@@ -55,6 +61,6 @@ cat $inputFile  | grep -v _random | grep -v chrUn_ | grep -v chrom | awk -F $'\t
 
 tabix ${prefix}.gtf.gz
 
-gsutil -m cp ${prefix}.sorted.txt.gz* $bucket
+gsutil -m cp ${prefix}.gtf.gz* $bucket
 
 echo Wrote ${prefix}.gtf.gz and copied it to ${bucket}/${prefix}.gtf.gz
