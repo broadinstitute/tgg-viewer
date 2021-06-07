@@ -51,6 +51,9 @@ export const SUPPORTED_FILE_EXTENSIONS = {
   '.wig': 'wig',
   '.bedGraph': 'wig',
 
+  '.gcnv.bed': 'gcnv_bed',
+  '.gcnv.bed.gz': 'gcnv_bed',
+
   '.bed': 'bed',
   '.bed.gz': 'bed',
   '.gff3': 'gff',
