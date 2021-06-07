@@ -33,6 +33,10 @@ const StyledButton = styled(Button)`
   margin-right: 15px !important;
 `
 
+const StyledButton2 = styled(Button)`
+  margin-left: 10px !important;
+`
+
 class InitialSettingsForm extends React.PureComponent
 {
   constructor(props) {
@@ -101,10 +105,7 @@ class InitialSettingsForm extends React.PureComponent
       try {
         settings = yaml.safeLoad(fileContents)
       } catch (e) {
-        if (isYaml) {
-          console.error(`Unable to parse YAML file: ${url}. ${e}`)
-          return
-        }
+        throw new Error(`Unable to parse YAML file: ${url}  ${e}`)
       }
     }
 
@@ -112,16 +113,12 @@ class InitialSettingsForm extends React.PureComponent
       try {
         settings = JSON.parse(fileContents)
       } catch (e) {
-        if (isJson) {
-          console.error(`Unable to parse JSON file: ${url}. ${e}`)
-          return
-        }
+        throw new Error(`Unable to parse JSON file: ${url}  ${e}`)
       }
     }
 
     if (!settings) {
-      console.error(`Unable to parse JSON or YAML from: ${url}`)
-      return
+      throw new Error(`Unable to parse settings from file: ${url}`)
     }
 
     // TODO validate settings more
@@ -210,11 +207,11 @@ class InitialSettingsForm extends React.PureComponent
           successMessage={this.state.successMessage}
         />
         <Popup
-          content="Export current settings to a .json file. If you then upload this file to a public url (for example to github) and then paste the url here, these settings will be restored."
+          content="Export current settings to a .json file. If you then upload this file to a public url (for example to github) and then paste the url here, the current settings will be restored."
           position="right center"
           trigger={
             <a download="settings.json" href={`data:text/json;charset=utf-8,${this.exportCurrentSettings()}`}>
-              <Button icon="download" />
+              <StyledButton2 icon="download" />
             </a>
           }
         />
