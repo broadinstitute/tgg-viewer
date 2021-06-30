@@ -153,6 +153,12 @@ class InitialSettingsForm extends React.PureComponent
     if (url.startsWith('https://github.com/')) {
       // switch to the github raw url
       url = url.replace('https://github.com', 'https://raw.githubusercontent.com').replace('blob/', '')
+    } else if (url.startsWith('https://storage.googleapis.com')) {
+      // switch to the url that supports CORS (https://stackoverflow.com/questions/66934689/getting-cors-issue-on-wildcard-cors-enabled-gcs-bucket-with-fetch)
+      const urlParts = url.replace('https://storage.googleapis.com/', '').split('/')
+      const bucketName = urlParts[0]
+      const objectPath = urlParts.slice(1).join('/')
+      url = `https://${bucketName}.storage.googleapis.com/${objectPath}`
     }
 
     try {
