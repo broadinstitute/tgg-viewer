@@ -15,7 +15,7 @@
 #
 #     ./enable_cors.sh gs://your-bucket
 # 
-# 4. paste the config url (eg. https://storage.googleapis.com/your-bucket/path/your-config.json
+# 4. paste the config url (eg. https://storage.googleapis.com/your-bucket/path/your-config.json) into the "Initial settings" box in TGG-viewer and click Apply
 # 
 BUCKET=$1   # eg. "gs://my-bucket"
 gsutil cors set <( echo '[{ "origin": ["*"], "method": ["GET"] }]' ) $BUCKET
