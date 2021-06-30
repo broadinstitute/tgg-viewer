@@ -1,5 +1,5 @@
 # TGG-viewer allows its sample lists, settings, and selected tracks to be saved or loaded to/from a json config file. 
-# To load or restore settings from such as config file, you have to store it at a publicly-accessible url 
+# To load settings from such a config file, you have to store it at a publicly-accessible url 
 # and then paste this url into the "Initial settings" field in TGG-viewer. 
 # 
 # One convenient option is to store the config in a public github repository. Another is to put it in a google storage bucket. 
