@@ -7,7 +7,7 @@
 # 1. upload the .json config(s) to gs://your-bucket
 # 2. set bucket contents to be public by granting read access to "AllUsers", or, if you enabled ACLs when creating your bucket, you can make just the config(s) public by running:
 #
-#     gsutil acl ch -u AllUsers:R gs://your-bucket/your-config.json
+#     gsutil acl ch -u AllUsers:R gs://your-bucket/path/your-config.json
 #
 # 3. update the bucket's CORS settings by running this script:
 #
