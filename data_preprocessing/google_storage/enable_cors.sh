@@ -5,8 +5,7 @@
 # If you choose to use a google bucket, the steps below adjust the bucket's settings so that it works with TGG-viewer.
 # 
 # 1. upload the .json config(s) to gs://your-bucket
-# 2. set bucket contents to be public by granting read access to "AllUsers", or,
-#    if you chose to enable ACLs when creating your bucket, you can make just the config(s) public by running:
+# 2. set bucket contents to be public by granting read access to "AllUsers", or, if you enabled ACLs when creating your bucket, you can make just the config(s) public by running:
 #
 #     gsutil acl ch -u AllUsers:R gs://your-bucket/your-config.json
 #
