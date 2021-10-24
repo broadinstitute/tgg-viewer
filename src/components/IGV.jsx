@@ -362,12 +362,13 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   locusChangedHandler: (event) => {
-    const newLocus = event.label.replace(/,/g, '')
-    //console.log('Locus changed handler', event.label, newLocus, event)
-    dispatch({
-      type: 'UPDATE_LOCUS',
-      newValue: newLocus,
-    })
+    if (event && event.length > 0 && event[0].locusSearchString) {
+      const newLocus = event[0].locusSearchString.replace(/,/g, '')
+      dispatch({
+        type: 'UPDATE_LOCUS',
+        newValue: newLocus,
+      })
+    }
   },
 
   trackRemovedHandler: (categoryName, trackName) => {
