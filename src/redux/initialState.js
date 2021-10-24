@@ -24,11 +24,15 @@ export const DEFAULT_STATE = {
     minUniquelyMappedReads: 0,
     minTotalReads: 1,
     maxFractionMultiMappedReads: 1,
+    maxPercentSamplesWithThisJunction: 100,
+    maxSamplesWithThisJunction: 1000000000,
+    minJunctionEndsVisible: 0,
+    minPercentSamplesWithThisJunction: 0,
+    minSamplesWithThisJunction: 0,
     minSplicedAlignmentOverhang: 0,
     thicknessBasedOn: 'numUniqueReads', //options: numUniqueReads (default), numReads, isAnnotatedJunction
     bounceHeightBasedOn: 'random', //options: random (default), distance, thickness
     labelWith: 'uniqueReadCount',
-    //labelWithInParen: 'multiMappedReadCount',
   },
   vcfOptions: {
     displayMode: 'EXPANDED',

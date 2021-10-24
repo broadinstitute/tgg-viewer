@@ -90,6 +90,7 @@ const SpliceJunctionsOptionsPanel = ({ sjOptions, updateSjOptions }) => {
     updateSjOptions({ ...sjOptions, ...editedFields })
   }
 
+  console.log('sjOptions.minJunctionEndsVisible', sjOptions.minJunctionEndsVisible, sjOptions)
   return (
     <div>
       <CategoryH3>Junctions Track Filters</CategoryH3><br />
