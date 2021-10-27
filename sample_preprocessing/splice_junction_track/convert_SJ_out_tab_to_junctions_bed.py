@@ -82,7 +82,7 @@ def parse_interval(i):
 
 
 intervals = [parse_interval(i) for i in args.interval]
-gencode_introns_set = parse_introns_from_gencode_gff(args.gencode_gff)
+gencode_introns_set = parse_introns_from_gencode_gff(args.gencode_gff) if args.gencode_gff else set()
 
 for input_path in args.input_path:
 
