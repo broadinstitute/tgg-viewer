@@ -21,18 +21,24 @@ export const initGoogleClient = () => new Promise((resolve) => {
 
 export const isSignedIn = async () => {
   const authInstance = await gapi.auth2.getAuthInstance()
+  if (!authInstance) {
+    return false
+  }
   return authInstance.isSignedIn.get()
 }
 
 export const googleSignIn = async () => {
   const authInstance = await gapi.auth2.getAuthInstance()
-  if (!authInstance.isSignedIn.get()) {
+  if (authInstance && !authInstance.isSignedIn.get()) {
     await authInstance.signIn()
   }
 }
 
 export const getGoogleUserEmail = async () => {
   const authInstance = await gapi.auth2.getAuthInstance()
+  if (!authInstance) {
+    return null
+  }
   const user = authInstance && authInstance.currentUser && authInstance.currentUser.get()
   const profile = user && user.getBasicProfile()
   return profile && profile.getEmail()
@@ -42,6 +48,9 @@ export const getGoogleAccessToken = async () => {
   // use OAuth2 to get an access token for RNA-seq viewer to access the google storage API on behalf of the user
   const authInstance = await gapi.auth2.getAuthInstance()
   const user = authInstance && authInstance.currentUser && authInstance.currentUser.get()
+  if (!authInstance) {
+    return null
+  }
   if (!authInstance.isSignedIn.get()) {
     user.reloadAuthResponse()
   }

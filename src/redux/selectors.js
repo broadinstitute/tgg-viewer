@@ -20,7 +20,8 @@ export const getVcfOptions = (state) => state.vcfOptions
 export const getBamOptions = (state) => state.bamOptions
 export const getGcnvOptions = (state) => state.gcnvOptions
 export const getUser = (state) => state.user
-export const getIsGoogleLoginRequired = (state) => state.isGoogleLoginRequired
+export const getIsGoogleLoginRequired = (state) => (
+    state.isGoogleLoginRequired === undefined ? true : state.isGoogleLoginRequired)
 export const getInitialSettingsUrl = (state) => state.initialSettingsUrl
 
 export const getAllDataTypes = createSelector(
