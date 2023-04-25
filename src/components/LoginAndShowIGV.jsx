@@ -10,7 +10,7 @@ import styled from 'styled-components'
 import { GoogleLogin } from 'react-google-login'
 import IGV from './IGV'
 import { getGoogleUserEmail, googleSignIn, initGoogleClient } from '../utils/googleAuth'
-import { getInitialSettingsUrl, getRowsInCategories } from '../redux/selectors'
+import { getInitialSettingsUrl, getRowsInCategories, getIsGoogleLoginRequired } from '../redux/selectors'
 
 const SignInButtonContainer = styled.div`
   display: flex;
@@ -46,7 +46,11 @@ class LoginAndShowIGV extends React.Component {
 
   async componentDidMount() {
 
-    // TODO check if any tracks need google sign-in
+    if (!this.props.isGoogleLoginRequired) {
+      this.setState({ show: 'igv' })
+      return
+    }
+
     try {
       await initGoogleClient()
     } catch (e) {
@@ -153,12 +157,14 @@ class LoginAndShowIGV extends React.Component {
 }
 
 LoginAndShowIGV.propTypes = {
+  isGoogleLoginRequired: PropTypes.bool,
   rowsInCategories: PropTypes.array,
   initialSettingsUrl: PropTypes.string,
   userChangedHandler: PropTypes.func,
 }
 
 const mapStateToProps = (state) => ({
+  isGoogleLoginRequired: getIsGoogleLoginRequired(state),
   rowsInCategories: getRowsInCategories(state),
   initialSettingsUrl: getInitialSettingsUrl(state),
 })
