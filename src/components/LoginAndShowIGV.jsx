@@ -45,7 +45,6 @@ class LoginAndShowIGV extends React.Component {
   }
 
   async componentDidMount() {
-
     if (!this.props.isGoogleLoginRequired) {
       this.setState({ show: 'igv' })
       return
@@ -78,7 +77,7 @@ class LoginAndShowIGV extends React.Component {
   }
 
   render = () => {
-    if (this.state.show === 'igv') {
+    if (this.state.show === 'igv' || !this.props.isGoogleLoginRequired) {
       console.log('Render <IGV />')
       return <IGV />
     }

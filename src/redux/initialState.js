@@ -9,6 +9,7 @@ import { loadState, saveState } from '../utils/localStorage'
 const INITIAL_ROWS_IN_CATEGORIES = []
 
 export const DEFAULT_STATE = {
+  isGoogleLoginRequired: true,
   genome: 'hg38',
   locus: 'chr15:92,835,700-93,031,800',
   dataTypesToShow: ['junctions', 'coverage', 'vcf', 'gcnv_bed'],

@@ -161,6 +161,7 @@ const selectedSamplesByCategoryNameAndRowNameReducer = (state, action) => {
 
 // combined reducers
 const otherReducers = combineReducers(Object.assign({
+  isGoogleLoginRequired: zeroActionsReducer,
   genome: zeroActionsReducer,
   locus: createSingleValueReducer('UPDATE_LOCUS', ''),
   rightSideBarLocusList: createArrayReducer('RIGHT_SIDE_BAR_LOCUS_LIST'),
