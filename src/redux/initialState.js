@@ -105,6 +105,11 @@ export const getStateFromUrlHash = () => {
           console.error('Couldn\'t parse url hash param', keyValueList[0], ': ', keyValueList[1])
         }
       }
+      if (!acc[key] || (typeof acc[key] === 'object' && Object.keys(acc[key]).length === 0)) {
+        //delete keys with empty values
+        delete acc[key]
+      }
+
       return acc
     }, {})
     : {}
