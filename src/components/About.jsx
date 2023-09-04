@@ -1,6 +1,7 @@
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable react/no-unescaped-entities */
-/* eslint-disable  react/jsx-closing-tag-location */
+/* eslint-disable react/jsx-closing-tag-location */
+/* eslint-disable no-trailing-spaces */
 
 import React from 'react'
 import styled from 'styled-components'
@@ -14,7 +15,7 @@ const LinkButton = styled.a`
 
 const AboutLink = () => (
   <Modal
-    title="About the TGG Viewer"
+    title="About TGG Viewer"
     size="large"
     modalName="AboutModal"
     trigger={<LinkButton>About</LinkButton>}
@@ -22,7 +23,11 @@ const AboutLink = () => (
     The Translational Genomics Group (TGG) Viewer is a free, open-source web app for visualizing splice junctions, copy number, and other data
     genome-wide using <a href="https://github.com/igvteam/igv.js" target="_blank">IGV.js</a><br />
     <br />
-    Main features: <br />
+    <b>Updates:</b><br />
+    <br />
+    <i>9/5/2023</i> - fixed: genomic location no longer resets when a new track is added<br />
+    <br />
+    <b>Main features:</b><br />
     <ul>
       <li>Supports most file formats supported by IGV.js, including: .bed, .vcf, .bam, .cram, .bigWig, as well as
         several custom formats for splice junctions (.junctions.bed.gz) and gCNV copy-number variants (.gcnv.bed.gz) </li>

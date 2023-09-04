@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-one-expression-per-line */
+
 import React from 'react'
 import styled from 'styled-components'
 import { Grid } from 'semantic-ui-react'
@@ -22,8 +24,9 @@ export default () => (
   <Grid>
     <HeaderRow>
       <Column1>
-        <b>TGG Viewer:</b>
+        <b>TGG Viewer </b> version <i> 9/5/2023</i>
         <AboutLink />
+
         {/* <a href="#">Intro Video</a> &nbsp; &nbsp; */}
       </Column1>
       <Column2>
