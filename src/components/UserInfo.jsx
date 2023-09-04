@@ -1,4 +1,5 @@
 /* eslint-disable react/jsx-one-expression-per-line */
+/* eslint-disable no-multiple-empty-lines */
 
 import React from 'react'
 import PropTypes from 'prop-types'

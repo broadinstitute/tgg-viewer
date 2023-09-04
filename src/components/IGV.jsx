@@ -4,6 +4,7 @@
 /* eslint-disable radix */
 /* eslint-disable prefer-template */
 /* eslint-disable no-else-return */
+/* eslint-disable no-multiple-empty-lines */
 
 import _ from 'lodash'
 import React from 'react'

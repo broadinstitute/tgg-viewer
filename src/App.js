@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-indent */
+
 import React from 'react'
 import { Provider } from 'react-redux'
 

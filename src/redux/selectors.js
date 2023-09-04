@@ -39,7 +39,6 @@ export const getAllDataTypes = createSelector(
     }, new Set())]
   })
 
-
 export const getDataTypesUsersCanToggle = createSelector(
   getRowsInCategories,
   (rowsInCategories) => {
@@ -74,7 +73,6 @@ export const getRowsByCategoryName = createSelector(
     }, {})
   })
 
-
 export const getSelectedRowsByCategoryName = createSelector(
   getSelectedRowNamesByCategoryName,
   getRowsByCategoryName,
@@ -86,7 +84,6 @@ export const getSelectedRowsByCategoryName = createSelector(
       return { ...acc, [categoryName]: rowsByCategoryName[categoryName].filter((row) => selectedRowNames.includes(row.name)) }
     }, {})
   })
-
 
 export const getTracks = createSelector(
   getSelectedRowsByCategoryName,
@@ -242,6 +239,8 @@ export const getTracks = createSelector(
             name: trackName,
             order: trackOrder,
             url: data.url,
+            delimiter: data.delimiter,
+            nameField: data.nameField,
             oauthToken: getGoogleAccessToken,
             indexURL: data.indexURL || `${data.url}.tbi`,
             height: 100,

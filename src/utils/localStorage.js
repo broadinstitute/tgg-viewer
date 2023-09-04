@@ -1,3 +1,5 @@
+/* eslint-disable no-multiple-empty-lines */
+
 import LZString from 'lz-string'
 
 /* in-memory cache to avoid unnecessary compression/decompression */

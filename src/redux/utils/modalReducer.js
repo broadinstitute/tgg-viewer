@@ -1,3 +1,5 @@
+/* eslint-disable no-multiple-empty-lines */
+
 import { createObjectsByIdReducer } from './reducerFactories'
 
 

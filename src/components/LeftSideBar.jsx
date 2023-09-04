@@ -1,3 +1,6 @@
+/* eslint-disable no-multiple-empty-lines */
+/* eslint-disable react/jsx-indent-props */
+/* eslint-disable react/jsx-indent */
 /* eslint-disable react/jsx-one-expression-per-line */
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable react/no-array-index-key */

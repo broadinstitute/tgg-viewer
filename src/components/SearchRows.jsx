@@ -1,5 +1,6 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable react/require-optimization */
+/* eslint-disable no-multiple-empty-lines */
 
 import _ from 'lodash'
 import React from 'react'

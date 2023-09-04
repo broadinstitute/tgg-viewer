@@ -1,4 +1,6 @@
 /* eslint-disable prefer-object-spread */
+/* eslint-disable no-multiple-empty-lines */
+
 import { createStore, applyMiddleware, compose, combineReducers } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import { updateLocalStorageAndUrl, computeInitialState } from './initialState'

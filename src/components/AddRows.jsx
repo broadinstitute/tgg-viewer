@@ -63,7 +63,6 @@ export const SUPPORTED_FILE_EXTENSIONS = {
   '.bigBed': 'bigBed',
 }
 
-
 class AddRowsButtonAndModal extends React.PureComponent {
 
   getInitialState = () => {
@@ -236,7 +235,6 @@ AddRowsButtonAndModal.propTypes = {
   trigger: PropTypes.node,
 }
 
-
 const AddRows = ({ category, addRows }) => (
   <div>
     <AddRowsButtonAndModal
@@ -246,7 +244,6 @@ const AddRows = ({ category, addRows }) => (
       trigger={<LinkButton>Add {category.rows.length === 0 ? category.categoryName : null} Rows</LinkButton>}
     />
   </div>)
-
 
 AddRows.propTypes = {
   category: PropTypes.object,

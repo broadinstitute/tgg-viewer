@@ -1,3 +1,6 @@
+/* eslint-disable no-multiple-empty-lines */
+/* eslint-disable react/jsx-indent */
+
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'

@@ -1,5 +1,7 @@
 /* eslint-disable react/no-find-dom-node */
 /* eslint-disable react/destructuring-assignment */
+/* eslint-disable no-multiple-empty-lines */
+/* eslint-disable react/jsx-indent */
 
 import React from 'react'
 import PropTypes from 'prop-types'

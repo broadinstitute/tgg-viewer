@@ -1,3 +1,5 @@
+/* eslint-disable no-multiple-empty-lines */
+
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Button, Icon } from 'semantic-ui-react'

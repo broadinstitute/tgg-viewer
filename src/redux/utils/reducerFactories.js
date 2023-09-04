@@ -1,3 +1,5 @@
+/* eslint-disable no-multiple-empty-lines */
+
 /**
  * Redux reducers take a 'state' object representing the current application
  * state, and an 'action' object specifying some change to that state.

@@ -1,3 +1,4 @@
+/* eslint-disable no-multiple-empty-lines */
 
 export const throttle = (delay, fn) => {
   let timerId

@@ -22,6 +22,7 @@
     }
   },
   "rules": {
+    "no-multiple-empty-lines": 0,
     "semi": [2, "never"],
     "no-shadow": ["error", { "allow": ["error"] }],
     "arrow-body-style": 0,
