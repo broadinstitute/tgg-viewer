@@ -185,7 +185,7 @@ class IGV extends React.Component {
       browser.trackViews.forEach((trackView) => { monkeyPatchPopupData(trackView.track) })
 
       if (locusChangedHandler) {
-        this.browser.on('locuschange', throttle(300, (event) => {
+        this.browser.on('locuschange', throttle(100, (event) => {
           if (!this.ignoreNextLocusChangedEvent) {
             locusChangedHandler(event)
           }
@@ -363,8 +363,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   locusChangedHandler: (event) => {
-    if (event && event.label) {
-      const newLocus = event.label.replace(/,/g, '')
+    if (event && event[0] && event[0].chr && event[0].start && event[0].end) {
+      const newLocus = `${event[0].chr}:${parseInt(event[0].start) + 1}-${parseInt(event[0].end)}`
       dispatch({
         type: 'UPDATE_LOCUS',
         newValue: newLocus,
