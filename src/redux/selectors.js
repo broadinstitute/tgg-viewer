@@ -323,8 +323,8 @@ export const getTracks = createSelector(
     igvTracks.push({
       name: gencodeGeneTrackName,
       format: 'refgene',
-      url: 'gs://tgg-viewer/ref/GRCh38/gencode_v32/gencode_v32_knownGene.sorted.txt.gz',
-      indexURL: 'gs://tgg-viewer/ref/GRCh38/gencode_v32/gencode_v32_knownGene.sorted.txt.gz.tbi',
+      url: 'gs://tgg-viewer/ref/GRCh38/gencode_v44/knownGene_v44.hg38.sorted.txt.gz',
+      indexURL: 'gs://tgg-viewer/ref/GRCh38/gencode_v44/knownGene_v44.hg38.sorted.txt.gz.tbi',
       indexed: true,
       searchable: true,
       height: 350,
