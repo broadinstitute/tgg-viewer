@@ -52,7 +52,7 @@ export const DEFAULT_STATE = {
     autoscale: false,
     onlyHandleClicksForHighlightedSamples: true,
   },
-  initialSettingsUrl: 'https://broadinstitute.github.io/rnaseq-methods/pipelines/tgg_viewer/configs/default.json',
+  initialSettingsUrl: 'https://tgg-viewer.broadinstitute.org/default_config.json',
 }
 
 
