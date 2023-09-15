@@ -1,0 +1,341 @@
+{
+  "bamOptions": {
+    "alignmentShading": "strand",
+    "showSoftClips": true,
+    "trackHeight": 200,
+    "viewAsPairs": false
+  },
+  "dataTypesToShow": ["junctions", "coverage", "vcf"],
+  "genome": "hg38",
+  "locus": "chr15:92,835,700-93,031,800",
+  "rowsInCategories": [
+    {
+      "categoryName": "GTEx Tracks",
+      "rows": [
+        {
+          "data": [
+            {
+              "type": "coverage",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_muscle.803_samples.bigWig"
+            },
+            {
+              "type": "junctions",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_muscle.803_samples.junctions.bed.gz"
+            }
+          ],
+          "description": "All splice junctions from all 803 GTEx v3 muscle samples. The junction-spanning read counts and read coverage are summed across all samples.",
+          "name": "GTEx Muscle"
+        },
+        {
+          "data": [
+            {
+              "type": "coverage",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_blood.755_samples.bigWig"
+            },
+            {
+              "type": "junctions",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_blood.755_samples.junctions.bed.gz"
+            }
+          ],
+          "description": "All splice junctions from all 755 GTEx v3 blood samples. The junction-spanning read counts and read coverage are summed across all samples.",
+          "name": "GTEx Blood"
+        },
+        {
+          "data": [
+            {
+              "type": "coverage",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_fibs.504_samples.bigWig"
+            },
+            {
+              "type": "junctions",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_fibs.504_samples.junctions.bed.gz"
+            }
+          ],
+          "description": "All splice junctions from all 504 GTEx v3 fibroblast samples. The junction-spanning read counts and read coverage are summed across all samples.",
+          "name": "GTEx Fibs"
+        },
+        {
+          "data": [
+            {
+              "type": "coverage",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_lymphocytes.174_samples.bigWig"
+            },
+            {
+              "type": "junctions",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_lymphocytes.174_samples.junctions.bed.gz"
+            }
+          ],
+          "description": "All splice junctions from all 174 GTEx v3 lymphocyte samples.<br/>The junction-spanning read counts and read coverage are summed across all samples.",
+          "name": "GTEx Lymph"
+        },
+        {
+          "data": [
+            {
+              "type": "coverage",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_brain_cortex.255_samples.bigWig"
+            },
+            {
+              "type": "junctions",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_brain_cortex.255_samples.junctions.bed.gz"
+            }
+          ],
+          "description": "All splice junctions from all 255 GTEx v3 cortex samples.<br/>The junction-spanning read counts and read coverage are summed across all samples.",
+          "name": "GTEx Brain: Cortex"
+        },
+        {
+          "data": [
+            {
+              "type": "coverage",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_frontal_cortex.209_samples.bigWig"
+            },
+            {
+              "type": "junctions",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_frontal_cortex.209_samples.junctions.bed.gz"
+            }
+          ],
+          "description": "All splice junctions from all 209 GTEx v3 frontal cortex samples.<br/>The junction-spanning read counts and read coverage are summed across all samples.",
+          "name": "GTEx Brain: Front. Cortex"
+        },
+        {
+          "data": [
+            {
+              "type": "coverage",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_muscle.803_samples.normalized.bigWig"
+            },
+            {
+              "type": "junctions",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_muscle.803_samples.normalized.junctions.bed.gz"
+            }
+          ],
+          "description": "Highly expressed junctions from all 803 GTEx v3 muscle samples.<br/>The junction-spanning read counts are normalized to represent the average spanning read count per-sample (see formula below). Only junctions with rounded normalized spanning read count > 0 are included in this track.<br /><br />average_unique_reads_per_muscle_sample = (total_unqiue_reads_in_all_muscle_samples / number_of_muscle_samples)<br />per_sample_normalized_read_count = raw_read_count * average_unique_reads_per_muscle_sample / total_unqiue_reads_in_this_sample<br/>normalized read count for junction = sum(per_sample_normalized_read_counts) / number_of_muscle_samples<br/>",
+          "name": "Norm. GTEx Muscle"
+        },
+        {
+          "data": [
+            {
+              "type": "coverage",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_blood.755_samples.normalized.bigWig"
+            },
+            {
+              "type": "junctions",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_blood.755_samples.normalized.junctions.bed.gz"
+            }
+          ],
+          "description": "Highly expressed junctions from all 755 GTEx v3 blood samples.<br/>The junction-spanning read counts are normalized to represent the average spanning read count per-sample (see formula below). Only junctions with rounded normalized spanning read count > 0 are included in this track.<br /><br />average_unique_reads_per_blood_sample = (total_unqiue_reads_in_all_blood_samples / number_of_blood_samples)<br />per_sample_normalized_read_count = raw_read_count * average_unique_reads_per_blood_sample / total_unqiue_reads_in_this_sample<br/>normalized read count for junction = sum(per_sample_normalized_read_counts) / number_of_blood_samples<br/>",
+          "name": "Norm. GTEx Blood"
+        },
+        {
+          "data": [
+            {
+              "type": "coverage",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_fibs.504_samples.normalized.bigWig"
+            },
+            {
+              "type": "junctions",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_fibs.504_samples.normalized.junctions.bed.gz"
+            }
+          ],
+          "description": "Highly expressed junctions from all 504 GTEx v3 fibroblast samples.<br/>The junction-spanning read counts are normalized to represent the average spanning read count per-sample (see formula below). Only junctions with rounded normalized spanning read count > 0 are included in this track.<br /><br />average_unique_reads_per_fibs_sample = (total_unqiue_reads_in_all_fibs_samples / number_of_fibs_samples)<br />per_sample_normalized_read_count = raw_read_count * average_unique_reads_per_fibs_sample / total_unqiue_reads_in_this_sample<br/>normalized read count for junction = sum(per_sample_normalized_read_counts) / number_of_fibs_samples<br/>",
+          "name": "Norm. GTEx Fibs"
+        },
+        {
+          "data": [
+            {
+              "type": "coverage",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_lymphocytes.174_samples.normalized.bigWig"
+            },
+            {
+              "type": "junctions",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_lymphocytes.174_samples.normalized.junctions.bed.gz"
+            }
+          ],
+          "description": "Highly expressed junctions from all 174 GTEx v3 lymphocyte samples.<br />The junction-spanning read counts are normalized to represent the average spanning read count per-sample (see formula below). Only junctions with rounded normalized spanning read count > 0 are included in this track.<br /><br />average_unique_reads_per_lymph_sample = (total_unqiue_reads_in_all_lymph_samples / number_of_lymph_samples)<br />per_sample_normalized_read_count = raw_read_count * average_unique_reads_per_lymph_sample / total_unqiue_reads_in_this_sample<br/>normalized read count for junction = sum(per_sample_normalized_read_counts) / number_of_lymph_samples<br/>",
+          "name": "Norm. GTEx Lymph"
+        },
+        {
+          "data": [
+            {
+              "type": "coverage",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_brain_cortex.255_samples.normalized.bigWig"
+            },
+            {
+              "type": "junctions",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_brain_cortex.255_samples.normalized.junctions.bed.gz"
+            }
+          ],
+          "description": "Highly expressed junctions from all 255 GTEx v3 brain cortex samples.<br />The junction-spanning read counts are normalized to represent the average spanning read count per-sample (see formula below).<br />Only junctions with rounded normalized spanning read count > 0 are included in this track.<br /><br />average_unique_reads_per_cortex_sample = (total_unqiue_reads_in_all_cortex_samples / number_of_cortex_samples)<br />per_sample_normalized_read_count = raw_read_count * average_unique_reads_per_cortex_sample / total_unqiue_reads_in_this_sample<br/>normalized read count for junction = sum(per_sample_normalized_read_counts) / number_of_cortex_samples<br/>",
+          "name": "Norm. GTEx Brain: Cortex"
+        },
+        {
+          "data": [
+            {
+              "type": "coverage",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_frontal_cortex.209_samples.normalized.bigWig"
+            },
+            {
+              "type": "junctions",
+              "url": "gs://tgg-viewer/ref/GRCh38/gtex_v8/GTEX_frontal_cortex.209_samples.normalized.junctions.bed.gz"
+            }
+          ],
+          "description": "Highly expressed junctions from all 209 GTEx v3 brain frontal cortex samples.<br />The junction-spanning read counts are normalized to represent the average spanning read count per-sample (see formula below).<br />Only junctions with rounded normalized spanning read count > 0 are included in this track.<br /><br />average_unique_reads_per_cortex_sample = (total_unqiue_reads_in_all_cortex_samples / number_of_cortex_samples)<br />per_sample_normalized_read_count = raw_read_count * average_unique_reads_per_cortex_sample / total_unqiue_reads_in_this_sample<br/>normalized read count for junction = sum(per_sample_normalized_read_counts) / number_of_cortex_samples<br/>",
+          "name": "Norm. GTEx Brain: Front. Cortex"
+        }
+      ]
+    },
+    {
+      "categoryName": "Phenotype Tracks",
+      "rows": [
+        {
+          "data": [
+            {
+              "type": "bed",
+              "url": "gs://tgg-viewer/ref/GRCh38/clingen/ClinGen_haploinsufficiency_gene_GRCh38.sorted.bed.gz"
+            }
+          ],
+          "description": "ClinGen dosage sensitivity curation tracks from https://clinicalgenome.org/working-groups/dosage-sensitivity-curation",
+          "name": "Haploinsufficiency Genes"
+        },
+        {
+          "data": [
+            {
+              "type": "bed",
+              "url": "gs://tgg-viewer/ref/GRCh38/clingen/ClinGen_triplosensitivity_gene_GRCh38.sorted.bed.gz"
+            }
+          ],
+          "description": "ClinGen dosage sensitivity curation tracks from https://clinicalgenome.org/working-groups/dosage-sensitivity-curation",
+          "name": "Triploinsufficiency Genes"
+        }
+      ]
+    },
+    {
+      "categoryName": "Mappability Tracks",
+      "rows": [
+        {
+          "data": [
+            {
+              "type": "coverage",
+              "url": "gs://tgg-viewer/ref/GRCh38/mappability/GRCh38_no_alt_analysis_set_GCA_000001405.15-k36_m2.bw"
+            }
+          ],
+          "description": "Mappability of 36-mers allowing for 2 mismatches. Generated using the same pipeline as the UCSC hg19 mappability tracks.",
+          "name": "36-mer mappability "
+        },
+        {
+          "data": [
+            {
+              "type": "coverage",
+              "url": "gs://tgg-viewer/ref/GRCh38/mappability/GRCh38_no_alt_analysis_set_GCA_000001405.15-k50_m2.bw"
+            }
+          ],
+          "description": "Mappability of 50-mers allowing for 2 mismatches. Generated using the same pipeline as the UCSC hg19 mappability tracks.",
+          "name": "50-mer mappability "
+        },
+        {
+          "data": [
+            {
+              "type": "coverage",
+              "url": "gs://tgg-viewer/ref/GRCh38/mappability/GRCh38_no_alt_analysis_set_GCA_000001405.15-k75_m2.bw"
+            }
+          ],
+          "description": "Mappability of 75-mers allowing for 2 mismatches. Generated using the same pipeline as the UCSC hg19 mappability tracks.",
+          "name": "75-mer mappability "
+        },
+        {
+          "data": [
+            {
+              "type": "coverage",
+              "url": "gs://tgg-viewer/ref/GRCh38/mappability/GRCh38_no_alt_analysis_set_GCA_000001405.15-k100_m2.bw"
+            }
+          ],
+          "description": "Mappability of 100-mers allowing for 2 mismatches. Generated using the same pipeline as the UCSC hg19 mappability tracks.",
+          "name": "100-mer mappability "
+        },
+        {
+          "data": [
+            {
+              "type": "gtf",
+              "url": "gs://tgg-viewer/ref/GRCh38/segdups/segdups.gtf.gz"
+            }
+          ],
+          "description": "Duplications of >1000 Bases of Non-RepeatMasked Sequence downloaded from UCSC",
+          "name": "SegDups >1000 bases"
+        }
+      ]
+    },
+    {
+      "categoryName": "SpliceAI Tracks",
+      "rows": [
+        {
+          "data": [
+            {
+              "type": "junctions",
+              "url": "gs://tgg-viewer/ref/GRCh38/spliceai/spliceai_scores.raw.snps_and_indels.hg38.filtered.sorted.score_0.5.splice_gain.bed.gz"
+            }
+          ],
+          "description": "SpliceAI delta score visualization. This is generated from Illumina's precomputed scores for all possible <br />SNVs and small InDels within the exons and introns of GENCODE v24 canonical transcripts. <br/>This track shows an arc for each variant that's predicted to disrupt splicing at another nearby position in the mRNA with a score >= 0.5",
+          "name": "SpliceAI gain (score >= 0.5) "
+        },
+        {
+          "data": [
+            {
+              "type": "junctions",
+              "url": "gs://tgg-viewer/ref/GRCh38/spliceai/spliceai_scores.raw.snps_and_indels.hg38.filtered.sorted.score_0.5.splice_loss.bed.gz"
+            }
+          ],
+          "description": "SpliceAI delta score visualization. This is generated from Illumina's precomputed scores for all possible <br />SNVs and small InDels within the exons and introns of GENCODE v24 canonical transcripts. <br/>This track shows an arc for each variant that's predicted to disrupt splicing at another nearby position in the mRNA with a score >= 0.5",
+          "name": "SpliceAI loss (score >= 0.5) "
+        },
+        {
+          "data": [
+            {
+              "type": "junctions",
+              "url": "gs://tgg-viewer/ref/GRCh38/spliceai/spliceai_scores.raw.snps_and_indels.hg38.filtered.sorted.score_0.2.splice_gain.bed.gz"
+            }
+          ],
+          "description": "SpliceAI delta score visualization. This is generated from Illumina's precomputed scores for all possible <br />SNVs and small InDels within the exons and introns of GENCODE v24 canonical transcripts. <br/>This track shows an arc for each variant that's predicted to disrupt splicing at another nearby position in the mRNA with a score >= 0.2",
+          "name": "SpliceAI gain (score >= 0.2) "
+        },
+        {
+          "data": [
+            {
+              "type": "junctions",
+              "url": "gs://tgg-viewer/ref/GRCh38/spliceai/spliceai_scores.raw.snps_and_indels.hg38.filtered.sorted.score_0.2.splice_loss.bed.gz"
+            }
+          ],
+          "description": "SpliceAI delta score visualization. This is generated from Illumina's precomputed scores for all possible <br />SNVs and small InDels within the exons and introns of GENCODE v24 canonical transcripts. <br/>This track shows an arc for each variant that's predicted to disrupt splicing at another nearby position in the mRNA with a score >= 0.2",
+          "name": "SpliceAI loss (score >= 0.2) "
+        }
+      ]
+    },
+    {
+      "categoryName": "Samples",
+      "rows": []
+    }
+  ],
+  "selectedRowNamesByCategoryName": {},
+  "selectedSamplesByCategoryNameAndRowName": {},
+  "sjOptions": {
+    "bounceHeightBasedOn": "random",
+    "colorBy": "isAnnotatedJunction",
+    "colorByNumReadsThreshold": 5,
+    "hideAnnotated": false,
+    "hideUnannotated": false,
+    "labelWith": "uniqueReadCount",
+    "maxFractionMultiMappedReads": 1,
+    "maxPercentSamplesWithThisJunction": 100,
+    "maxSamplesWithThisJunction": 1000000,
+    "minJunctionEndsVisible": 0,
+    "minPercentSamplesWithThisJunction": 0,
+    "minSamplesWithThisJunction": 0,
+    "minSplicedAlignmentOverhang": 0,
+    "minTotalReads": 1,
+    "minUniquelyMappedReads": 0,
+    "showOnlyMinusStrand": false,
+    "showOnlyPlusStrand": false,
+    "thicknessBasedOn": "numUniqueReads",
+    "trackHeight": 170
+  },
+  "vcfOptions": {
+    "displayMode": "EXPANDED"
+  }
+}
