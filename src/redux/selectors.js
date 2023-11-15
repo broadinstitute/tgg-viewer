@@ -10,8 +10,8 @@ export const getLocus = (state) => state.locus
 export const getRightSideBarLocusList = (state) => state.rightSideBarLocusList
 export const getLeftSideBarLocusList = (state) => state.leftSideBarLocusList
 export const getGenome = (state) => state.genome
-export const getIsLeftSideBarVisible = (state) => state.isLeftSideBarVisible
-export const getIsRightSideBarVisible = (state) => state.isRightSideBarVisible
+export const getIsLeftSideBarVisible = (state) => state.showLeftSideBar
+export const getIsRightSideBarVisible = (state) => state.showRightSideBar
 export const getDataTypesToShow = (state) => state.dataTypesToShow
 export const getRowsInCategories = (state) => state.rowsInCategories
 export const getSelectedRowNamesByCategoryName = (state) => state.selectedRowNamesByCategoryName

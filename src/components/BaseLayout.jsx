@@ -34,23 +34,23 @@ class BaseLayout extends React.PureComponent
   {
 
     const {
-      isLeftSideBarVisible,
-      isRightSideBarVisible,
+      showLeftSideBar,
+      showRightSideBar,
     } = this.props
 
-    const nSideBars = (isLeftSideBarVisible ? 1 : 0) + (isRightSideBarVisible ? 1 : 0)
+    const nSideBars = (showLeftSideBar ? 1 : 0) + (showRightSideBar ? 1 : 0)
 
     return (
       <StyledDiv>
         <Grid>
           <Grid.Row>
-            {isLeftSideBarVisible ? <LeftSideBarColumn><LeftSideBar /></LeftSideBarColumn> : null}
+            {showLeftSideBar ? <LeftSideBarColumn><LeftSideBar /></LeftSideBarColumn> : null}
             <Grid.Column style={{ minWidth: `calc(99% - ${nSideBars * SIDE_BAR_WIDTH + 5}px)`, zIndex: 1 }}>
               <Header />
               <LoginAndShowIGV />
               <InitialSettingsForm />
             </Grid.Column>
-            {isRightSideBarVisible ? <RightSideBarColumn><RightSideBar /></RightSideBarColumn> : null}
+            {showRightSideBar ? <RightSideBarColumn><RightSideBar /></RightSideBarColumn> : null}
           </Grid.Row>
         </Grid>
       </StyledDiv>
@@ -59,13 +59,13 @@ class BaseLayout extends React.PureComponent
 }
 
 BaseLayout.propTypes = {
-  isLeftSideBarVisible: PropTypes.bool,
-  isRightSideBarVisible: PropTypes.bool,
+  showLeftSideBar: PropTypes.bool,
+  showRightSideBar: PropTypes.bool,
 }
 
 const mapStateToProps = (state) => ({
-  isLeftSideBarVisible: getIsLeftSideBarVisible(state),
-  isRightSideBarVisible: getIsRightSideBarVisible(state),
+  showLeftSideBar: getIsLeftSideBarVisible(state),
+  showRightSideBar: getIsRightSideBarVisible(state),
 })
 
 export default connect(mapStateToProps)(BaseLayout)
