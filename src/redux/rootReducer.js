@@ -166,6 +166,8 @@ const otherReducers = combineReducers(Object.assign({
   isGoogleLoginRequired: zeroActionsReducer,
   genome: zeroActionsReducer,
   locus: createSingleValueReducer('UPDATE_LOCUS', ''),
+  isLeftSideBarVisible: zeroActionsReducer,
+  isRightSideBarVisible: zeroActionsReducer,
   rightSideBarLocusList: createArrayReducer('RIGHT_SIDE_BAR_LOCUS_LIST'),
   leftSideBarLocusList: createArrayReducer('LEFT_SIDE_BAR_LOCUS_LIST'),
   dataTypesToShow: createArrayReducer('DATA_TYPES_TO_SHOW'),
