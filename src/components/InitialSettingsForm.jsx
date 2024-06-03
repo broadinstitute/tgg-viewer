@@ -95,7 +95,8 @@ class InitialSettingsForm extends React.PureComponent
     //  throw new Error('Expected file extensions (".yaml", ".yml", or ".json") not found in the URL')
     //}
 
-    const response = await fetch(url)
+    console.log('Loading settings from', url)
+    const response = await fetch(url, { mode: 'cors', redirect: 'follow' })
     if (!response.ok) {
       throw new Error(`Couldn't load URL. Error: ${response.statusText.toLowerCase()} (${response.status})`)
     }

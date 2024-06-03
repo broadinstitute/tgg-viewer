@@ -43,6 +43,7 @@ const DataTypeIcon = styled.div.attrs({ name: 'stop' })`
   border-radius: 1px;
   height: 10px;
   cursor: pointer;
+  z-index: 100000;
 `
 
 const dataTypeIconColors = {
@@ -76,6 +77,7 @@ const LinkButton = styled.a`
 const RowColorLabelsContainer = styled.span`
   padding-left: 5px;
   white-space: nowrap;
+  z-index: 100000;
 `
 
 const NoWrapDiv = styled.div`
@@ -98,7 +100,7 @@ const ShowTrackTypesPanel = ({ dataTypesUsersCanToggle, enabledDataTypes, update
     return (
       <OptionDiv key={`${dataType} ${i}`}>
         <Checkbox label={`${label.toLocaleString()}`} checked={enabledDataTypes.includes(dataType)} onChange={(e, data) => updateDataTypesToShow(data.checked ? 'ADD' : 'REMOVE', [dataType])} />
-        <RowColorLabelsContainer><Popup content={`This stripe marks rows that have ${label.toLowerCase()} data. Use the checkbox on the left to show or hide ${label.toLowerCase()} tracks for all rows selected below.`} position="right center" trigger={<DataTypeIcon color={dataTypeIconColors[dataType] || dataTypeIconColors.default} />} /></RowColorLabelsContainer>
+        <RowColorLabelsContainer><Popup on="click" content={`This stripe marks rows that have ${label.toLowerCase()} data. Use the checkbox on the left to show or hide ${label.toLowerCase()} tracks for all rows selected below.`} position="right center" trigger={<DataTypeIcon color={dataTypeIconColors[dataType] || dataTypeIconColors.default} />} /></RowColorLabelsContainer>
       </OptionDiv>)
   })
 
@@ -116,47 +118,50 @@ ShowTrackTypesPanel.propTypes = {
 }
 
 
-const RowColorLabelsWithPopup = ({ row }) => {
-  const handleCopyToClipboard = () => {
-    const s = (row.data || []).map((d) => d.url).join('\n')
-    navigator.clipboard.writeText(s)
-  }
-
-  return (<Popup
+const RowColorLabelsWithPopup = ({ row }) => <Popup
     flowing
     content={
       <table>
         <tbody>
           {
             (row.data || []).map((d, i) =>
-              <tr key={`${d.url} ${d.type} ${i}`}>
-                <td style={{ paddingRight: '10px' }}>
-                  <b>{d.type && (dataTypeLabels[d.type] || d.type.toUpperCase())}:</b>
-                </td>
-                <td>
-                  <NoWrapDiv>{d.url}</NoWrapDiv>
-                </td>
-                <td style={{ color: 'gray', whiteSpace: 'nowrap', paddingLeft: '15px' }}>
-                  {d.samples ? `(${d.samples.length} samples)` : null}
-                </td>
-              </tr>,
+                <tr key={`${d.url} ${d.type} ${i}`}>
+                  <td style={{ paddingRight: '10px' }}>
+                    <b>{d.type && (dataTypeLabels[d.type] || d.type.toUpperCase())}:</b>
+                  </td>
+                  <td>
+                    <Popup content="Copy url" trigger={
+                      <Icon name="copy outline" style={{ cursor: 'pointer', paddingRight: '10px' }}
+                        onClick={(e) => { navigator.clipboard.writeText(d.url); e.target.classList.add('outline') }}
+                        onMouseDown={(e) => console.log(e.target.classList.remove('outline'))}
+                      />
+                    }
+                    />
+                  </td>
+                  <td>
+                    <NoWrapDiv>{d.url}</NoWrapDiv>
+                  </td>
+                  <td style={{ color: 'gray', whiteSpace: 'nowrap', paddingLeft: '15px' }}>
+                    {d.samples ? `(${d.samples.length} samples)` : null}
+                  </td>
+                </tr>,
             )
           }
-          <tr><td colSpan={2}><div style={{ fontSize: 'small', color: 'grey', marginTop: '10px' }}>(click to copy paths)</div></td></tr>
         </tbody>
       </table>
     }
     position="right center"
+    on="click"
     trigger={
-      <RowColorLabelsContainer onClick={handleCopyToClipboard}>
+      <RowColorLabelsContainer>
         {
           (row.data || []).map((d, i) => <DataTypeIcon key={`${d.url} ${d.type} ${i}`} color={dataTypeIconColors[d.type] || dataTypeIconColors.default} />)
         }
       </RowColorLabelsContainer>
     }
     style={{ marginLeft: '2px' }}
-  />)
-}
+/>
+
 
 RowColorLabelsWithPopup.propTypes = {
   row: PropTypes.object,
@@ -261,8 +266,9 @@ const RowDetails = ({ row }) => {
         flowing
         content={row.description && <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(row.description) }} />}
         position="right center"
+        on="click"
         trigger={
-          <Icon style={{ marginLeft: '10px' }} name="question circle outline" />
+          <Icon style={{ marginLeft: '10px', cursor: 'pointer' }} name="question circle outline" />
         }
       />
       : null)
