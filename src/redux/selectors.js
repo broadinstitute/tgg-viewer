@@ -313,7 +313,7 @@ export const getTracks = createSelector(
     }))
 
     // add gencode genes
-    const gencodeGeneTrackName = 'Gencode v32 Genes'
+    const gencodeGeneTrackName = 'Gencode v46 Genes'
 
     let gencodeGeneTrackOrder = trackOrderArray.indexOf(gencodeGeneTrackName)
     if (gencodeGeneTrackOrder !== -1) {
@@ -325,8 +325,8 @@ export const getTracks = createSelector(
     igvTracks.push({
       name: gencodeGeneTrackName,
       format: 'refgene',
-      url: 'gs://tgg-viewer/ref/GRCh38/gencode_v44/gencode.v44.hg38.sorted.txt.gz',
-      indexURL: 'gs://tgg-viewer/ref/GRCh38/gencode_v44/gencode.v44.hg38.sorted.txt.gz.tbi',
+      url: 'gs://tgg-viewer/ref/GRCh38/gencode_v46/gencode.v46.GRCh38.sorted.txt.gz',
+      indexURL: 'gs://tgg-viewer/ref/GRCh38/gencode_v46/gencode.v46.GRCh38.sorted.txt.gz.tbi',
       indexed: true,
       searchable: true,
       height: 350,
