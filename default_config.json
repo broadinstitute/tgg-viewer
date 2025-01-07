@@ -5,6 +5,7 @@
     "trackHeight": 200,
     "viewAsPairs": false
   },
+  "isGoogleLoginRequired": false,
   "showLeftSideBar": true,
   "showRightSideBar": true,
   "dataTypesToShow": ["junctions", "coverage", "vcf"],
